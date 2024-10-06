@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, TextInput, View, Alert, TouchableOpacity } from 'react-native';
 import colors from '../../constants/Color';
+import firebase from '../../firebaseConfig';
 
 import Feather from '@expo/vector-icons/Feather';
 import Fontisto from '@expo/vector-icons/Fontisto';
@@ -17,10 +18,17 @@ export default function Register({ navigation }) {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
 
+    const [confirm, setConfirm] = useState(null);
+
     // Xử lý đăng ký
     const handleSignUp = async () => {
-        console.log('Đăng ký');
-        navigation.navigate('OTP');
+        try {
+            const confirmation = await firebase.auth().signInWithPhoneNumber(phone);
+            setConfirm(confirmation);
+            navigation.navigate('OTP', { confirmation });
+        } catch (error) {
+            Alert.alert('Error', error.message);
+        }
     };
 
     return (

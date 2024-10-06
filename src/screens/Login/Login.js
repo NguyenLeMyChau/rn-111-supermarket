@@ -15,8 +15,9 @@ export default function Login({ navigation }) {
     const [showPassword, setShowPassword] = useState(false);
 
     // Xử lý đăng nhập với email và password
-    const handleSignIn = async () => {
+    const handleLogin = async () => {
         console.log('Đăng nhập với email và password');
+        navigation.navigate('Home');
     };
 
     return (
@@ -48,7 +49,7 @@ export default function Login({ navigation }) {
                 <Text style={{ color: colors.title }}>Quên mật khẩu?</Text>
             </TouchableOpacity>
 
-            <Button TextValue={'Đăng Nhập'} onPress={handleSignIn} />
+            <Button TextValue={'Đăng Nhập'} onPress={handleLogin} />
 
             <TouchableOpacityForm
                 TextBegin={"Bạn chưa có tài khoản?"}
