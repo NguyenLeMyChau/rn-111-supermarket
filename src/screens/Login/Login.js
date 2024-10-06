@@ -45,7 +45,7 @@ export default function Login({ navigation }) {
             />
 
             <TouchableOpacity style={styles.forgotPass}>
-                <Text style={{ color: colors.button }}>Quên mật khẩu?</Text>
+                <Text style={{ color: colors.title }}>Quên mật khẩu?</Text>
             </TouchableOpacity>
 
             <Button TextValue={'Đăng Nhập'} onPress={handleSignIn} />
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         marginBottom: 24,
         fontWeight: 'bold',
-        color: colors.button
+        color: colors.title
     },
     forgotPass: {
         alignSelf: 'flex-end',

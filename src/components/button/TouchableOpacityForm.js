@@ -8,7 +8,7 @@ export default function TouchableOpacityForm({ TextBegin, TextValue, onPress }) 
         <View style={{ flexDirection: 'row' }}>
             <Text>{TextBegin}</Text>
             <TouchableOpacity style={styles.TouchableOpacityForm} onPress={onPress}>
-                <Text style={{ color: colors.button, left: 5, fontWeight: 500 }}>{TextValue}</Text>
+                <Text style={{ color: colors.title, left: 5, fontWeight: 500 }}>{TextValue}</Text>
             </TouchableOpacity>
         </View>
 

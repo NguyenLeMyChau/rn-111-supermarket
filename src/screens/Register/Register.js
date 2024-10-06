@@ -20,6 +20,7 @@ export default function Register({ navigation }) {
     // Xử lý đăng ký
     const handleSignUp = async () => {
         console.log('Đăng ký');
+        navigation.navigate('OTP');
     };
 
     return (
