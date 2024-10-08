@@ -17,7 +17,7 @@ export default function Login({ navigation }) {
     // Xử lý đăng nhập với email và password
     const handleLogin = async () => {
         console.log('Đăng nhập với email và password');
-        navigation.navigate('Home');
+        navigation.navigate('MainTabs');
     };
 
     return (
