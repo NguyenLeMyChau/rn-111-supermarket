@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, TextInput, View, Alert, TouchableOpacity } from 'react-native';
 import colors from '../../constants/Color';
+import { useDispatch } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
+import { loginUser } from '../../services/authRequest';
 
 import Fontisto from '@expo/vector-icons/Fontisto';
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -9,15 +12,22 @@ import Input from '../../components/input/Input';
 import Button from '../../components/button/Button';
 import TouchableOpacityForm from '../../components/button/TouchableOpacityForm';
 
-export default function Login({ navigation }) {
+
+export default function Login() {
+    const dispatch = useDispatch();
+    const navigation = useNavigation();
+
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
 
     // Xử lý đăng nhập với email và password
     const handleLogin = async () => {
-        console.log('Đăng nhập với email và password');
-        navigation.navigate('MainTabs');
+        const loginData = {
+            phone: phone,
+            password: password,
+        };
+        loginUser(loginData, dispatch, navigation);
     };
 
     return (

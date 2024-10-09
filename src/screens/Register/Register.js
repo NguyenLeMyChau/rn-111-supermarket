@@ -10,8 +10,6 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import Input from '../../components/input/Input';
 import Button from '../../components/button/Button';
 import TouchableOpacityForm from '../../components/button/TouchableOpacityForm';
-import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
-import { auth } from '../../config/firebaseConfig';
 
 const CELL_COUNT = 6;
 const { width } = Dimensions.get('window');
