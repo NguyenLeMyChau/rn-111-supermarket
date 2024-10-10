@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, TextInput, TouchableOpacity } from 'react-native';
 import colors from '../../constants/Color';
 
-export default function Input({ Icon, nameIcon, onClick, placeholder, value, onChangeText, secureTextEntry, IconEnd, nameIconEnd, onPressIconEnd }) {
+export default function Input({ Icon, nameIcon, onClick, placeholder, value, onChangeText, secureTextEntry, IconEnd, nameIconEnd, onPressIconEnd, keyboardType }) {
 
     return (
         <View style={styles.container}>
@@ -17,6 +17,7 @@ export default function Input({ Icon, nameIcon, onClick, placeholder, value, onC
                 value={value}
                 onChangeText={onChangeText}
                 secureTextEntry={secureTextEntry}
+                keyboardType={keyboardType}
             />
 
             {IconEnd && (

@@ -18,8 +18,6 @@ const loginUser = async (loginData, dispatch, navigation) => {
         // Giải mã accessToken để lấy thông tin người dùng
         const decodedToken = jwtDecode(accessToken);
 
-        console.log('Decoded token:', decodedToken);
-
         const { exp, iat, ...userWithoutExpIat } = decodedToken;
 
         const userWithToken = {
@@ -53,10 +51,14 @@ const logoutUser = async (dispatch, navigation, accessToken, axiosJWT) => {
                 Authorization: `Bearer ${accessToken}`,
             },
         });
+
         await dispatch(logoutSuccess());
+
         // Xóa refresh token khỏi AsyncStorage
         await AsyncStorage.removeItem('refreshToken');
-        navigation.navigate('Login');
+
+        navigation.navigate('MainTabs');
+
         setTimeout(() => {
             dispatch(resetLogoutState());
         }, 1000);

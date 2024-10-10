@@ -1,18 +1,31 @@
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, Image } from "react-native";
 import React, { useState } from "react";
 import Icon from 'react-native-vector-icons/FontAwesome'; // Import icon
+import colors from "../../constants/Color";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUser } from "../../services/authRequest";
+import { useAccessToken, useAxiosJWT } from "../../util/axiosInstance";
+import { useNavigation } from "@react-navigation/native";
+import TouchableOpacityForm from "../../components/button/TouchableOpacityForm";
 
 export default function User() {
-    const [name, setName] = useState("John Doe");
-    const [email, setEmail] = useState("john.doe@example.com");
-    const [phone, setPhone] = useState("123-456-7890");
+    const dispatch = useDispatch();
+    const navigation = useNavigation();
+    const accessToken = useAccessToken();
+    const axiosJWT = useAxiosJWT();
 
-    const userItems = [
+    const user = useSelector((state) => state.auth?.login?.currentUser) || {};
+
+    const guestItems = [
+        { id: '4', title: 'Hỗ trợ', icon: 'question-circle' },
+        { id: '5', title: 'Về Capy Smart', icon: 'info' },
+    ];
+
+    const loggedInItems = [
         { id: '1', title: 'Đơn hàng của tôi', icon: 'shopping-cart' },
         { id: '2', title: 'Thông tin chi tiết', icon: 'info-circle' },
         { id: '3', title: 'Thông báo', icon: 'bell' },
-        { id: '4', title: 'Help', icon: 'question-circle' },
-        { id: '5', title: 'About', icon: 'info' },
+        ...guestItems,
     ];
 
     const renderItem = ({ item }) => (
@@ -23,36 +36,52 @@ export default function User() {
     );
 
     const handleLogout = () => {
-        // Thêm logic xử lý khi người dùng đăng xuất ở đây
-        console.log("Đã đăng xuất");
+        logoutUser(dispatch, navigation, accessToken, axiosJWT);
     };
 
     return (
         <View style={styles.container}>
-            <View style={styles.user}>
-                <Image
-                    style={styles.avt}
-                    source={{ uri: "https://inkythuatso.com/uploads/thumbnails/800/2023/03/6-anh-dai-dien-trang-inkythuatso-03-15-26-36.jpg?gidzl=QL-ECEnPjmnbHeyrw4A_3s16W3Bo4xu5BHU2CwWUl0Wd6T4mhH2-N24LZs2h7RDU94-ADcEyCGaEvr-_3W" }}
-                />
-                <View style={styles.columnText}>
-                    <Text style={styles.bold}>Mỹ Châu</Text>
-                    <Text style={styles.nor}>mychau@gmail.com</Text>
-                </View>
-            </View>
-            <FlatList
-                data={userItems}
-                renderItem={renderItem}
-                keyExtractor={item => item.id}
-                contentContainerStyle={styles.list}
-            />
-
-            {/* Nút Đăng xuất ở dưới */}
-            <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-                <Icon name="sign-out" size={24} color="#fff" />
-                <Text style={styles.logoutText}>Đăng xuất</Text>
-            </TouchableOpacity>
+            {user?.user ? (
+                <>
+                    <View style={styles.user}>
+                        <Image
+                            style={styles.avt}
+                            source={{ uri: user?.user?.avatar || 'https://inkythuatso.com/uploads/thumbnails/800/2023/03/6-anh-dai-dien-trang-inkythuatso-03-15-26-36.jpg?gidzl=QL-ECEnPjmnbHeyrw4A_3s16W3Bo4xu5BHU2CwWUl0Wd6T4mhH2-N24LZs2h7RDU94-ADcEyCGaEvr-_3W' }}
+                        />
+                        <View style={styles.columnText}>
+                            <Text style={styles.bold}>{user.user.name}</Text>
+                            <Text style={styles.nor}>{user.user.email}</Text>
+                        </View>
+                    </View>
+                    <FlatList
+                        data={loggedInItems}
+                        renderItem={renderItem}
+                        keyExtractor={item => item.id}
+                        contentContainerStyle={styles.list}
+                    />
+                    <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+                        <Icon name="sign-out" size={24} color={colors.textButton} />
+                        <Text style={styles.logoutText}>Đăng xuất</Text>
+                    </TouchableOpacity>
+                </>
+            ) : (
+                <>
+                    <TouchableOpacityForm
+                        TextBegin={"Bạn chưa đăng nhập. Vui lòng"}
+                        TextValue={'Đăng nhập'}
+                        onPress={() => navigation.navigate('Login')}
+                    />
+                    <FlatList
+                        data={guestItems}
+                        renderItem={renderItem}
+                        keyExtractor={item => item.id}
+                        contentContainerStyle={styles.list}
+                    />
+                </>
+            )}
         </View>
     );
+
 }
 
 const styles = StyleSheet.create({
@@ -60,7 +89,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#FFFFFF',
         padding: 16,
-        justifyContent: 'space-between', // Căn đều phần trên và nút dưới cùng
+        justifyContent: 'space-between',
     },
     user: {
         flexDirection: 'row',
@@ -110,14 +139,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#ff4444',
+        backgroundColor: colors.button,
         paddingVertical: 12,
         borderRadius: 8,
         marginVertical: 20,
     },
     logoutText: {
         fontSize: 16,
-        color: '#fff',
+        color: colors.textButton,
         marginLeft: 10,
         fontWeight: 'bold',
     },

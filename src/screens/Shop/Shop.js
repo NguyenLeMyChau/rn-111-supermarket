@@ -1,69 +1,85 @@
-import { StyleSheet, Text, View, FlatList, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, ActivityIndicator, Image } from "react-native";
+import React, { useCallback, useState } from "react";
 import colors from "../../constants/Color";
-
-const initialCategories = [
-    {
-        id: '1',
-        name: 'Loại 1',
-        products: [
-            { id: '1', name: 'Sản phẩm 1' },
-            { id: '2', name: 'Sản phẩm 2' },
-            { id: '3', name: 'Sản phẩm 3' },
-            { id: '4', name: 'Sản phẩm 4' },
-            { id: '5', name: 'Sản phẩm 5' },
-        ],
-    },
-    {
-        id: '2',
-        name: 'Loại 2',
-        products: [
-            { id: '6', name: 'Sản phẩm 6' },
-            { id: '7', name: 'Sản phẩm 7' },
-            { id: '8', name: 'Sản phẩm 8' },
-            { id: '9', name: 'Sản phẩm 9' },
-            { id: '10', name: 'Sản phẩm 10' },
-        ],
-    },
-];
+import { useSelector } from "react-redux";
+import { useFocusEffect } from "@react-navigation/native";
+import { loadingContainer } from "../../constants/Loading";
+import useCommonData from "../../hooks/useCommonData";
+import Icon from 'react-native-vector-icons/Ionicons';
+import useCart from "../../hooks/useCart";
 
 export default function Shop() {
-    const [categories, setCategories] = useState(initialCategories);
+    const { fetchDataShop } = useCommonData();
 
-    const renderProduct = ({ item }) => (
-        <View style={styles.productContainer}>
-            <Text style={styles.productName}>{item.name}</Text>
-        </View>
+    const categories = useSelector((state) => state.category?.categories);
+    const filteredCategories = categories.filter(category => category.products.length > 0);
+
+    const [loadingShop, setLoadingShop] = useState(true);
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchDataShop(setLoadingShop);
+        }, [])
     );
+
+    const { addCart } = useCart();
+
+    const renderProduct = ({ item, index }) => {
+        return (
+            <View style={[styles.productContainer, index === 0 && styles.firstProduct]}>
+                <Image
+                    source={{ uri: item.img }}
+                    style={styles.productImage}
+                    resizeMode="contain"
+                />
+                <Text style={styles.productName}>{item.name}</Text>
+                <Text style={styles.productPrice}>20000đ</Text>
+
+                <TouchableOpacity style={styles.addToCartButton} onPress={() => addCart(item._id, 1, 20000)}>
+                    <Icon name="cart" size={24} color="#FFFFFF" />
+                </TouchableOpacity>
+            </View>
+        );
+    };
+
 
     const renderCategory = ({ item }) => (
         <View style={styles.categoryContainer}>
             <View style={styles.categoryHeader}>
                 <Text style={styles.categoryName}>{item.name}</Text>
-                <TouchableOpacity style={styles.seeMoreButton} onPress={() => alert('Xem thêm sản phẩm')}>
+                <TouchableOpacity style={styles.seeMoreButton} onPress={() => alert('Xem thêm')}>
                     <Text style={styles.seeMoreText}>Xem thêm</Text>
                 </TouchableOpacity>
             </View>
             <FlatList
-                data={item.products.slice(0, 3)}
+                data={item.products.slice(0, 2)}
                 renderItem={renderProduct}
-                keyExtractor={product => product.id}
+                keyExtractor={product => product._id}
                 horizontal
             />
         </View>
     );
 
+    if (loadingShop) {
+        return (
+            <View style={loadingContainer}>
+                <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+        );
+    }
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Cửa hàng</Text>
             <FlatList
-                data={categories}
+                data={filteredCategories}
                 renderItem={renderCategory}
-                keyExtractor={category => category.id}
+                keyExtractor={category => category._id}
             />
         </View>
     );
 }
+
 
 const styles = StyleSheet.create({
     container: {
@@ -75,8 +91,9 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 16,
-        textAlign: 'center',
     },
+
+
     categoryContainer: {
         marginBottom: 24,
     },
@@ -90,16 +107,46 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
     },
+
+
     productContainer: {
-        padding: 16,
-        backgroundColor: '#f9f9f9',
+        padding: 10,
         borderRadius: 8,
         borderWidth: 1,
         borderColor: '#ddd',
-        marginRight: 16,
+        width: 183,
+        justifyContent: 'space-between',
+    },
+    firstProduct: {
+        marginRight: 10,
+    },
+    productImage: {
+        width: '100%',
+        height: 100,
+        borderRadius: 8,
+        marginBottom: 8,
+        alignSelf: 'center',
     },
     productName: {
-        fontSize: 16,
+        fontSize: 12,
+        height: 80,
+        marginTop: 10,
+    },
+    productPrice: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: 8,
+    },
+    addToCartButton: {
+        backgroundColor: colors.button,
+        padding: 8,
+        borderRadius: 4,
+        alignItems: 'center',
+    },
+    addToCartText: {
+        color: '#FFFFFF',
+        fontSize: 14,
     },
     seeMoreButton: {
         padding: 4,

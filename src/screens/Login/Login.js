@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, View, Alert, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator } from 'react-native';
 import colors from '../../constants/Color';
 import { useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
@@ -20,14 +20,17 @@ export default function Login() {
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false); // Thêm trạng thái isLoading
 
     // Xử lý đăng nhập với email và password
     const handleLogin = async () => {
+        setIsLoading(true); // Bắt đầu quá trình đăng nhập
         const loginData = {
             phone: phone,
             password: password,
         };
-        loginUser(loginData, dispatch, navigation);
+        await loginUser(loginData, dispatch, navigation);
+        setIsLoading(false); // Kết thúc quá trình đăng nhập
     };
 
     return (
@@ -41,6 +44,7 @@ export default function Login() {
                 placeholder={'Số điện thoại'}
                 value={phone}
                 onChangeText={setPhone}
+                keyboardType="numeric"
             />
 
             <Input
@@ -59,7 +63,11 @@ export default function Login() {
                 <Text style={{ color: colors.title }}>Quên mật khẩu?</Text>
             </TouchableOpacity>
 
-            <Button TextValue={'Đăng Nhập'} onPress={handleLogin} />
+            {isLoading ? (
+                <ActivityIndicator size="large" color={colors.primary} />
+            ) : (
+                <Button TextValue={'Đăng Nhập'} onPress={handleLogin} />
+            )}
 
             <TouchableOpacityForm
                 TextBegin={"Bạn chưa có tài khoản?"}

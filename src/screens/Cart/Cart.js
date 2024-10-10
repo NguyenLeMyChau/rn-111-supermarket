@@ -1,50 +1,93 @@
-import React from 'react';
-import { StyleSheet, Text, View, FlatList, Button } from 'react-native';
-
-const cartItems = [
-    { id: '1', name: 'Sản phẩm 1', price: '100,000 VND' },
-    { id: '2', name: 'Sản phẩm 2', price: '200,000 VND' },
-    { id: '3', name: 'Sản phẩm 3', price: '300,000 VND' },
-    { id: '4', name: 'Sản phẩm 4', price: '400,000 VND' },
-    { id: '5', name: 'Sản phẩm 1', price: '100,000 VND' },
-    { id: '6', name: 'Sản phẩm 2', price: '200,000 VND' },
-    { id: '7', name: 'Sản phẩm 3', price: '300,000 VND' },
-    { id: '8', name: 'Sản phẩm 4', price: '400,000 VND' },
-];
-
-const calculateTotal = (items) => {
-    return items.reduce((total, item) => {
-        const price = parseInt(item.price.replace(/,/g, '').replace(' VND', ''));
-        return total + price;
-    }, 0);
-};
+import React, { useCallback, useState } from 'react';
+import { StyleSheet, Text, View, FlatList, Button, ActivityIndicator } from 'react-native';
+import { useSelector } from 'react-redux';
+import TouchableOpacityForm from '../../components/button/TouchableOpacityForm';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import useCommonData from '../../hooks/useCommonData';
+import { loadingContainer } from '../../constants/Loading';
 
 export default function Cart() {
-    const renderItem = ({ item }) => (
-        <View style={styles.itemContainer}>
-            <Text style={styles.itemName}>{item.name}</Text>
-            <Text style={styles.itemPrice}>{item.price}</Text>
-        </View>
+    const navigation = useNavigation();
+
+    const { fetchDataCart } = useCommonData();
+
+    const user = useSelector((state) => state.auth?.login?.currentUser) || {};
+    const cart = useSelector((state) => state.cart?.carts) || [];
+    console.log(cart);
+
+    const total = calculateTotal(cart);
+    const [loadingCart, setLoadingCart] = useState(true);
+
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchDataCart(setLoadingCart);
+        }, [])
     );
 
-    const total = calculateTotal(cartItems);
+
+    if (!user.user) {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.title}>Giỏ hàng</Text>
+                <TouchableOpacityForm
+                    TextBegin={"Bạn chưa đăng nhập. Vui lòng"}
+                    TextValue={'Đăng nhập'}
+                    onPress={() => navigation.navigate('Login')}
+                />
+            </View>
+        );
+    }
+
+    if (loadingCart) {
+        return (
+            <View style={loadingContainer}>
+                <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+        );
+    }
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Giỏ hàng</Text>
-            <FlatList
-                data={cartItems}
-                renderItem={renderItem}
-                keyExtractor={item => item.id}
-                contentContainerStyle={styles.list}
-            />
-            <View style={styles.footer}>
-                <Text style={styles.total}>Tổng tiền: {total.toLocaleString('vi-VN')} VND</Text>
-                <Button title="Thanh toán" />
-            </View>
+            {cart.length === 0 ? (
+                <Text style={styles.emptyCartText}>Không có sản phẩm nào trong giỏ hàng</Text>
+            ) : (
+                <>
+                    <FlatList
+                        data={cart}
+                        renderItem={renderItem}
+                        keyExtractor={item => item.product_id}
+                        contentContainerStyle={styles.list}
+                    />
+                    <View style={styles.footer}>
+                        <Text style={styles.total}>Tổng tiền: {total.toLocaleString('vi-VN')} VND</Text>
+                        <Button title="Thanh toán" />
+                    </View>
+                </>
+            )}
         </View>
     );
 }
+
+const renderItem = ({ item }) => (
+    console.log('item:', item),
+    <View style={styles.itemContainer}>
+        <Text style={styles.itemName}>{item.name}</Text>
+        <Text style={styles.itemPrice}>{item.quantity}</Text>
+        <Text style={styles.itemPrice}>{item.price}</Text>
+    </View>
+);
+
+const calculateTotal = (items) => {
+    return items.reduce((total, item) => {
+        if (typeof item.price === 'number') {
+            return total + item.price;
+        }
+        return total;
+    }, 0);
+};
+
 
 const styles = StyleSheet.create({
     container: {
@@ -89,5 +132,11 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 16,
+    },
+    emptyCartText: {
+        fontSize: 16,
+        color: '#888',
+        textAlign: 'center',
+        marginTop: 20,
     },
 });
