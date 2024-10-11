@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, ActivityIndicator, Image } from "react-native";
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, ActivityIndicator, Image, Alert } from "react-native";
 import React, { useCallback, useState } from "react";
 import colors from "../../constants/Color";
 import { useSelector } from "react-redux";
@@ -11,6 +11,7 @@ import useCart from "../../hooks/useCart";
 export default function Shop() {
     const { fetchDataShop } = useCommonData();
 
+    const user = useSelector((state) => state.auth?.login?.currentUser) || {};
     const categories = useSelector((state) => state.category?.categories);
     const filteredCategories = categories.filter(category => category.products.length > 0);
 
@@ -24,6 +25,15 @@ export default function Shop() {
 
     const { addCart } = useCart();
 
+    const handleAddCart = (productId, quantity, price) => {
+        if (!user.id) {
+            Alert.alert("Lưu ý", "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
+            return;
+        }
+        addCart(productId, quantity, price);
+    };
+
+
     const renderProduct = ({ item, index }) => {
         return (
             <View style={[styles.productContainer, index === 0 && styles.firstProduct]}>
@@ -35,7 +45,7 @@ export default function Shop() {
                 <Text style={styles.productName}>{item.name}</Text>
                 <Text style={styles.productPrice}>20000đ</Text>
 
-                <TouchableOpacity style={styles.addToCartButton} onPress={() => addCart(item._id, 1, 20000)}>
+                <TouchableOpacity style={styles.addToCartButton} onPress={() => handleAddCart(item._id, 1, 20000)}>
                     <Icon name="cart" size={24} color="#FFFFFF" />
                 </TouchableOpacity>
             </View>

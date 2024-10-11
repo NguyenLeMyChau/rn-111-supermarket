@@ -2,6 +2,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { loginFailed, loginStart, loginSuccess, logoutFailed, logoutStart, logoutSuccess, resetLogoutState } from '../store/reducers/authSlice';
 import { jwtDecode } from "jwt-decode";
+import { resetCart } from '../store/reducers/cartSlice';
 
 const loginUser = async (loginData, dispatch, navigation) => {
     dispatch(loginStart());
@@ -53,6 +54,7 @@ const logoutUser = async (dispatch, navigation, accessToken, axiosJWT) => {
         });
 
         await dispatch(logoutSuccess());
+        await dispatch(resetCart());
 
         // Xóa refresh token khỏi AsyncStorage
         await AsyncStorage.removeItem('refreshToken');

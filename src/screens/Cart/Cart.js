@@ -1,19 +1,21 @@
 import React, { useCallback, useState } from 'react';
-import { StyleSheet, Text, View, FlatList, Button, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, FlatList, ActivityIndicator } from 'react-native';
 import { useSelector } from 'react-redux';
 import TouchableOpacityForm from '../../components/button/TouchableOpacityForm';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import useCommonData from '../../hooks/useCommonData';
 import { loadingContainer } from '../../constants/Loading';
+import Button from '../../components/button/Button';
+import useCart from '../../hooks/useCart';
 
 export default function Cart() {
     const navigation = useNavigation();
 
     const { fetchDataCart } = useCommonData();
+    const { payProductInCart } = useCart();
 
     const user = useSelector((state) => state.auth?.login?.currentUser) || {};
     const cart = useSelector((state) => state.cart?.carts) || [];
-    console.log(cart);
 
     const total = calculateTotal(cart);
     const [loadingCart, setLoadingCart] = useState(true);
@@ -21,12 +23,14 @@ export default function Cart() {
 
     useFocusEffect(
         useCallback(() => {
-            fetchDataCart(setLoadingCart);
-        }, [])
+            if (user?.accessToken) {
+                fetchDataCart(setLoadingCart);
+            }
+        }, [user])
     );
 
 
-    if (!user.user) {
+    if (!user?.accessToken) {
         return (
             <View style={styles.container}>
                 <Text style={styles.title}>Giỏ hàng</Text>
@@ -62,7 +66,10 @@ export default function Cart() {
                     />
                     <View style={styles.footer}>
                         <Text style={styles.total}>Tổng tiền: {total.toLocaleString('vi-VN')} VND</Text>
-                        <Button title="Thanh toán" />
+                        <Button
+                            TextValue='Thanh toán'
+                            onPress={() => payProductInCart(user.id, cart)}
+                        />
                     </View>
                 </>
             )}
@@ -71,7 +78,6 @@ export default function Cart() {
 }
 
 const renderItem = ({ item }) => (
-    console.log('item:', item),
     <View style={styles.itemContainer}>
         <Text style={styles.itemName}>{item.name}</Text>
         <Text style={styles.itemPrice}>{item.quantity}</Text>
@@ -106,7 +112,7 @@ const styles = StyleSheet.create({
     itemContainer: {
         width: '100%',
         alignSelf: 'stretch',
-        height: 100,
+        height: 'auto',
         padding: 16,
         marginVertical: 8,
         backgroundColor: '#f9f9f9',

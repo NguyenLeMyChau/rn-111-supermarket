@@ -32,7 +32,6 @@ const useCommonData = () => {
         }
     }
 
-
     return { fetchDataShop, fetchDataCart };
 };
 

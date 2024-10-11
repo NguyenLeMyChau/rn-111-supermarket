@@ -41,7 +41,7 @@ export default function User() {
 
     return (
         <View style={styles.container}>
-            {user?.user ? (
+            {user?.accessToken ? (
                 <>
                     <View style={styles.user}>
                         <Image

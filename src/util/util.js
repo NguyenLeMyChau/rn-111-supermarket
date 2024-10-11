@@ -1,6 +1,8 @@
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { jwtDecode } from "jwt-decode";
+import { logoutSuccess, resetLogoutState } from "../store/reducers/authSlice";
+import { resetCart } from "../store/reducers/cartSlice";
 
 const refreshToken = async () => {
     try {
@@ -39,6 +41,15 @@ export const createAxiosInstance = (user, dispatch, stateSuccess) => {
                     dispatch(stateSuccess(refreshUser));
                     config.headers.Authorization = `Bearer ${newToken.accessToken}`; // Gán token mới cho header Authorization 
                 } catch (error) {
+                    dispatch(logoutSuccess());
+                    dispatch(resetCart());
+
+                    // Xóa refresh token khỏi AsyncStorage
+                    await AsyncStorage.removeItem('refreshToken');
+
+                    setTimeout(() => {
+                        dispatch(resetLogoutState());
+                    }, 1000);
                     console.error('Failed to refresh token:', error);
                 }
             } else {

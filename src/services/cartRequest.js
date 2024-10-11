@@ -29,10 +29,33 @@ const addProductToCart = async (accessToken, axiosJWT, accountId, productId, qua
                 Authorization: `Bearer ${accessToken}`,
             },
         });
+        alert('Thêm sản phẩm vào giỏ hàng thành công');
         return response.data;
     } catch (error) {
         console.error('Add product to cart failed:', error);
+        alert('Thêm sản phẩm vào giỏ hàng thất bại ', error);
     }
 }
 
-export { getCartById, addProductToCart }
+const payCart = async (navigation, accessToken, axiosJWT, customerId, products) => {
+    try {
+        const response = await axiosJWT.post(`/api/customer/pay-cart`, {
+            customerId,
+            products,
+        }, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+        alert('Thanh toán giỏ hàng thành công');
+        navigation.navigate('MainTabs');
+        return response.data;
+    } catch (error) {
+        console.error('Pay cart failed:', error);
+        alert('Thanh toán giỏ hàng thất bại ', error);
+    }
+
+}
+
+
+export { getCartById, addProductToCart, payCart }
