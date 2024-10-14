@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { StyleSheet, Text, View, FlatList, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, FlatList, ActivityIndicator, Image, TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 import TouchableOpacityForm from '../../components/button/TouchableOpacityForm';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -7,6 +7,7 @@ import useCommonData from '../../hooks/useCommonData';
 import { loadingContainer } from '../../constants/Loading';
 import Button from '../../components/button/Button';
 import useCart from '../../hooks/useCart';
+import colors from '../../constants/Color';
 
 export default function Cart() {
     const navigation = useNavigation();
@@ -25,6 +26,7 @@ export default function Cart() {
         useCallback(() => {
             if (user?.accessToken) {
                 fetchDataCart(setLoadingCart);
+                console.log('cart', cart);
             }
         }, [user])
     );
@@ -65,10 +67,10 @@ export default function Cart() {
                         contentContainerStyle={styles.list}
                     />
                     <View style={styles.footer}>
-                        <Text style={styles.total}>Tổng tiền: {total.toLocaleString('vi-VN')} VND</Text>
+                        {/* <Text style={styles.total}>Tổng tiền: {total.toLocaleString('vi-VN')} VND</Text> */}
                         <Button
                             TextValue='Thanh toán'
-                            onPress={() => payProductInCart(user.id, cart)}
+                        // onPress={() => payProductInCart(user.id, cart)}
                         />
                     </View>
                 </>
@@ -79,9 +81,29 @@ export default function Cart() {
 
 const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
-        <Text style={styles.itemName}>{item.name}</Text>
-        <Text style={styles.itemPrice}>{item.quantity}</Text>
-        <Text style={styles.itemPrice}>{item.price}</Text>
+        <View style={{ width: 120, height: 100 }}>
+            <Image style={styles.itemImage} src={item.img} />
+        </View>
+        <View style={{ width: 200 }}>
+            <Text style={styles.itemName}>{item.name}</Text>
+            <Text style={styles.itemUnit}>Chai</Text>
+
+            <View style={styles.quantityContainer}>
+                <TouchableOpacity style={styles.button}>
+                    <Text style={styles.buttonText}>-</Text>
+                </TouchableOpacity>
+
+                <Text style={styles.itemQuantity}>{item.quantity}</Text>
+
+                <TouchableOpacity style={styles.button}>
+                    <Text style={styles.buttonText}>+</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Text style={styles.itemPrice} >{item.price}</Text>
+        </View>
     </View>
 );
 
@@ -113,20 +135,51 @@ const styles = StyleSheet.create({
         width: '100%',
         alignSelf: 'stretch',
         height: 'auto',
-        padding: 16,
-        marginVertical: 8,
-        backgroundColor: '#f9f9f9',
-        borderRadius: 8,
-        borderWidth: 1,
-        borderColor: '#ddd',
+        borderBottomWidth: 1,
+        borderBottomColor: '#E2E2E2',
+        flexDirection: 'row',
+        paddingVertical: 10
+    },
+    itemImage: {
+        width: 100,
+        height: 100,
+        resizeMode: 'contain'
     },
     itemName: {
-        fontSize: 18,
-        fontWeight: 'bold',
+        fontSize: 14,
+        fontWeight: 'medium',
+        width: '100%'
+    },
+    itemUnit: {
+        fontSize: 12,
+        color: '#888',
     },
     itemPrice: {
         fontSize: 16,
-        color: '#888',
+        fontWeight: 'bold'
+    },
+    quantityContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 8,
+    },
+    button: {
+        width: 30,
+        height: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#ddd',
+        borderRadius: 15,
+        marginHorizontal: 15,
+        marginVertical: 10
+    },
+    buttonText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    itemQuantity: {
+        fontSize: 16,
+        color: colors.button,
     },
     footer: {
         padding: 16,

@@ -4,9 +4,7 @@ import { getCategoryFailed, getCategoryStart, getCategorySuccess } from "../stor
 const getAllCategories = async (dispatch) => {
     dispatch(getCategoryStart());
     try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/auth/get-categories`, {
-
-        });
+        const response = await axios.get(`https://be-111-supermarket.vercel.app/api/auth/get-categories`);
         dispatch(getCategorySuccess(response.data));
         return response.data;
     } catch (error) {

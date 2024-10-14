@@ -12,8 +12,9 @@ export default function Shop() {
     const { fetchDataShop } = useCommonData();
 
     const user = useSelector((state) => state.auth?.login?.currentUser) || {};
-    const categories = useSelector((state) => state.category?.categories);
+    const categories = useSelector((state) => state.category?.categories) || [];
     const filteredCategories = categories.filter(category => category.products.length > 0);
+
 
     const [loadingShop, setLoadingShop] = useState(true);
 

@@ -23,8 +23,7 @@ const refreshToken = async () => {
 
 export const createAxiosInstance = (user, dispatch, stateSuccess) => {
     const newInstance = axios.create({
-        baseURL: process.env.REACT_APP_API_URL,
-        withCredentials: true
+        baseURL: 'https://be-111-supermarket.vercel.app',
     });
 
     newInstance.interceptors.request.use(
