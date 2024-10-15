@@ -14,6 +14,7 @@ import Explore from '../screens/Explore/Explore';
 import Cart from '../screens/Cart/Cart';
 import User from '../screens/User/User';
 import QRCodeScanner from '../screens/QRCodeScanner/QRCodeScanner';
+import ProductList from '../screens/Explore/ProductList';
 
 
 const Stack = createStackNavigator();
@@ -71,6 +72,7 @@ export default function AppRouter() {
                 <Stack.Screen name="Login" component={Login} />
                 <Stack.Screen name="Register" component={Register} />
                 <Stack.Screen name="MainTabs" component={MainTabs} />
+                <Stack.Screen name="ProductList" component={ProductList} />
             </Stack.Navigator>
         </NavigationContainer>
     );

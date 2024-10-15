@@ -1,38 +1,36 @@
 import React from 'react';
-import { StyleSheet, Text, View, FlatList } from 'react-native';
+import { StyleSheet, Text, View, FlatList, Image, TouchableOpacity } from 'react-native';
 import tinycolor from 'tinycolor2';
 import Input from '../../components/input/Input';
-
-const productCategories = [
-    { id: '1', name: 'Dầu ăn', color: '#FDE598' },
-    { id: '2', name: 'Thịt và Cá', color: '#F7A593' },
-    { id: '3', name: 'Snack', color: '#D3B0E0' },
-    { id: '4', name: 'Đồ uống', color: '#B7DFF5' },
-    { id: '5', name: 'Dầu ăn', color: '#FDE598' },
-    { id: '6', name: 'Thịt và Cá', color: '#F7A593' },
-    { id: '7', name: 'Snack', color: '#D3B0E0' },
-    { id: '8', name: 'Đồ uống', color: '#B7DFF5' },
-];
+import { useSelector } from 'react-redux';
+import colors from '../../constants/Color';
+import { useNavigation } from '@react-navigation/native';
 
 export default function Explore() {
-    const renderItem = ({ item }) => {
-        const backgroundColor = tinycolor(item.color).lighten(15).toString();
-        const borderColor = tinycolor(item.color).darken(0).toString();
+    const navigation = useNavigation();
+    const categories = useSelector((state) => state.category?.categories) || [];
 
+    const renderItem = ({ item }) => {
         return (
-            <View style={[styles.itemContainer, { backgroundColor, borderColor }]}>
-                <Text style={[styles.itemText]}>{item.name}</Text>
-            </View>
+            <TouchableOpacity
+                style={styles.itemContainer}
+                onPress={() => {
+                    navigation.navigate('ProductList', { name: item.name, productList: item.products });
+                }}
+            >
+                <Image source={{ uri: item.img }} style={styles.itemImage} />
+                <Text style={styles.itemText}>{item.name}</Text>
+            </TouchableOpacity>
         );
     };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Tìm sản phẩm</Text>
+            <Text style={styles.title}>Loại sản phẩm</Text>
             <FlatList
-                data={productCategories}
+                data={categories}
                 renderItem={renderItem}
-                keyExtractor={item => item.id}
+                keyExtractor={item => item._id}
                 contentContainerStyle={styles.list}
                 numColumns={2}
                 key={(2).toString()}
@@ -51,6 +49,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 16,
+        textAlign: 'center',
     },
     list: {
         width: '100%',
@@ -60,13 +59,20 @@ const styles = StyleSheet.create({
         height: 190,
         marginTop: 16,
         marginRight: 28,
-        borderWidth: 2,
         borderRadius: 8,
         alignItems: 'center',
         justifyContent: 'center',
+        borderWidth: 1,
+        borderColor: colors.button,
+    },
+    itemImage: {
+        width: 100,
+        height: 100,
+        resizeMode: 'contain',
+        marginBottom: 8,
     },
     itemText: {
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: 'bold',
     },
 });

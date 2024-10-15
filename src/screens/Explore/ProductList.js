@@ -1,28 +1,13 @@
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, ActivityIndicator, Image, Alert } from "react-native";
-import React, { useCallback, useState } from "react";
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Image, Alert } from "react-native";
+import React from "react";
 import colors from "../../constants/Color";
-import { useSelector } from "react-redux";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { loadingContainer } from "../../constants/Loading";
-import useCommonData from "../../hooks/useCommonData";
 import Icon from 'react-native-vector-icons/Ionicons';
 import useCart from "../../hooks/useCart";
+import { useNavigation } from '@react-navigation/native';
 
-export default function Shop() {
-    const navigation = useNavigation();
-    const { fetchDataShop } = useCommonData();
-    const user = useSelector((state) => state.auth?.login?.currentUser) || {};
-    const categories = useSelector((state) => state.category?.categories) || [];
-    const filteredCategories = categories.filter(category => category.products.length > 0);
-
-    const [loadingShop, setLoadingShop] = useState(true);
-
-    useFocusEffect(
-        useCallback(() => {
-            fetchDataShop(setLoadingShop);
-        }, [])
-    );
-
+export default function ProductList({ route }) {
+    const { name, productList } = route.params; // Nhận productList từ route.params
+    const navigation = useNavigation(); // Khai báo navigation
     const { addCart } = useCart();
 
     const handleAddCart = (productId, quantity, price) => {
@@ -33,22 +18,20 @@ export default function Shop() {
         addCart(productId, quantity, price);
     };
 
-    const renderProduct = ({ item, index }) => {
+    const renderProduct = ({ item }) => {
         const giakhuyenmai = 0;
         const giagoc = 200000;
         return (
-            <View style={[styles.productContainer, index === 0 && styles.firstProduct]}>
+            <View style={styles.productContainer}>
                 <Image
                     source={{ uri: item.img }}
                     style={styles.productImage}
                     resizeMode="contain"
                 />
-
                 <View style={styles.productInfo}>
                     <Text style={styles.productName} numberOfLines={2} ellipsizeMode="tail">{item.name}</Text>
                     <Text style={styles.productUnit}>Chai</Text>
                 </View>
-
                 <View style={styles.sectionRow}>
                     {giakhuyenmai ? (
                         <View style={{ flexDirection: 'column' }}>
@@ -66,41 +49,36 @@ export default function Shop() {
         );
     };
 
-    const renderCategory = ({ item }) => (
-        <View style={styles.categoryContainer}>
-            <View style={styles.categoryHeader}>
-                <Text style={styles.categoryName}>{item.name}</Text>
-                <TouchableOpacity style={styles.seeMoreButton} onPress={() => {
-                    navigation.navigate('ProductList', { name: item.name, productList: item.products });
-
-                }}>
-                    <Text style={styles.seeMoreText}>Xem thêm</Text>
-                </TouchableOpacity>
-            </View>
-            <FlatList
-                data={item.products.slice(0, 2)}
-                renderItem={renderProduct}
-                keyExtractor={product => product._id}
-                horizontal
-            />
-        </View>
-    );
-
-    if (loadingShop) {
+    const renderRow = ({ item }) => {
         return (
-            <View style={loadingContainer}>
-                <ActivityIndicator size="large" color="#0000ff" />
+            <View style={styles.row}>
+                {item.map(product => (
+                    <View key={product._id} style={styles.column}>
+                        {renderProduct({ item: product })}
+                    </View>
+                ))}
             </View>
         );
+    };
+
+    // Tạo các hàng sản phẩm
+    const dataRows = [];
+    for (let i = 0; i < productList.length; i += 2) {
+        dataRows.push(productList.slice(i, i + 2));
     }
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Cửa hàng</Text>
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                    <Icon name="arrow-back" size={24} color="#000" />
+                </TouchableOpacity>
+                <Text style={styles.title}>{name}</Text>
+            </View>
             <FlatList
-                data={filteredCategories}
-                renderItem={renderCategory}
-                keyExtractor={category => category._id}
+                data={dataRows}
+                renderItem={renderRow}
+                keyExtractor={(_, index) => index.toString()}
             />
         </View>
     );
@@ -112,41 +90,37 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         padding: 16,
     },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 16,
+    },
     title: {
         fontSize: 20,
         fontWeight: 'bold',
-        marginBottom: 16,
         textAlign: 'center',
+        flex: 1,
     },
-    categoryContainer: {
-        marginBottom: 24,
-    },
-    categoryHeader: {
+    row: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 8,
+        marginBottom: 16,
     },
-    categoryName: {
-        fontSize: 18,
-        fontWeight: 'bold',
+    column: {
+        width: '48%', // Chiếm gần 50% chiều rộng
     },
     productContainer: {
         padding: 10,
         borderRadius: 8,
         borderWidth: 1,
         borderColor: '#ddd',
-        width: 183,
         justifyContent: 'space-between',
-    },
-    firstProduct: {
-        marginRight: 10,
+        height: 250, // Fixed height to ensure equal spacing
     },
     productImage: {
         width: '100%',
         height: 100,
         borderRadius: 8,
-        marginBottom: 8,
         alignSelf: 'center',
     },
     productInfo: {
@@ -165,38 +139,26 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: 'bold',
         color: '#333',
-        marginVertical: 10,
-        textAlign: 'right'
+        textAlign: 'right',
     },
     originalPrice: {
         textDecorationLine: 'line-through',
-        color: '#888', // Màu sắc cho giá gốc
+        color: '#888',
         fontSize: 12,
-        textAlign: 'right'
+        textAlign: 'right',
     },
     discountPrice: {
         fontSize: 14,
         fontWeight: 'bold',
-        color: '#e53935', // Màu sắc cho giá khuyến mãi
+        color: '#e53935',
         textAlign: 'right',
-        marginTop: 10
+        marginTop: 10,
     },
     addToCartButton: {
         backgroundColor: colors.button,
         padding: 8,
         borderRadius: 4,
         alignItems: 'center',
-    },
-    addToCartText: {
-        color: '#FFFFFF',
-        fontSize: 14,
-    },
-    seeMoreButton: {
-        padding: 4,
-    },
-    seeMoreText: {
-        color: colors.button,
-        fontSize: 12,
     },
     sectionRow: {
         flexDirection: 'row',

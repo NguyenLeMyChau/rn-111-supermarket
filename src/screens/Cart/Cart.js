@@ -107,6 +107,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 16,
+        textAlign: 'center',
     },
     list: {
         width: '100%',
