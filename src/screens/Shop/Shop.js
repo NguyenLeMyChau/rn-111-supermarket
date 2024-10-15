@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, ActivityIndicator, Image, Alert } from "react-native";
-import React, { useCallback, useState } from "react";
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, ActivityIndicator, Image, Alert, Dimensions, TextInput } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
 import colors from "../../constants/Color";
 import { useSelector } from "react-redux";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
@@ -7,6 +7,12 @@ import { loadingContainer } from "../../constants/Loading";
 import useCommonData from "../../hooks/useCommonData";
 import Icon from 'react-native-vector-icons/Ionicons';
 import useCart from "../../hooks/useCart";
+import Logo from '../../components/logo/Logo';
+import Input from "../../components/input/Input";
+import EvilIcons from '@expo/vector-icons/EvilIcons';
+
+const { width } = Dimensions.get('window');
+const PRODUCT_WIDTH = width * 0.44;
 
 export default function Shop() {
     const navigation = useNavigation();
@@ -17,11 +23,15 @@ export default function Shop() {
 
     const [loadingShop, setLoadingShop] = useState(true);
 
-    useFocusEffect(
-        useCallback(() => {
-            fetchDataShop(setLoadingShop);
-        }, [])
-    );
+    // useFocusEffect(
+    //     useCallback(() => {
+    //         fetchDataShop(setLoadingShop);
+    //     }, [])
+    // );
+
+    useEffect(() => {
+        fetchDataShop(setLoadingShop);
+    }, []);
 
     const { addCart } = useCart();
 
@@ -96,7 +106,17 @@ export default function Shop() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Cửa hàng</Text>
+            <View style={styles.header}>
+                <Text style={styles.title}>CAPY SMART</Text>
+                <Logo width={50} height={50}/>
+            </View>
+
+            <Input 
+                placeholder="Tìm kiếm sản phẩm"
+                Icon={EvilIcons}
+                nameIcon="search"
+            />
+
             <FlatList
                 data={filteredCategories}
                 renderItem={renderCategory}
@@ -112,11 +132,17 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         padding: 16,
     },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent:'center',
+        marginBottom: 16,
+    },
     title: {
         fontSize: 20,
         fontWeight: 'bold',
-        marginBottom: 16,
         textAlign: 'center',
+        color: colors.primary
     },
     categoryContainer: {
         marginBottom: 24,
@@ -136,7 +162,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         borderWidth: 1,
         borderColor: '#ddd',
-        width: 183,
+        width: PRODUCT_WIDTH,
         justifyContent: 'space-between',
     },
     firstProduct: {

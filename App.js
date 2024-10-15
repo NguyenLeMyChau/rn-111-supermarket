@@ -1,4 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
+import '@expo/metro-runtime';
 import { StyleSheet, View } from 'react-native';
 import AppRouter from './src/routes/AppRouter';
 import { Provider } from 'react-redux';
@@ -13,7 +14,6 @@ export default function App() {
           <AppRouter />
         </PersistGate>
       </Provider>
-      <StatusBar style="auto" />
     </View>
   );
 }

@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import { StyleSheet, Text, View, FlatList, ActivityIndicator, Image, TouchableOpacity, TextInput } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { StyleSheet, Text, View, FlatList, ActivityIndicator, Image, TouchableOpacity, TextInput, BackHandler } from 'react-native';
 import { useSelector } from 'react-redux';
 import TouchableOpacityForm from '../../components/button/TouchableOpacityForm';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -31,6 +31,21 @@ export default function Cart() {
             }
         }, [user])
     );
+
+    // Handle back button press
+    useEffect(() => {
+        const backAction = () => {
+            if (isModalPayment) {
+                setIsModalPayment(false);
+                return true; // Prevent default behavior of going back
+            }
+            return false; // Allow default behavior to occur
+        };
+
+        const subscription = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+        return () => subscription.remove(); // Clean up on unmount
+    }, [isModalPayment]);
 
     const calculateTotal = (items) => {
         return items.reduce((total, item) => {

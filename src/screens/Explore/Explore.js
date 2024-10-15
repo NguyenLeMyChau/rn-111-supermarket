@@ -1,10 +1,14 @@
 import React from 'react';
-import { StyleSheet, Text, View, FlatList, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, FlatList, Image, TouchableOpacity, Dimensions } from 'react-native';
 import tinycolor from 'tinycolor2';
 import Input from '../../components/input/Input';
 import { useSelector } from 'react-redux';
 import colors from '../../constants/Color';
 import { useNavigation } from '@react-navigation/native';
+
+
+const { width } = Dimensions.get('window');
+const PRODUCT_WIDTH = width * 0.42;
 
 export default function Explore() {
     const navigation = useNavigation();
@@ -55,8 +59,8 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     itemContainer: {
-        width: 175,
-        height: 190,
+        width: PRODUCT_WIDTH,
+        height: 150,
         marginTop: 16,
         marginRight: 28,
         borderRadius: 8,

@@ -15,6 +15,12 @@ import Cart from '../screens/Cart/Cart';
 import User from '../screens/User/User';
 import QRCodeScanner from '../screens/QRCodeScanner/QRCodeScanner';
 import ProductList from '../screens/Explore/ProductList';
+import About from '../screens/User/About';
+import Support from '../screens/User/Support';
+import UserInfo from '../screens/User/UserInfo';
+import Order from '../screens/User/Order';
+import OrderDetail from '../screens/User/OrderDetail';
+import Promotion from '../screens/Cart/Promotion';
 
 
 const Stack = createStackNavigator();
@@ -67,13 +73,19 @@ function MainTabs() {
 
 export default function AppRouter() {
     return (
-        <NavigationContainer>
-            <Stack.Navigator initialRouteName="MainTabs" screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="Login" component={Login} />
-                <Stack.Screen name="Register" component={Register} />
-                <Stack.Screen name="MainTabs" component={MainTabs} />
-                <Stack.Screen name="ProductList" component={ProductList} />
-            </Stack.Navigator>
-        </NavigationContainer>
+            <NavigationContainer>
+                <Stack.Navigator initialRouteName="MainTabs" screenOptions={{ headerShown: false }}>
+                    <Stack.Screen name="Login" component={Login} />
+                    <Stack.Screen name="Register" component={Register} />
+                    <Stack.Screen name="MainTabs" component={MainTabs} />
+                    <Stack.Screen name="ProductList" component={ProductList} />
+                    <Stack.Screen name="About" component={About} />
+                    <Stack.Screen name="Support" component={Support} />
+                    <Stack.Screen name="UserInfo" component={UserInfo} />
+                    <Stack.Screen name="Order" component={Order} />
+                    <Stack.Screen name="OrderDetail" component={OrderDetail} />
+                    <Stack.Screen name="Promotion" component={Promotion} />
+                </Stack.Navigator>
+            </NavigationContainer>
     );
 }

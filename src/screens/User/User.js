@@ -1,6 +1,8 @@
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, Image } from "react-native";
 import React, { useState } from "react";
-import Icon from 'react-native-vector-icons/FontAwesome'; // Import icon
+import FontAwesome from 'react-native-vector-icons/FontAwesome'; // Import icon
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
 import colors from "../../constants/Color";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../services/authRequest";
@@ -28,10 +30,26 @@ export default function User() {
         ...guestItems,
     ];
 
+    const getScreenName = (id) => {
+        const screenMap = {
+            '1': 'Order',
+            '2': 'UserInfo',
+            '3': 'Notifications',
+            '4': 'Support',
+            '5': 'About'
+        };
+        return screenMap[id]; // Lấy tên màn hình tương ứng với id
+    };
+
     const renderItem = ({ item }) => (
-        <TouchableOpacity style={styles.itemContainer}>
-            <Icon name={item.icon} size={24} color="#000" style={styles.itemIcon} />
-            <Text style={styles.itemText}>{item.title}</Text>
+        <TouchableOpacity style={styles.itemContainer}
+            onPress={() => navigation.navigate(getScreenName(item.id))} // Điều hướng trực tiếp dựa trên item id
+        >
+            <View style={{ flexDirection: 'row' }}>
+                <FontAwesome name={item.icon} size={24} color="#000" style={styles.itemIcon} />
+                <Text style={styles.itemText}>{item.title}</Text>
+            </View>
+            <MaterialIcons name="keyboard-arrow-right" size={20} />
         </TouchableOpacity>
     );
 
@@ -60,7 +78,7 @@ export default function User() {
                         contentContainerStyle={styles.list}
                     />
                     <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-                        <Icon name="sign-out" size={24} color={colors.textButton} />
+                        <FontAwesome name="sign-out" size={24} color={colors.textButton} />
                         <Text style={styles.logoutText}>Đăng xuất</Text>
                     </TouchableOpacity>
                 </>
@@ -122,12 +140,11 @@ const styles = StyleSheet.create({
     itemContainer: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'space-between',
         padding: 16,
         marginVertical: 8,
-        backgroundColor: '#f9f9f9',
-        borderRadius: 8,
-        borderWidth: 1,
-        borderColor: '#ddd',
+        borderBottomWidth: 1,
+        borderBottomColor: '#C2C2C2',
     },
     itemIcon: {
         marginRight: 16, // Cách icon khỏi text

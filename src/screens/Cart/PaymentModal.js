@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { Modal, View, Text, StyleSheet, TextInput, TouchableOpacity, Image, FlatList, TouchableWithoutFeedback } from 'react-native';
 import colors from '../../constants/Color';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useNavigation } from '@react-navigation/native';
 
 export default function PaymentModal({ isVisible, onClose, total }) {
+    const navigation = useNavigation();
     const [promoCode, setPromoCode] = useState('');
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
     const [isPaymentPickerVisible, setPaymentPickerVisible] = useState(false);
@@ -57,13 +59,17 @@ export default function PaymentModal({ isVisible, onClose, total }) {
 
                             <View style={styles.sectionRow}>
                                 <Text style={styles.label}>Mã khuyến mãi</Text>
-                                <TouchableOpacity style={styles.selectMethod}>
+                                <TouchableOpacity style={styles.selectMethod} onPress={() => {
+                                    onClose();
+                                    navigation.navigate('Promotion');
+
+                                }}>
                                     <Text style={styles.selectMethodText}>Select Method</Text>
                                     <Icon name="keyboard-arrow-right" size={20} />
                                 </TouchableOpacity>
                             </View>
 
-                            <View style={styles.sectionRow}>
+                            <View style={{ ...styles.sectionRow, paddingVertical: 10 }}>
                                 <Text style={styles.label}>Phương thức thanh toán</Text>
                                 <TouchableOpacity style={styles.picker} onPress={() => setPaymentPickerVisible(true)}>
                                     {/* Hiển thị icon của phương thức thanh toán đã chọn */}
@@ -110,8 +116,8 @@ export default function PaymentModal({ isVisible, onClose, total }) {
                         </View>
                     </TouchableWithoutFeedback>
                 </View>
-            </TouchableWithoutFeedback>
-        </Modal>
+            </TouchableWithoutFeedback >
+        </Modal >
     );
 }
 
@@ -144,7 +150,6 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 16,
         fontWeight: 'medium',
-        marginBottom: 5,
         color: '#7C7C7C'
     },
     input: {
@@ -180,7 +185,6 @@ const styles = StyleSheet.create({
         borderColor: '#ddd',
         borderRadius: 10,
         padding: 10,
-        marginBottom: 20,
     },
     pickerText: {
         fontSize: 16,
@@ -219,10 +223,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingBottom: 10,
-        marginBottom: 10,
         borderBottomWidth: 1,
         borderBottomColor: '#ddd',
+        paddingVertical: 20
     },
     promoInput: {
         borderBottomWidth: 1,
@@ -235,7 +238,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingVertical: 10,
     },
     selectMethodText: {
         fontSize: 16,
