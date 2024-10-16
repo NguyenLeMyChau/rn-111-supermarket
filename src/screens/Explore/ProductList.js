@@ -32,6 +32,7 @@ export default function ProductList({ route }) {
                     <Text style={styles.productName} numberOfLines={2} ellipsizeMode="tail">{item.name}</Text>
                     <Text style={styles.productUnit}>Chai</Text>
                 </View>
+                
                 <View style={styles.sectionRow}>
                     {giakhuyenmai ? (
                         <View style={{ flexDirection: 'column' }}>

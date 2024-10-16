@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 
 
 const { width } = Dimensions.get('window');
-const PRODUCT_WIDTH = width * 0.42;
+const PRODUCT_WIDTH = width * 0.4;
 
 export default function Explore() {
     const navigation = useNavigation();
@@ -31,15 +31,17 @@ export default function Explore() {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Loại sản phẩm</Text>
-            <FlatList
-                data={categories}
-                renderItem={renderItem}
-                keyExtractor={item => item._id}
-                contentContainerStyle={styles.list}
-                numColumns={2}
-                key={(2).toString()}
-            />
+            <View style={styles.listContainer}>
+                <FlatList
+                    data={categories}
+                    renderItem={renderItem}
+                    keyExtractor={item => item._id}
+                    numColumns={2}
+                    key={(2).toString()}
+                />
+            </View>
         </View>
+
     );
 }
 
@@ -55,19 +57,22 @@ const styles = StyleSheet.create({
         marginBottom: 16,
         textAlign: 'center',
     },
-    list: {
+    listContainer: {
+        flex: 1,  // Ensure this view takes up the available space
         width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     itemContainer: {
         width: PRODUCT_WIDTH,
-        height: 150,
+        height: 170,
         marginTop: 16,
-        marginRight: 28,
         borderRadius: 8,
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 1,
         borderColor: colors.button,
+        marginHorizontal: 8,
     },
     itemImage: {
         width: 100,

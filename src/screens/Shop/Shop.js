@@ -12,7 +12,7 @@ import Input from "../../components/input/Input";
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 
 const { width } = Dimensions.get('window');
-const PRODUCT_WIDTH = width * 0.44;
+const PRODUCT_WIDTH = width * 0.42;
 
 export default function Shop() {
     const navigation = useNavigation();
@@ -47,7 +47,7 @@ export default function Shop() {
         const giakhuyenmai = 0;
         const giagoc = 200000;
         return (
-            <View style={[styles.productContainer, index === 0 && styles.firstProduct]}>
+            <View style={[styles.productContainer]}>
                 <Image
                     source={{ uri: item.img }}
                     style={styles.productImage}
@@ -87,12 +87,15 @@ export default function Shop() {
                     <Text style={styles.seeMoreText}>Xem thêm</Text>
                 </TouchableOpacity>
             </View>
-            <FlatList
-                data={item.products.slice(0, 2)}
-                renderItem={renderProduct}
-                keyExtractor={product => product._id}
-                horizontal
-            />
+
+            <View style={styles.listContainer}>
+                <FlatList
+                    data={item.products.slice(0, 2)}
+                    renderItem={renderProduct}
+                    keyExtractor={product => product._id}
+                    horizontal
+                />
+            </View>
         </View>
     );
 
@@ -108,10 +111,10 @@ export default function Shop() {
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>CAPY SMART</Text>
-                <Logo width={50} height={50}/>
+                <Logo width={50} height={50} />
             </View>
 
-            <Input 
+            <Input
                 placeholder="Tìm kiếm sản phẩm"
                 Icon={EvilIcons}
                 nameIcon="search"
@@ -135,7 +138,7 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent:'center',
+        justifyContent: 'center',
         marginBottom: 16,
     },
     title: {
@@ -145,6 +148,7 @@ const styles = StyleSheet.create({
         color: colors.primary
     },
     categoryContainer: {
+        flex: 1,
         marginBottom: 24,
     },
     categoryHeader: {
@@ -157,16 +161,20 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
     },
+    listContainer: {
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
     productContainer: {
+        flex: 1,
         padding: 10,
         borderRadius: 8,
         borderWidth: 1,
         borderColor: '#ddd',
         width: PRODUCT_WIDTH,
+        marginHorizontal: 15,
+        height: 250,
         justifyContent: 'space-between',
-    },
-    firstProduct: {
-        marginRight: 10,
     },
     productImage: {
         width: '100%',
@@ -178,7 +186,7 @@ const styles = StyleSheet.create({
     productInfo: {
         flexDirection: 'column',
         justifyContent: 'flex-start',
-        marginBottom: 5, // Điều chỉnh khoảng cách giữa productInfo và phần còn lại
+        marginBottom: 5,
     },
     productName: {
         fontSize: 13,
