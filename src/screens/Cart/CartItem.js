@@ -2,20 +2,41 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput } from 'react-native';
 import colors from '../../constants/Color';
 import Icon from 'react-native-vector-icons/MaterialIcons'; // Import Icon
+import { useDispatch } from 'react-redux'; // Import dispatch from Redux
+import { updateProductQuantity } from '../../store/reducers/cartSlice';
 
 const CartItem = ({ item }) => {
     const [quantity, setQuantity] = useState(item.quantity);
+    const dispatch = useDispatch();
     const giakhuyenmai = 0;
     const giagoc = 40000;
 
+    // Cập nhật số lượng sản phẩm
+    const handleUpdateQuantity = (newQuantity) => {
+        setQuantity(newQuantity);
+        dispatch(updateProductQuantity({ productId: item.product_id, quantity: newQuantity }));
+    };
+
+    // Giảm số lượng
     const handleDecreaseQuantity = () => {
         if (quantity > 1) {
-            setQuantity(quantity - 1);
+            const newQuantity = quantity - 1;
+            handleUpdateQuantity(newQuantity);
         }
     };
 
+    // Tăng số lượng
     const handleIncreaseQuantity = () => {
-        setQuantity(quantity + 1);
+        const newQuantity = quantity + 1;
+        handleUpdateQuantity(newQuantity);
+    };
+
+    // Xử lý thay đổi số lượng qua TextInput
+    const handleInputChange = (text) => {
+        const newQuantity = Number(text);
+        if (!isNaN(newQuantity) && newQuantity > 0) {
+            handleUpdateQuantity(newQuantity);
+        }
     };
 
     const handleRemoveItem = () => {
@@ -40,7 +61,7 @@ const CartItem = ({ item }) => {
                     <TextInput
                         style={styles.itemQuantity}
                         value={String(quantity)}
-                        onChangeText={(text) => setQuantity(Number(text))}
+                        onChangeText={handleInputChange}
                         keyboardType="numeric"
                     />
 
@@ -63,7 +84,6 @@ const CartItem = ({ item }) => {
                             <Text style={styles.itemOriginalPrice}>
                                 {giagoc.toLocaleString('vi-VN')} đ
                             </Text>
-
                         </View>
                     ) : (
                         <Text style={styles.itemPrice}>

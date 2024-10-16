@@ -24,6 +24,7 @@ import Promotion from '../screens/Cart/Promotion';
 import { PaymentModalProvider } from '../context/PaymentProvider';
 import PaymentInfo from '../screens/Cart/PaymentInfo';
 import OrderSuccess from '../screens/Cart/OrderSuccess';
+import ProductDetail from '../screens/Explore/ProductDetail';
 
 
 const Stack = createStackNavigator();
@@ -91,6 +92,7 @@ export default function AppRouter() {
                     <Stack.Screen name="Promotion" component={Promotion} />
                     <Stack.Screen name="PaymentInfo" component={PaymentInfo} />
                     <Stack.Screen name="OrderSuccess" component={OrderSuccess} />
+                    <Stack.Screen name="ProductDetail" component={ProductDetail} />
                 </Stack.Navigator>
             </NavigationContainer>
         </PaymentModalProvider>

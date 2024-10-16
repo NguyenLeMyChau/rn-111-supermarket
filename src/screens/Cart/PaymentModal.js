@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import { usePaymentModal } from '../../context/PaymentProvider';
 
-export default function PaymentModal({ isVisible, onClose, total }) {
+export default function PaymentModal({ isVisible, onClose, total, cart }) {
     const navigation = useNavigation();
     const { promoCode, paymentMethod, setPaymentMethod, paymentInfo } = usePaymentModal();
     const [isPaymentPickerVisible, setPaymentPickerVisible] = useState(false); // Hiển thị modal chọn phương thức thanh toán
@@ -40,7 +40,7 @@ export default function PaymentModal({ isVisible, onClose, total }) {
             alert('Vui lòng chọn phương thức thanh toán');
             return;
         }
-        console.log(paymentInfo, paymentMethod, promoCode, total);
+        console.log(paymentInfo, paymentMethod, promoCode, total, cart);
         onClose();
         navigation.navigate('OrderSuccess');
     }

@@ -28,8 +28,15 @@ const cartSlice = createSlice({
             state.isFetching = false;
             state.error = false;
         },
+        updateProductQuantity(state, action) {
+            const { productId, quantity } = action.payload;
+            const product = state.carts?.find(product => product.product_id === productId);
+            if (product) {
+                product.quantity = quantity;
+            }
+        },
     }
 });
 
-export const { getCartStart, getCartSuccess, getCartFailed, resetCart } = cartSlice.actions;
+export const { getCartStart, getCartSuccess, getCartFailed, resetCart, updateProductQuantity } = cartSlice.actions;
 export default cartSlice.reducer;

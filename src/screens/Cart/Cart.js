@@ -14,7 +14,6 @@ import { usePaymentModal } from '../../context/PaymentProvider';
 
 export default function Cart() {
     const navigation = useNavigation();
-    const route = useRoute();
 
     const { isPaymentModalVisible,
         setPaymentModalVisible,
@@ -27,17 +26,23 @@ export default function Cart() {
 
     const user = useSelector((state) => state.auth?.login?.currentUser) || {};
     const cart = useSelector((state) => state.cart?.carts) || [];
+    console.log(cart);
 
     const [loadingCart, setLoadingCart] = useState(true);
 
-    useFocusEffect(
-        useCallback(() => {
-            if (user?.accessToken) {
-                fetchDataCart(setLoadingCart);
-                console.log('cart', cart);
-            }
-        }, [user])
-    );
+    // useFocusEffect(
+    //     useCallback(() => {
+    //         if (user?.accessToken) {
+    //             fetchDataCart(setLoadingCart);
+    //         }
+    //     }, [user])
+    // );
+
+    useEffect(() => {
+        if (user?.accessToken) {
+            fetchDataCart(setLoadingCart);
+        }
+    }, []);
 
     // Lắng nghe sự kiện goBack của navigation
     useEffect(() => {
@@ -109,6 +114,7 @@ export default function Cart() {
                 isVisible={isPaymentModalVisible}
                 onClose={() => setPaymentModalVisible(false)}
                 total={total}
+                cart={cart}
             />
         </View>
     );

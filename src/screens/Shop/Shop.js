@@ -47,7 +47,9 @@ export default function Shop() {
         const giakhuyenmai = 0;
         const giagoc = 200000;
         return (
-            <View style={[styles.productContainer]}>
+            <TouchableOpacity style={[styles.productContainer]}
+                onPress={() => navigation.navigate('ProductDetail', { product: item })}
+            >
                 <Image
                     source={{ uri: item.img }}
                     style={styles.productImage}
@@ -72,7 +74,7 @@ export default function Shop() {
                         <Icon name="cart" size={24} color="#FFFFFF" />
                     </TouchableOpacity>
                 </View>
-            </View>
+            </TouchableOpacity>
         );
     };
 
