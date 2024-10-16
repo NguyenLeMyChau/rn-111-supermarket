@@ -1,13 +1,24 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native';
 import colors from '../../constants/Color';
 import Icon from 'react-native-vector-icons/MaterialIcons'; // Import Icon
-import { useDispatch } from 'react-redux'; // Import dispatch from Redux
+import { useDispatch, useSelector } from 'react-redux'; // Import dispatch from Redux
 import { updateProductQuantity } from '../../store/reducers/cartSlice';
+import { removeProductCart } from '../../services/cartRequest';
+import { useAccessToken, useAxiosJWT } from '../../util/axiosInstance';
+import useCommonData from '../../hooks/useCommonData';
+import { loadingContainer } from '../../constants/Loading';
 
 const CartItem = ({ item }) => {
-    const [quantity, setQuantity] = useState(item.quantity);
     const dispatch = useDispatch();
+    const { fetchDataCart } = useCommonData();
+
+    const accessToken = useAccessToken();
+    const axiosJWT = useAxiosJWT();
+    const user = useSelector((state) => state.auth?.login?.currentUser) || {};
+    const [quantity, setQuantity] = useState(item.quantity);
+    const [loadingCart, setLoadingCart] = useState(false);
+
     const giakhuyenmai = 0;
     const giagoc = 40000;
 
@@ -39,9 +50,11 @@ const CartItem = ({ item }) => {
         }
     };
 
-    const handleRemoveItem = () => {
+    const handleRemoveItem = async () => {
         // Logic để xóa mục khỏi giỏ hàng
         console.log('Remove item:', item);
+        await removeProductCart(user.id, item.product_id, accessToken, axiosJWT);
+        await fetchDataCart(setLoadingCart);
     };
 
     return (
@@ -71,10 +84,18 @@ const CartItem = ({ item }) => {
                 </View>
             </View>
             <View style={styles.priceContainer}>
-                <TouchableOpacity onPress={handleRemoveItem}>
-                    <Icon name="cancel" size={28} color={colors.button} />
-                </TouchableOpacity>
-
+                {loadingCart ? (
+                    <View style={loadingContainer}>
+                        <ActivityIndicator size="large" color={colors.primary} />
+                    </View>
+                )
+                    :
+                    (
+                        <TouchableOpacity onPress={() => handleRemoveItem()} style={styles.buttonRemove}>
+                            <Icon name="cancel" size={28} color={colors.button} />
+                        </TouchableOpacity>
+                    )
+                }
                 <View style={styles.priceTextContainer}>
                     {giakhuyenmai ? (
                         <View>
@@ -178,6 +199,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginTop: -20,
     },
+    buttonRemove: {
+        width: 40,
+        height: 40,
+        alignItems: 'flex-end',
+    }
 });
 
 export default CartItem;

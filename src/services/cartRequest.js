@@ -73,5 +73,21 @@ const updateCart = async (accountId, productList, accessToken, axiosJWT) => {
     }
 }
 
+const removeProductCart = async (accountId, productId, accessToken, axiosJWT) => {
+    try {
+        const response = await axiosJWT.post(`/api/customer/remove-product-cart`, {
+            accountId,
+            productId,
+        }, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Remove product cart failed:', error);
+    }
+}
 
-export { getCartById, addProductToCart, payCart, updateCart }
+
+export { getCartById, addProductToCart, payCart, updateCart, removeProductCart }
