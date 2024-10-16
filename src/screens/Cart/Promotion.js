@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'reac
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { usePaymentModal } from '../../context/PaymentProvider';
+import colors from '../../constants/Color';
 
 export default function Promotion() {
     const navigation = useNavigation();
@@ -73,7 +74,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     button: {
-        backgroundColor: '#007BFF',
+        backgroundColor: colors.button,
         padding: 16,
         borderRadius: 8,
         alignItems: 'center',

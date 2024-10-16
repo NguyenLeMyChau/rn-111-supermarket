@@ -4,10 +4,13 @@ import colors from "../../constants/Color";
 import Icon from 'react-native-vector-icons/Ionicons';
 import useCart from "../../hooks/useCart";
 import { useNavigation } from '@react-navigation/native';
+import { useSelector } from "react-redux";
 
 export default function ProductList({ route }) {
     const { name, productList } = route.params; // Nhận productList từ route.params
     const navigation = useNavigation(); // Khai báo navigation
+    const user = useSelector((state) => state.auth?.login?.currentUser) || {};
+
     const { addCart } = useCart();
 
     const handleAddCart = (productId, quantity, price) => {
