@@ -13,7 +13,7 @@ const OrderSuccess = () => {
             </View>
             <Text style={styles.title}>Đặt hàng thành công!</Text>
             <Text style={styles.subtitle}>
-                Các mặt hàng của bạn đang được chúng tôi xử lý. Cảm ơn bạn vì đã tin dùng
+                Đơn hàng của bạn đang được xử lý.{'\n'} Cảm ơn bạn vì đã tin dùng
                 <Text style={{ color: colors.primary, fontWeight: 'bold' }}> CAPY SMART</Text>
             </Text>
             <TouchableOpacity
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
         marginVertical: 5,
         backgroundColor: 'transparent', // Không có nền cho nút "Quay về giỏ hàng"
         width: '100%',
-        height: 40,
+        height: 50,
         justifyContent: 'center',
         alignItems: 'center',
     },

@@ -5,6 +5,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons'; // Import Icon
 
 const CartItem = ({ item }) => {
     const [quantity, setQuantity] = useState(item.quantity);
+    const giakhuyenmai = 0;
+    const giagoc = 40000;
 
     const handleDecreaseQuantity = () => {
         if (quantity > 1) {
@@ -51,8 +53,23 @@ const CartItem = ({ item }) => {
                 <TouchableOpacity onPress={handleRemoveItem}>
                     <Icon name="cancel" size={28} color={colors.button} />
                 </TouchableOpacity>
+
                 <View style={styles.priceTextContainer}>
-                    <Text style={styles.itemPrice}>{item.price.toLocaleString('vi-VN')} đ</Text>
+                    {giakhuyenmai ? (
+                        <View>
+                            <Text style={styles.itemDiscountPrice}>
+                                {giakhuyenmai.toLocaleString('vi-VN')} đ
+                            </Text>
+                            <Text style={styles.itemOriginalPrice}>
+                                {giagoc.toLocaleString('vi-VN')} đ
+                            </Text>
+
+                        </View>
+                    ) : (
+                        <Text style={styles.itemPrice}>
+                            {giagoc.toLocaleString('vi-VN')} đ
+                        </Text>
+                    )}
                 </View>
             </View>
         </View>
@@ -67,21 +84,33 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#E2E2E2',
         flexDirection: 'row',
-        paddingVertical: 10
+        paddingVertical: 10,
     },
     itemImage: {
         width: 100,
         height: 100,
-        resizeMode: 'contain'
+        resizeMode: 'contain',
     },
     itemName: {
         fontSize: 13,
         fontWeight: 'medium',
-        width: '100%'
+        width: '100%',
     },
     itemUnit: {
         fontSize: 12,
         color: '#888',
+    },
+    itemOriginalPrice: {
+        fontSize: 12,
+        textDecorationLine: 'line-through',
+        color: '#888',
+        textAlign: 'right',
+    },
+    itemDiscountPrice: {
+        fontSize: 13,
+        fontWeight: 'bold',
+        color: 'red',
+        textAlign: 'right',
     },
     itemPrice: {
         fontSize: 13,
@@ -105,7 +134,7 @@ const styles = StyleSheet.create({
     buttonText: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: colors.button
+        color: colors.button,
     },
     itemQuantity: {
         width: 50,
@@ -116,7 +145,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#E2E2E2',
         marginHorizontal: 8,
-        color: colors.button
+        color: colors.button,
     },
     priceContainer: {
         width: '23%',
@@ -129,7 +158,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginTop: -20,
     },
-
 });
 
 export default CartItem;

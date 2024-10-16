@@ -40,6 +40,7 @@ export default function PaymentModal({ isVisible, onClose, total }) {
             alert('Vui lòng chọn phương thức thanh toán');
             return;
         }
+        console.log(paymentInfo, paymentMethod, promoCode, total);
         onClose();
         navigation.navigate('OrderSuccess');
     }

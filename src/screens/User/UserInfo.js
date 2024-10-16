@@ -77,7 +77,7 @@ export default function UserInfo() {
                     keyboardType="phone-pad"
                     value={phone}
                     onChangeText={setPhone}
-                    disabled={isDisable}
+                    editable={!isDisable}
                 />
             </View>
 
@@ -102,34 +102,38 @@ export default function UserInfo() {
                     />
                 </View>
 
-                <View style={styles.inputContainerShort}>
+                <View style={styles.inputContainerShort2}>
                     <Text style={styles.label}>Quận/Huyện</Text>
-                    <Picker
-                        selectedValue={district}
-                        style={styles.input}
-                        onValueChange={handleDistrictChange}
-                    >
-                        <Picker.Item label="Chọn" value="" />
-                        {districts.map((districtItem, index) => (
-                            <Picker.Item key={index} label={districtItem.name} value={districtItem.name} />
-                        ))}
-                    </Picker>
+                    <View style={styles.pickerContainer}>
+                        <Picker
+                            selectedValue={district}
+                            style={styles.input}
+                            onValueChange={handleDistrictChange}
+                        >
+                            <Picker.Item label="Chọn" value="" />
+                            {districts.map((districtItem, index) => (
+                                <Picker.Item key={index} label={districtItem.name} value={districtItem.name} />
+                            ))}
+                        </Picker>
+                    </View>
                 </View>
             </View>
 
             {/* Ward */}
             <View style={styles.inputContainer}>
                 <Text style={styles.label}>Phường/Xã</Text>
-                <Picker
-                    selectedValue={ward}
-                    style={styles.inputFull}
-                    onValueChange={(itemValue) => setWard(itemValue)}
-                >
-                    <Picker.Item label="Chọn phường/xã" value="" />
-                    {wards.map((wardItem, index) => (
-                        <Picker.Item key={index} label={wardItem} value={wardItem} />
-                    ))}
-                </Picker>
+                <View style={styles.pickerContainer}>
+                    <Picker
+                        selectedValue={ward}
+                        style={styles.inputFull}
+                        onValueChange={(itemValue) => setWard(itemValue)}
+                    >
+                        <Picker.Item label="Chọn phường/xã" value="" />
+                        {wards.map((wardItem, index) => (
+                            <Picker.Item key={index} label={wardItem} value={wardItem} />
+                        ))}
+                    </Picker>
+                </View>
             </View>
 
             {/* Address */}
@@ -155,6 +159,11 @@ const styles = StyleSheet.create({
         padding: 16,
         backgroundColor: '#FFFFFF',
     },
+    pickerContainer: {
+        borderColor: '#ddd',
+        borderWidth: 1,
+        borderRadius: 8,
+    },
     header: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -173,7 +182,11 @@ const styles = StyleSheet.create({
     },
     inputContainerShort: {
         marginBottom: 20,
-        width: '48%', // Short input width
+        width: '42%', // Short input width
+    },
+    inputContainerShort2: {
+        marginBottom: 20,
+        width: '55%', // Short input width
     },
     rowContainer: {
         flexDirection: 'row',
@@ -187,7 +200,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 5,
         fontSize: 13,
         fontWeight: '400',
-        color: 'gray'
+        color: 'gray',
+        zIndex: 1,  // Thêm thuộc tính zIndex
     },
     input: {
         height: 50, // Reduced height

@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Picker, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { useSelector } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import colors from '../../constants/Color';
 import { usePaymentModal } from '../../context/PaymentProvider';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { districts } from '../../util/address';
+import { Picker } from '@react-native-picker/picker';
 
 const PaymentInfo = () => {
     const navigation = useNavigation();
@@ -134,34 +135,39 @@ const PaymentInfo = () => {
                     />
                 </View>
 
-                <View style={styles.inputContainerShort}>
+                <View style={styles.inputContainerShort2}>
                     <Text style={styles.label}>Quận/Huyện</Text>
-                    <Picker
-                        selectedValue={district}
-                        style={styles.input}
-                        onValueChange={handleDistrictChange}
-                    >
-                        <Picker.Item label="Chọn" value="" />
-                        {districts.map((districtItem, index) => (
-                            <Picker.Item key={index} label={districtItem.name} value={districtItem.name} />
-                        ))}
-                    </Picker>
+                    <View style={styles.pickerContainer}>
+                        <Picker
+                            selectedValue={district}
+                            style={styles.input}
+                            onValueChange={handleDistrictChange}
+                        >
+                            <Picker.Item label="Chọn" value="" />
+                            {districts.map((districtItem, index) => (
+                                <Picker.Item key={index} label={districtItem.name} value={districtItem.name} />
+                            ))}
+                        </Picker>
+                    </View>
                 </View>
             </View>
 
             {/* Ward */}
             <View style={styles.inputContainer}>
                 <Text style={styles.label}>Phường/Xã</Text>
-                <Picker
-                    selectedValue={ward}
-                    style={styles.inputFull}
-                    onValueChange={(itemValue) => setWard(itemValue)}
-                >
-                    <Picker.Item label="Chọn phường/xã" value="" />
-                    {wards.map((wardItem, index) => (
-                        <Picker.Item key={index} label={wardItem} value={wardItem} />
-                    ))}
-                </Picker>
+                <View style={styles.pickerContainer}>
+
+                    <Picker
+                        selectedValue={ward}
+                        style={styles.inputFull}
+                        onValueChange={(itemValue) => setWard(itemValue)}
+                    >
+                        <Picker.Item label="Chọn phường/xã" value="" />
+                        {wards.map((wardItem, index) => (
+                            <Picker.Item key={index} label={wardItem} value={wardItem} />
+                        ))}
+                    </Picker>
+                </View>
             </View>
 
             {/* Address */}
@@ -192,6 +198,11 @@ const styles = StyleSheet.create({
         padding: 20,
         backgroundColor: '#FFFFFF',
     },
+    pickerContainer: {
+        borderColor: '#ddd',
+        borderWidth: 1,
+        borderRadius: 8,
+    },
     header: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -210,7 +221,11 @@ const styles = StyleSheet.create({
     },
     inputContainerShort: {
         marginBottom: 20,
-        width: '48%', // Chiều rộng cho ô nhập liệu ngắn
+        width: '40%', // Short input width
+    },
+    inputContainerShort2: {
+        marginBottom: 20,
+        width: '57%', // Short input width
     },
     rowContainer: {
         flexDirection: 'row',
@@ -224,7 +239,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 5,
         fontSize: 13,
         fontWeight: '400',
-        color: 'gray'
+        color: 'gray',
+        zIndex: 1,  // Thêm thuộc tính zIndex
     },
     input: {
         height: 50, // Chiều cao giảm
@@ -233,7 +249,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         paddingHorizontal: 10,
         fontSize: 16,
-        fontWeight: 'medium'
+        fontWeight: 'medium',
     },
     inputFull: {
         width: '100%', // Chiều rộng ô nhập liệu
