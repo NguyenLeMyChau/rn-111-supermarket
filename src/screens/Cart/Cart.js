@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, Text, View, FlatList, ActivityIndicator, Image, TouchableOpacity, TextInput, BackHandler } from 'react-native';
 import { useSelector } from 'react-redux';
 import TouchableOpacityForm from '../../components/button/TouchableOpacityForm';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import useCommonData from '../../hooks/useCommonData';
 import { loadingContainer } from '../../constants/Loading';
 import Button from '../../components/button/Button';
@@ -10,9 +10,17 @@ import useCart from '../../hooks/useCart';
 import colors from '../../constants/Color';
 import CartItem from './CartItem';
 import PaymentModal from './PaymentModal';
+import { usePaymentModal } from '../../context/PaymentProvider';
 
 export default function Cart() {
     const navigation = useNavigation();
+    const route = useRoute();
+
+    const { isPaymentModalVisible,
+        setPaymentModalVisible,
+        isInPaymentProcess,
+        setIsInPaymentProcess
+    } = usePaymentModal();
 
     const { fetchDataCart } = useCommonData();
     const { payProductInCart } = useCart();
@@ -21,7 +29,6 @@ export default function Cart() {
     const cart = useSelector((state) => state.cart?.carts) || [];
 
     const [loadingCart, setLoadingCart] = useState(true);
-    const [isModalPayment, setIsModalPayment] = useState(false);
 
     useFocusEffect(
         useCallback(() => {
@@ -32,20 +39,17 @@ export default function Cart() {
         }, [user])
     );
 
-    // Handle back button press
+    // Lắng nghe sự kiện goBack của navigation
     useEffect(() => {
-        const backAction = () => {
-            if (isModalPayment) {
-                setIsModalPayment(false);
-                return true; // Prevent default behavior of going back
+        const unsubscribe = navigation.addListener('focus', () => {
+            if (isInPaymentProcess) {
+                setPaymentModalVisible(true); // Mở modal thanh toán
+                setIsInPaymentProcess(false); // Reset trạng thái thanh toán sau khi hiển thị modal
             }
-            return false; // Allow default behavior to occur
-        };
+        });
 
-        const subscription = BackHandler.addEventListener('hardwareBackPress', backAction);
-
-        return () => subscription.remove(); // Clean up on unmount
-    }, [isModalPayment]);
+        return unsubscribe;
+    }, [navigation, isInPaymentProcess]);
 
     const calculateTotal = (items) => {
         return items.reduce((total, item) => {
@@ -93,7 +97,7 @@ export default function Cart() {
                         contentContainerStyle={styles.list}
                     />
                     <View style={styles.footer}>
-                        <TouchableOpacity style={styles.buttonForm} onPress={() => setIsModalPayment(true)}>
+                        <TouchableOpacity style={styles.buttonForm} onPress={() => setPaymentModalVisible(true)}>
                             <Text style={styles.textButton}>Thanh toán</Text>
                         </TouchableOpacity>
                     </View>
@@ -102,8 +106,8 @@ export default function Cart() {
 
             {/* Modal cho Thanh toán */}
             <PaymentModal
-                isVisible={isModalPayment}
-                onClose={() => setIsModalPayment(false)}
+                isVisible={isPaymentModalVisible}
+                onClose={() => setPaymentModalVisible(false)}
                 total={total}
             />
         </View>

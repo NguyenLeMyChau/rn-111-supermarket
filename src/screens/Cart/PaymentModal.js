@@ -3,12 +3,12 @@ import { Modal, View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Flat
 import colors from '../../constants/Color';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
+import { usePaymentModal } from '../../context/PaymentProvider';
 
 export default function PaymentModal({ isVisible, onClose, total }) {
     const navigation = useNavigation();
-    const [promoCode, setPromoCode] = useState('');
-    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
-    const [isPaymentPickerVisible, setPaymentPickerVisible] = useState(false);
+    const { promoCode, paymentMethod, setPaymentMethod, paymentInfo } = usePaymentModal();
+    const [isPaymentPickerVisible, setPaymentPickerVisible] = useState(false); // Hiển thị modal chọn phương thức thanh toán
 
     const paymentMethods = [
         { id: '1', name: 'MoMo', icon: require('../../../assets/icon-momo.png') },
@@ -21,14 +21,28 @@ export default function PaymentModal({ isVisible, onClose, total }) {
         <TouchableOpacity style={styles.paymentMethod} onPress={() => handleSelectPaymentMethod(item)}>
             <Image source={item.icon} style={styles.icon} />
             <Text style={styles.paymentMethodText}>{item.name}</Text>
-            {selectedPaymentMethod?.id === item.id && <Text style={styles.selectedText}>✓</Text>}
+            {paymentMethod?.id === item.id && <Text style={styles.selectedText}>✓</Text>}
         </TouchableOpacity>
     );
 
     const handleSelectPaymentMethod = (method) => {
-        setSelectedPaymentMethod(method);
+        setPaymentMethod(method);
         setPaymentPickerVisible(false);
     };
+
+    const handleOrder = () => {
+        if (!paymentInfo) {
+            alert('Vui lòng nhập thông tin nhận hàng');
+            return;
+        }
+
+        if (!paymentMethod) {
+            alert('Vui lòng chọn phương thức thanh toán');
+            return;
+        }
+        onClose();
+        navigation.navigate('OrderSuccess');
+    }
 
     return (
         <Modal
@@ -49,9 +63,13 @@ export default function PaymentModal({ isVisible, onClose, total }) {
                             </View>
 
                             <View style={styles.sectionRow}>
-                                <Text style={styles.label}>Thông tin đặt hàng</Text>
-                                <TouchableOpacity style={styles.selectMethod}>
-                                    <Text style={styles.selectMethodText}>Select Method</Text>
+                                <Text style={styles.label}>Thông tin nhận hàng</Text>
+                                <TouchableOpacity style={styles.selectMethod}
+                                    onPress={() => {
+                                        onClose();
+                                        navigation.navigate('PaymentInfo');
+                                    }}>
+                                    <Text style={styles.selectMethodText}>{paymentInfo ? paymentInfo.phoneNumber : 'Nhập thông tin'}</Text>
                                     <Icon name="keyboard-arrow-right" size={20} />
                                 </TouchableOpacity>
                             </View>
@@ -62,9 +80,8 @@ export default function PaymentModal({ isVisible, onClose, total }) {
                                 <TouchableOpacity style={styles.selectMethod} onPress={() => {
                                     onClose();
                                     navigation.navigate('Promotion');
-
                                 }}>
-                                    <Text style={styles.selectMethodText}>Select Method</Text>
+                                    <Text style={styles.selectMethodText}>{promoCode ? promoCode : 'Nhập mã KM'}</Text>
                                     <Icon name="keyboard-arrow-right" size={20} />
                                 </TouchableOpacity>
                             </View>
@@ -73,8 +90,8 @@ export default function PaymentModal({ isVisible, onClose, total }) {
                                 <Text style={styles.label}>Phương thức thanh toán</Text>
                                 <TouchableOpacity style={styles.picker} onPress={() => setPaymentPickerVisible(true)}>
                                     {/* Hiển thị icon của phương thức thanh toán đã chọn */}
-                                    {selectedPaymentMethod ? (
-                                        <Image source={selectedPaymentMethod.icon} style={styles.icon} />
+                                    {paymentMethod ? (
+                                        <Image source={paymentMethod.icon} style={styles.icon} />
                                     ) : (
                                         <Text style={styles.pickerText}>Chọn</Text>
                                     )}
@@ -86,7 +103,7 @@ export default function PaymentModal({ isVisible, onClose, total }) {
                                 <Text style={styles.label}>Tổng tiền</Text>
                                 <Text style={styles.total}>{total.toLocaleString('vi-VN')} đ</Text>
                             </View>
-                            <TouchableOpacity style={styles.button} onPress={onClose}>
+                            <TouchableOpacity style={styles.button} onPress={handleOrder}>
                                 <Text style={styles.textButton}>Đặt hàng</Text>
                             </TouchableOpacity>
 

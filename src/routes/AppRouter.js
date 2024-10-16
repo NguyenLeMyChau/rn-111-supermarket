@@ -21,6 +21,9 @@ import UserInfo from '../screens/User/UserInfo';
 import Order from '../screens/User/Order';
 import OrderDetail from '../screens/User/OrderDetail';
 import Promotion from '../screens/Cart/Promotion';
+import { PaymentModalProvider } from '../context/PaymentProvider';
+import PaymentInfo from '../screens/Cart/PaymentInfo';
+import OrderSuccess from '../screens/Cart/OrderSuccess';
 
 
 const Stack = createStackNavigator();
@@ -73,6 +76,7 @@ function MainTabs() {
 
 export default function AppRouter() {
     return (
+        <PaymentModalProvider>
             <NavigationContainer>
                 <Stack.Navigator initialRouteName="MainTabs" screenOptions={{ headerShown: false }}>
                     <Stack.Screen name="Login" component={Login} />
@@ -85,7 +89,10 @@ export default function AppRouter() {
                     <Stack.Screen name="Order" component={Order} />
                     <Stack.Screen name="OrderDetail" component={OrderDetail} />
                     <Stack.Screen name="Promotion" component={Promotion} />
+                    <Stack.Screen name="PaymentInfo" component={PaymentInfo} />
+                    <Stack.Screen name="OrderSuccess" component={OrderSuccess} />
                 </Stack.Navigator>
             </NavigationContainer>
+        </PaymentModalProvider>
     );
 }

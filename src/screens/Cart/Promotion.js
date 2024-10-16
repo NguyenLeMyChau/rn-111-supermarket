@@ -1,25 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { usePaymentModal } from '../../context/PaymentProvider';
 
 export default function Promotion() {
     const navigation = useNavigation();
-    const [promoCode, setPromoCode] = useState('');
 
-    const handleApplyPromoCode = () => {
-        // Giả sử bạn có logic kiểm tra mã khuyến mãi ở đây
-        if (promoCode === 'DISCOUNT10') {
-            Alert.alert('Thành công', 'Mã khuyến mãi đã được áp dụng!');
-        } else {
-            Alert.alert('Thất bại', 'Mã khuyến mãi không hợp lệ.');
-        }
-    };
+    const { setPromoCode, setIsInPaymentProcess } = usePaymentModal();
+    const [promoCodePage, setPromoCodePage] = useState('');
 
+    const handleApplyPromoCode = (promoCode) => {
+        setPromoCode(promoCode);
+        setIsInPaymentProcess(true);
+        navigation.goBack();
+    }
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                <TouchableOpacity onPress={() => {
+                    setIsInPaymentProcess(true);
+                    navigation.goBack();
+                }}>
                     <Icon name="arrow-back" size={24} color="#333" />
                 </TouchableOpacity>
                 <Text style={styles.title}>Nhập mã khuyến mãi</Text>
@@ -27,10 +29,10 @@ export default function Promotion() {
             <TextInput
                 style={styles.input}
                 placeholder="Nhập mã khuyến mãi"
-                value={promoCode}
-                onChangeText={setPromoCode}
+                value={promoCodePage}
+                onChangeText={setPromoCodePage}
             />
-            <TouchableOpacity style={styles.button} onPress={handleApplyPromoCode}>
+            <TouchableOpacity style={styles.button} onPress={() => handleApplyPromoCode(promoCodePage)}>
                 <Text style={styles.buttonText}>Áp dụng</Text>
             </TouchableOpacity>
         </View>
