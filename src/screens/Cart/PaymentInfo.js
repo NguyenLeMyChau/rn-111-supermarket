@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import colors from '../../constants/Color';
 import { usePaymentModal } from '../../context/PaymentProvider';
 import { useNavigation } from '@react-navigation/native';
+import { districts } from '../../util/address';
 
 const PaymentInfo = () => {
     const navigation = useNavigation();
@@ -12,36 +13,42 @@ const PaymentInfo = () => {
     const { setIsInPaymentProcess, paymentInfo, setPaymentInfo } = usePaymentModal();
 
     // Sử dụng paymentInfo nếu có, nếu không sử dụng thông tin từ user
-    const [phoneNumber, setPhoneNumber] = useState(paymentInfo?.phoneNumber || user?.phone || '');
+    const [phone, setPhone] = useState(paymentInfo?.phone || user?.phone || '');
     const [gender, setGender] = useState(paymentInfo?.gender || user?.gender || false);
-    const [fullName, setFullName] = useState(paymentInfo?.fullName || user?.name || '');
+    const [name, setName] = useState(paymentInfo?.name || user?.name || '');
     const [city, setCity] = useState('Hồ Chí Minh');
     const [district, setDistrict] = useState(paymentInfo?.district || '');
     const [ward, setWard] = useState(paymentInfo?.ward || '');
-    const [address, setAddress] = useState(paymentInfo?.address || '');
+    const [street, setStreet] = useState(paymentInfo?.street || '');
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+    const [wards, setWards] = useState([]);
 
-    const districts = ['Quận 1', 'Quận 2', 'Quận 3', 'Quận 4', 'Quận 5'];
-    const wards = ['Phường 1', 'Phường 2', 'Phường 3', 'Phường 4', 'Phường 5'];
+    const handleDistrictChange = (itemValue) => {
+        setDistrict(itemValue);
+        const selectedDistrict = districts.find(d => d.name === itemValue);
+        console.log(selectedDistrict);
+        setWards(selectedDistrict ? selectedDistrict.wards : []);
+        setWard(''); // Reset ward selection when district changes
+    };
 
     useEffect(() => {
         // Kiểm tra nếu tất cả các trường đều được điền đầy đủ
-        if (phoneNumber && gender !== '' && fullName && district && ward && address) {
+        if (phone && gender !== '' && name && district && ward && street) {
             setIsButtonDisabled(false);
         } else {
             setIsButtonDisabled(true);
         }
-    }, [phoneNumber, gender, fullName, district, ward, address]);
+    }, [phone, gender, name, district, ward, street]);
 
     const handleSubmit = () => {
         setPaymentInfo({
-            phoneNumber,
+            phone,
             gender,
-            fullName,
+            name,
             city,
             district,
             ward,
-            address,
+            street,
         });
         setIsInPaymentProcess(true);
         navigation.goBack();
@@ -65,8 +72,8 @@ const PaymentInfo = () => {
                 <TextInput
                     style={styles.inputFull}
                     keyboardType="phone-pad"
-                    value={phoneNumber}
-                    onChangeText={setPhoneNumber}
+                    value={phone}
+                    onChangeText={setPhone}
                 />
             </View>
 
@@ -99,8 +106,8 @@ const PaymentInfo = () => {
                 <Text style={styles.label}>Họ và tên</Text>
                 <TextInput
                     style={styles.inputFull}
-                    value={fullName}
-                    onChangeText={setFullName}
+                    value={name}
+                    onChangeText={setName}
                 />
             </View>
 
@@ -120,11 +127,11 @@ const PaymentInfo = () => {
                     <Picker
                         selectedValue={district}
                         style={styles.input}
-                        onValueChange={(itemValue) => setDistrict(itemValue)}
+                        onValueChange={handleDistrictChange}
                     >
                         <Picker.Item label="Chọn" value="" />
-                        {districts.map((district, index) => (
-                            <Picker.Item key={index} label={district} value={district} />
+                        {districts.map((districtItem, index) => (
+                            <Picker.Item key={index} label={districtItem.name} value={districtItem.name} />
                         ))}
                     </Picker>
                 </View>
@@ -139,8 +146,8 @@ const PaymentInfo = () => {
                     onValueChange={(itemValue) => setWard(itemValue)}
                 >
                     <Picker.Item label="Chọn phường/xã" value="" />
-                    {wards.map((ward, index) => (
-                        <Picker.Item key={index} label={ward} value={ward} />
+                    {wards.map((wardItem, index) => (
+                        <Picker.Item key={index} label={wardItem} value={wardItem} />
                     ))}
                 </Picker>
             </View>
@@ -150,8 +157,8 @@ const PaymentInfo = () => {
                 <Text style={styles.label}>Số nhà, tên đường</Text>
                 <TextInput
                     style={styles.inputFull}
-                    value={address}
-                    onChangeText={setAddress}
+                    value={street}
+                    onChangeText={setStreet}
                 />
             </View>
 
