@@ -69,7 +69,7 @@ export default function PaymentModal({ isVisible, onClose, total }) {
                                         onClose();
                                         navigation.navigate('PaymentInfo');
                                     }}>
-                                    <Text style={styles.selectMethodText}>{paymentInfo ? paymentInfo.phoneNumber : 'Nhập thông tin'}</Text>
+                                    <Text style={styles.selectMethodText}>{paymentInfo ? paymentInfo.phone : 'Nhập thông tin'}</Text>
                                     <Icon name="keyboard-arrow-right" size={20} />
                                 </TouchableOpacity>
                             </View>

@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Picker, TouchableOpacity, ScrollView } from 'react-native';
 import { useSelector } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import colors from '../../constants/Color';
 import { usePaymentModal } from '../../context/PaymentProvider';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { districts } from '../../util/address';
 
 const PaymentInfo = () => {
@@ -28,8 +28,20 @@ const PaymentInfo = () => {
         const selectedDistrict = districts.find(d => d.name === itemValue);
         console.log(selectedDistrict);
         setWards(selectedDistrict ? selectedDistrict.wards : []);
-        setWard(''); // Reset ward selection when district changes
+        setWard('');
     };
+
+    useFocusEffect(
+        useCallback(() => {
+            if (!paymentInfo) {
+                handleDistrictChange(user?.address?.district);
+                setWard(user?.address?.ward);
+            } else {
+                handleDistrictChange(paymentInfo.district);
+                setWard(paymentInfo.ward);
+            }
+        }, [user])
+    );
 
     useEffect(() => {
         // Kiểm tra nếu tất cả các trường đều được điền đầy đủ

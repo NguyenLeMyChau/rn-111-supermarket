@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useSelector } from 'react-redux';
 import colors from '../../constants/Color';
@@ -19,7 +19,6 @@ export default function UserInfo() {
     const [district, setDistrict] = useState(user?.address?.district || '');
     const [ward, setWard] = useState(user?.address?.ward || '');
     const [street, setStreet] = useState(user?.address?.street || '');
-
     const [wards, setWards] = useState([]);
 
     const handleDistrictChange = (itemValue) => {
@@ -27,8 +26,15 @@ export default function UserInfo() {
         const selectedDistrict = districts.find(d => d.name === itemValue);
         console.log(selectedDistrict);
         setWards(selectedDistrict ? selectedDistrict.wards : []);
-        setWard(''); // Reset ward selection when district changes
+        setWard('');
     };
+
+    useFocusEffect(
+        useCallback(() => {
+            handleDistrictChange(user?.address?.district);
+            setWard(user?.address?.ward);
+        }, [user])
+    );
 
     return (
         <ScrollView style={styles.container}>
