@@ -11,9 +11,13 @@ import colors from '../../constants/Color';
 import CartItem from './CartItem';
 import PaymentModal from './PaymentModal';
 import { usePaymentModal } from '../../context/PaymentProvider';
+import { updateCart } from '../../services/cartRequest';
+import { useAccessToken, useAxiosJWT } from '../../util/axiosInstance';
 
 export default function Cart() {
     const navigation = useNavigation();
+    const accessToken = useAccessToken();
+    const axiosJWT = useAxiosJWT();
 
     const { isPaymentModalVisible,
         setPaymentModalVisible,
@@ -26,23 +30,34 @@ export default function Cart() {
 
     const user = useSelector((state) => state.auth?.login?.currentUser) || {};
     const cart = useSelector((state) => state.cart?.carts) || [];
-    console.log(cart);
-
+    const [previousCart, setPreviousCart] = useState(cart); // Lưu trữ giỏ hàng trước đó để kiểm tra thay đổi
     const [loadingCart, setLoadingCart] = useState(true);
 
-    // useFocusEffect(
-    //     useCallback(() => {
-    //         if (user?.accessToken) {
-    //             fetchDataCart(setLoadingCart);
-    //         }
-    //     }, [user])
-    // );
+    useFocusEffect(
+        useCallback(() => {
+            if (user?.accessToken) {
+                fetchDataCart(setLoadingCart);
+            }
+        }, [user])
+    );
 
-    useEffect(() => {
-        if (user?.accessToken) {
-            fetchDataCart(setLoadingCart);
-        }
-    }, []);
+    // Gọi updateCart khi người dùng rời khỏi tab giỏ hàng (sự kiện 'blur')
+    useFocusEffect(
+        useCallback(() => {
+            const handleBlur = () => {
+                if (JSON.stringify(cart) !== JSON.stringify(previousCart)) {
+                    console.log('Chạy updateCart');
+                    updateCart(user.id, cart, accessToken, axiosJWT);
+                    setPreviousCart(cart); // Cập nhật giỏ hàng trước đó sau khi đã lưu
+                }
+            };
+
+            const unsubscribe = navigation.addListener('blur', handleBlur);
+
+            return () => unsubscribe();
+        }, [cart, previousCart])
+    );
+
 
     // Lắng nghe sự kiện goBack của navigation
     useEffect(() => {
@@ -66,6 +81,15 @@ export default function Cart() {
     };
 
     const total = calculateTotal(cart);
+
+    const handlePayment = () => {
+        if (JSON.stringify(cart) !== JSON.stringify(previousCart)) {
+            console.log('Cập nhật giỏ hàng trước khi thanh toán');
+            updateCart(user.id, cart, accessToken, axiosJWT); // Cập nhật giỏ hàng nếu có thay đổi
+            setPreviousCart(cart); // Cập nhật giỏ hàng trước đó
+        }
+        setPaymentModalVisible(true); // Hiển thị modal thanh toán sau khi cập nhật giỏ hàng
+    }
 
     if (!user?.accessToken) {
         return (
@@ -102,7 +126,7 @@ export default function Cart() {
                         contentContainerStyle={styles.list}
                     />
                     <View style={styles.footer}>
-                        <TouchableOpacity style={styles.buttonForm} onPress={() => setPaymentModalVisible(true)}>
+                        <TouchableOpacity style={styles.buttonForm} onPress={() => handlePayment()}>
                             <Text style={styles.textButton}>Thanh toán</Text>
                         </TouchableOpacity>
                     </View>

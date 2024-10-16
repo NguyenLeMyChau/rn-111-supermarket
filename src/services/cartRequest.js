@@ -57,5 +57,21 @@ const payCart = async (navigation, accessToken, axiosJWT, customerId, products) 
 
 }
 
+const updateCart = async (accountId, productList, accessToken, axiosJWT) => {
+    try {
+        const response = await axiosJWT.post(`/api/customer/update-cart`, {
+            accountId,
+            productList,
+        }, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Update cart failed:', error);
+    }
+}
 
-export { getCartById, addProductToCart, payCart }
+
+export { getCartById, addProductToCart, payCart, updateCart }

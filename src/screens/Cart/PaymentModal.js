@@ -40,9 +40,9 @@ export default function PaymentModal({ isVisible, onClose, total, cart }) {
             alert('Vui lòng chọn phương thức thanh toán');
             return;
         }
-        console.log(paymentInfo, paymentMethod, promoCode, total, cart);
-        onClose();
-        navigation.navigate('OrderSuccess');
+        console.log('card payment', cart);
+        // onClose();
+        // navigation.navigate('OrderSuccess');
     }
 
     return (
