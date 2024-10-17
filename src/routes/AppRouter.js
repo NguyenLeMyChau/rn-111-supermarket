@@ -25,12 +25,19 @@ import { PaymentModalProvider } from '../context/PaymentProvider';
 import PaymentInfo from '../screens/Cart/PaymentInfo';
 import OrderSuccess from '../screens/Cart/OrderSuccess';
 import ProductDetail from '../screens/Explore/ProductDetail';
+import { useSelector } from 'react-redux';
 
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function MainTabs() {
+
+    const cartItemsCount = useSelector((state) => {
+        const products = state.cart?.carts;
+        return products ? products.length : 0;
+    });
+
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
@@ -69,7 +76,13 @@ function MainTabs() {
             <Tab.Screen name="Shop" component={Shop} options={{ tabBarLabel: 'Cửa hàng' }} />
             <Tab.Screen name="Explore" component={Explore} options={{ tabBarLabel: 'Khám phá' }} />
             <Tab.Screen name="QRCodeScanner" component={QRCodeScanner} options={{ tabBarLabel: 'Quét QR' }} />
-            <Tab.Screen name="Cart" component={Cart} options={{ tabBarLabel: 'Giỏ hàng' }} />
+            <Tab.Screen name="Cart" component={Cart}
+                options={{
+                    tabBarLabel: 'Giỏ hàng',
+                    tabBarBadge: cartItemsCount > 0 ? cartItemsCount : null, // Hiển thị số lượng sản phẩm
+                    tabBarBadgeStyle: { backgroundColor: 'red', color: 'white' }, // Tuỳ chỉnh style
+                }}
+            />
             <Tab.Screen name="User" component={User} options={{ tabBarLabel: 'Người dùng' }} />
         </Tab.Navigator>
     );
