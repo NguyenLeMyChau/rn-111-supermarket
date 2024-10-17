@@ -1,5 +1,4 @@
-import { Alert } from "react-native";
-
+import { getInvoiceFailed, getInvoiceStart, getInvoiceSuccess } from "../store/reducers/invoiceSlice";
 
 const updateCustomerInfo = async (accountId, customerInfo, navigation, accessToken, axiosJWT) => {
     try {
@@ -19,4 +18,20 @@ const updateCustomerInfo = async (accountId, customerInfo, navigation, accessTok
     }
 }
 
-export { updateCustomerInfo };
+const getInvoicesByAccountId = async (accountId, accessToken, axiosJWT, dispatch) => {
+    dispatch(getInvoiceStart());
+    try {
+        const response = await axiosJWT.get(`/api/customer/get-invoice/${accountId}`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+        dispatch(getInvoiceSuccess(response.data));
+        return response.data;
+    } catch (error) {
+        console.error('Get invoices failed:', error);
+        dispatch(getInvoiceFailed());
+    }
+}
+
+export { updateCustomerInfo, getInvoicesByAccountId };

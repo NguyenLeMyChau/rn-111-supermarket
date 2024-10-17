@@ -82,7 +82,7 @@ console.log(categories)
     const renderCategory = ({ item }) => (
         <View style={styles.categoryContainer}>
             <View style={styles.categoryHeader}>
-                <Text style={styles.categoryName}>{item.category.name}</Text>
+                <Text style={styles.categoryName}>{item.category?.name}</Text>
                 <TouchableOpacity style={styles.seeMoreButton} onPress={() => {
                     navigation.navigate('ProductList', { name: item.category.name, productList: item.products });
 

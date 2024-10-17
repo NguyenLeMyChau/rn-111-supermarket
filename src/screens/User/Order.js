@@ -2,43 +2,23 @@ import React from 'react';
 import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useSelector } from 'react-redux';
+import { formatCurrency, formatDate } from '../../util/format';
 
 export default function Order() {
     const navigation = useNavigation();
-
-    // Giả sử bạn có dữ liệu đơn hàng từ một nguồn nào đó
-    const orders = [
-        {
-            id: '1',
-            orderNumber: 'ORD001',
-            date: '2023-10-01',
-            total: '500,000 VNĐ',
-            status: 'Đã giao hàng',
-        },
-        {
-            id: '2',
-            orderNumber: 'ORD002',
-            date: '2023-10-05',
-            total: '300,000 VNĐ',
-            status: 'Đang xử lý',
-        },
-        {
-            id: '3',
-            orderNumber: 'ORD003',
-            date: '2023-10-10',
-            total: '700,000 VNĐ',
-            status: 'Đã hủy',
-        },
-    ];
+    const invoices = useSelector(state => state.invoice?.invoices);
+    console.log('invoices', invoices);
 
     const renderItem = ({ item }) => (
-        <TouchableOpacity style={styles.orderContainer} onPress={() => navigation.navigate('OrderDetail', { orderId: item.id })}>
+        console.log('item', item),
+        <TouchableOpacity style={styles.orderContainer} onPress={() => navigation.navigate('OrderDetail', { itemInvoice: item })}>
             <View style={styles.orderHeader}>
-                <Text style={styles.orderNumber}>Mã đơn hàng: {item.orderNumber}</Text>
+                <Text style={styles.orderNumber}>Mã đơn hàng: {item._id}</Text>
                 <Text style={styles.orderDate}>{item.date}</Text>
             </View>
-            <Text style={styles.orderTotal}>Tổng tiền: {item.total}</Text>
-            <Text style={styles.orderStatus}>Trạng thái: {item.status}</Text>
+            <Text style={styles.orderTotal}>Tổng tiền: {formatCurrency(item.total)}</Text>
+            <Text style={styles.orderStatus}>Ngày đặt hàng: {formatDate(item.createdAt)}</Text>
         </TouchableOpacity>
     );
 
@@ -51,7 +31,7 @@ export default function Order() {
                 <Text style={styles.title}>Đơn hàng của bạn</Text>
             </View>
             <FlatList
-                data={orders}
+                data={invoices}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
                 contentContainerStyle={styles.list}

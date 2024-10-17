@@ -1,41 +1,13 @@
 import React from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { formatCurrency, formatDate } from '../../util/format';
 
 export default function OrderDetail() {
     const navigation = useNavigation();
     const route = useRoute();
-    const { orderId } = route.params;
-
-    // Giả sử bạn có dữ liệu chi tiết đơn hàng từ một nguồn nào đó
-    const orderDetails = {
-        id: orderId,
-        orderNumber: 'ORD001',
-        date: '2023-10-01',
-        total: '500,000 VNĐ',
-        status: 'Đã giao hàng',
-        products: [
-            {
-                id: '1',
-                name: 'Sản phẩm 1',
-                quantity: 2,
-                price: '200,000 VNĐ',
-            },
-            {
-                id: '2',
-                name: 'Sản phẩm 2',
-                quantity: 1,
-                price: '100,000 VNĐ',
-            },
-            {
-                id: '3',
-                name: 'Sản phẩm 3',
-                quantity: 3,
-                price: '200,000 VNĐ',
-            },
-        ],
-    };
+    const { itemInvoice } = route.params;
 
     return (
         <ScrollView style={styles.container}>
@@ -48,34 +20,34 @@ export default function OrderDetail() {
 
             <View style={styles.orderInfoContainer}>
                 <View style={styles.orderInfoRow}>
-                    <View style={styles.orderInfo}>
+                    <View style={styles.orderInfoRow2}>
                         <Text style={styles.label}>Mã đơn hàng:</Text>
-                        <Text style={styles.value}>{orderDetails.orderNumber}</Text>
+                        <Text style={styles.value}>{itemInvoice._id}</Text>
                     </View>
-                    <View style={styles.orderInfo}>
-                        <Text style={styles.label}>Ngày đặt hàng:</Text>
-                        <Text style={styles.value}>{orderDetails.date}</Text>
-                    </View>
+
                 </View>
                 <View style={styles.orderInfoRow}>
                     <View style={styles.orderInfo}>
                         <Text style={styles.label}>Tổng tiền:</Text>
-                        <Text style={styles.value}>{orderDetails.total}</Text>
+                        <Text style={styles.value}>{formatCurrency(itemInvoice.total)}</Text>
                     </View>
                     <View style={styles.orderInfo}>
-                        <Text style={styles.label}>Trạng thái:</Text>
-                        <Text style={[styles.value, styles.status]}>{orderDetails.status}</Text>
+                        <Text style={styles.label}>Ngày đặt hàng:</Text>
+                        <Text style={styles.value}>{formatDate(itemInvoice.createdAt)}</Text>
                     </View>
                 </View>
             </View>
 
             <Text style={styles.productTitle}>Sản phẩm trong đơn hàng:</Text>
 
-            {orderDetails.products.map((item) => (
+            {itemInvoice.details.map((item) => (
                 <View key={item.id} style={styles.productContainer}>
-                    <Text style={styles.productName}>{item.name}</Text>
-                    <Text style={styles.productQuantity}>Số lượng: {item.quantity}</Text>
-                    <Text style={styles.productPrice}>Giá: {item.price}</Text>
+                    <Image source={{ uri: item.productImg }} style={styles.productImage} />
+                    <View style={styles.productInfo}>
+                        <Text style={styles.productName}>{item.productName}</Text>
+                        <Text style={styles.productQuantity}>Số lượng: {item.quantity}</Text>
+                        <Text style={styles.productPrice}>Giá: {formatCurrency(item.price)}</Text>
+                    </View>
                 </View>
             ))}
         </ScrollView>
@@ -127,16 +99,21 @@ const styles = StyleSheet.create({
     orderInfo: {
         flex: 1,
     },
+    orderInfoRow2: {
+        flex: 1,
+        flexDirection: 'row',
+        marginBottom: 12
+    },
     label: {
         fontSize: 16,
         fontWeight: '600',
         color: '#333',
+        marginRight: 8,
     },
     value: {
         fontSize: 16,
         fontWeight: '400',
         color: '#777',
-        marginTop: 4,
     },
     status: {
         color: '#4CAF50',
@@ -150,33 +127,36 @@ const styles = StyleSheet.create({
         color: '#333',
     },
     productContainer: {
-        padding: 18,
-        borderRadius: 12,
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 10,
+        marginBottom: 10,
+        borderRadius: 8,
         borderWidth: 1,
         borderColor: '#ddd',
-        marginBottom: 16,
-        backgroundColor: '#FFFFFF',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 5,
-        elevation: 5,
+        backgroundColor: '#f9f9f9',
+    },
+    productImage: {
+        width: 60,
+        height: 60,
+        borderRadius: 8,
+        marginRight: 10,
+    },
+    productInfo: {
+        flex: 1,
     },
     productName: {
-        fontSize: 18,
+        fontSize: 16, 
         fontWeight: 'bold',
-        color: '#333',
-        marginBottom: 6,
+        marginBottom: 4,
     },
     productQuantity: {
-        fontSize: 16,
+        fontSize: 14,
         color: '#555',
-        marginTop: 4,
+        marginBottom: 4,
     },
     productPrice: {
-        fontSize: 16,
-        color: '#555',
-        marginTop: 4,
-        fontWeight: '600',
+        fontSize: 14,
+        fontWeight: 'bold',
     },
 });

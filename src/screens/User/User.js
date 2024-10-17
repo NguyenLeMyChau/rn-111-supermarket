@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, Image } from "react-native";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import FontAwesome from 'react-native-vector-icons/FontAwesome'; // Import icon
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
@@ -7,9 +7,10 @@ import colors from "../../constants/Color";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../services/authRequest";
 import { useAccessToken, useAxiosJWT } from "../../util/axiosInstance";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import TouchableOpacityForm from "../../components/button/TouchableOpacityForm";
 import Logo from "../../components/logo/Logo";
+import { getInvoicesByAccountId } from "../../services/userRequest";
 
 export default function User() {
     const dispatch = useDispatch();
@@ -41,6 +42,14 @@ export default function User() {
         };
         return screenMap[id]; // Lấy tên màn hình tương ứng với id
     };
+
+    useFocusEffect(
+        useCallback(() => {
+            if (user?.accessToken) {
+                getInvoicesByAccountId(user.id, accessToken, axiosJWT, dispatch);
+            }
+        }, [user])
+    );
 
     const renderItem = ({ item }) => (
         <TouchableOpacity style={styles.itemContainer}
