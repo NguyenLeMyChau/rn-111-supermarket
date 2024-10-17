@@ -37,9 +37,11 @@ const PaymentInfo = () => {
             if (!paymentInfo) {
                 handleDistrictChange(user?.address?.district);
                 setWard(user?.address?.ward);
+                setStreet(user?.address?.street);
             } else {
                 handleDistrictChange(paymentInfo.district);
                 setWard(paymentInfo.ward);
+                setStreet(paymentInfo.street);
             }
         }, [user])
     );

@@ -1,52 +1,123 @@
-import React from 'react';
-import { StyleSheet, Text, View, Image, Button, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, TextInput, Animated, LayoutAnimation, UIManager, Platform } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons'; // Import Icon
 import colors from '../../constants/Color';
+import { useDispatch } from 'react-redux';
+
+// Enable LayoutAnimation on Android
+if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 
 const ProductDetail = () => {
+    const dispatch = useDispatch();
     const route = useRoute();
     const navigation = useNavigation(); // Hook để điều hướng
     const { product } = route.params;
+    const [quantity, setQuantity] = useState(1);
+    const [detailsVisible, setDetailsVisible] = useState(false);
     const giagoc = 200000;
 
+    // Cập nhật số lượng sản phẩm
+    const handleUpdateQuantity = (newQuantity) => {
+        setQuantity(newQuantity);
+        dispatch(updateProductQuantity({ productId: product.id, quantity: newQuantity }));
+    };
+
+    // Giảm số lượng
+    const handleDecreaseQuantity = () => {
+        if (quantity > 1) {
+            const newQuantity = quantity - 1;
+            handleUpdateQuantity(newQuantity);
+        }
+    };
+
+    // Tăng số lượng
+    const handleIncreaseQuantity = () => {
+        const newQuantity = quantity + 1;
+        handleUpdateQuantity(newQuantity);
+    };
+
+    // Xử lý thay đổi số lượng qua TextInput
+    const handleInputChange = (text) => {
+        const newQuantity = Number(text);
+        if (!isNaN(newQuantity) && newQuantity > 0) {
+            handleUpdateQuantity(newQuantity);
+        }
+    };
+
+    // Xử lý mở/đóng phần chi tiết sản phẩm
+    const toggleDetails = () => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setDetailsVisible(!detailsVisible);
+    };
+
     return (
-        <ScrollView contentContainerStyle={styles.container}>
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                    <Icon name="arrow-back" size={28} color="black" />
-                </TouchableOpacity>
-
-                <Text>{product.name}</Text>
-            </View>
-            <View style={styles.imgContainer}>
-                <Image source={{ uri: product.img }} style={styles.image} />
-            </View>
-
-            <View style={styles.info}>
-                <View style={styles.productInfo}>
-                    <Text style={styles.title}>{product.name}</Text>
-                    <Text style={styles.productUnit}>Chai</Text>
+        <View style={styles.container}>
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
+                <View style={styles.header}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                        <Icon name="arrow-back" size={28} color="black" />
+                    </TouchableOpacity>
+                    <Text>{product.name}</Text>
                 </View>
-                <Text style={styles.price}>{giagoc.toLocaleString('vi-VN')} VNĐ</Text>
-                <Text style={styles.description}>{product.description}</Text>
+                <View style={styles.imgContainer}>
+                    <Image source={{ uri: product.img }} style={styles.image} />
+                </View>
+                <View style={styles.info}>
+                    <View style={styles.productInfo}>
+                        <Text style={styles.title}>{product.name}</Text>
+                        <Text style={styles.productUnit}>Chai</Text>
+                    </View>
+                    <View style={styles.sectionRow}>
+                        <View style={styles.quantityContainer}>
+                            <TouchableOpacity style={styles.buttonQuantity} onPress={handleDecreaseQuantity}>
+                                <Text style={styles.buttonTextQuantity}>-</Text>
+                            </TouchableOpacity>
+                            <TextInput
+                                style={styles.itemQuantity}
+                                value={String(quantity)}
+                                onChangeText={handleInputChange}
+                                keyboardType="numeric"
+                            />
+                            <TouchableOpacity style={styles.buttonQuantity} onPress={handleIncreaseQuantity}>
+                                <Text style={styles.buttonTextQuantity}>+</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <Text style={styles.price}>{giagoc.toLocaleString('vi-VN')} đ</Text>
+                    </View>
 
-                <TouchableOpacity style={styles.button}>
-                    <Text style={styles.textButton}>Thêm vào giỏ hàng</Text>
-                </TouchableOpacity>
-            </View>
-        </ScrollView>
+                    <View style={{ borderBottomWidth: 1, borderBottomColor: '#ddd', paddingBottom: 5 }}>
+                        <TouchableOpacity onPress={toggleDetails} style={styles.detailsButton}>
+                            <Text style={styles.detailsButtonText}>Mô tả sản phẩm</Text>
+                            <Icon name={detailsVisible ? 'expand-less' : 'expand-more'} size={24} color="black" />
+                        </TouchableOpacity>
+                        {detailsVisible && (
+                            <View style={styles.detailsContainer}>
+                                <Text style={styles.description}>{product.description}</Text>
+                            </View>
+                        )}
+                    </View>
+                </View>
+            </ScrollView>
+            <TouchableOpacity style={styles.button}>
+                <Text style={styles.textButton}>Thêm vào giỏ hàng</Text>
+            </TouchableOpacity>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        flexGrow: 1,
+        flex: 1,
         backgroundColor: '#FFFFFF',
+    },
+    scrollContainer: {
+        flexGrow: 1,
     },
     header: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
         padding: 20,
         borderBottomWidth: 1,
@@ -85,30 +156,80 @@ const styles = StyleSheet.create({
         color: '#888',
     },
     price: {
-        fontSize: 20,
-        color: '#FF6347',
-        marginBottom: 20,
+        fontSize: 18,
         textAlign: 'center',
+        fontWeight: 'bold',
     },
     description: {
         fontSize: 16,
         color: '#333',
-        marginBottom: 20,
-        textAlign: 'center',
     },
     backButton: {
         alignSelf: 'flex-start',
+        marginRight: 20,
     },
     button: {
         backgroundColor: colors.button,
         padding: 15,
         borderRadius: 10,
         alignItems: 'center',
+        margin: 20,
     },
     textButton: {
         color: '#fff',
         fontSize: 16,
         fontWeight: 'bold',
+    },
+    quantityContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    buttonQuantity: {
+        width: 35,
+        height: 35,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 15,
+        marginVertical: 10,
+        borderWidth: 1,
+        borderColor: '#E2E2E2',
+    },
+    buttonTextQuantity: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: colors.button,
+    },
+    itemQuantity: {
+        width: 50,
+        height: 40,
+        textAlign: 'center',
+        fontSize: 15,
+        fontWeight: 'bold',
+        borderBottomWidth: 1,
+        borderBottomColor: '#E2E2E2',
+        marginHorizontal: 8,
+        color: colors.button,
+    },
+    sectionRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 20,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ddd',
+    },
+    detailsButton: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 10,
+    },
+    detailsButtonText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    detailsContainer: {
+        paddingVertical: 10,
     },
 });
 

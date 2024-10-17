@@ -41,8 +41,8 @@ export default function PaymentModal({ isVisible, onClose, total, cart }) {
             return;
         }
         console.log('card payment', cart);
-        // onClose();
-        // navigation.navigate('OrderSuccess');
+        onClose();
+        navigation.navigate('OrderSuccess');
     }
 
     return (
