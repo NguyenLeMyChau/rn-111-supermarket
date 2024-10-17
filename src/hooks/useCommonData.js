@@ -3,12 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllCategories } from "../services/productRequest";
 import { useAccessToken, useAxiosJWT } from "../util/axiosInstance";
 import { getCartById } from "../services/cartRequest";
+import { usePaymentModal } from "../context/PaymentProvider";
 
 const useCommonData = () => {
     const dispatch = useDispatch();
     const accessToken = useAccessToken();
     const axiosJWT = useAxiosJWT();
     const user = useSelector((state) => state.auth?.login?.currentUser) || {};
+    const { setPreviousCart } = usePaymentModal();
 
     const fetchDataShop = async (setLoading) => {
         try {
@@ -24,7 +26,8 @@ const useCommonData = () => {
     const fetchDataCart = async (setLoading) => {
         try {
             setLoading(true); // Bắt đầu loading
-            const reponse = await getCartById(dispatch, accessToken, axiosJWT, user.id);
+            const cart = await getCartById(dispatch, accessToken, axiosJWT, user.id);
+            setPreviousCart(cart);
         } catch (error) {
             console.error('Error fetching categories:', error);
         } finally {

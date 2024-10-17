@@ -13,6 +13,7 @@ import PaymentModal from './PaymentModal';
 import { usePaymentModal } from '../../context/PaymentProvider';
 import { updateCart } from '../../services/cartRequest';
 import { useAccessToken, useAxiosJWT } from '../../util/axiosInstance';
+import { useCartContext } from '../../context/CartProvider';
 
 export default function Cart() {
     const navigation = useNavigation();
@@ -22,15 +23,17 @@ export default function Cart() {
     const { isPaymentModalVisible,
         setPaymentModalVisible,
         isInPaymentProcess,
-        setIsInPaymentProcess
+        setIsInPaymentProcess,
+        previousCart,
+        setPreviousCart
     } = usePaymentModal();
+
 
     const { fetchDataCart } = useCommonData();
     const { payProductInCart } = useCart();
 
     const user = useSelector((state) => state.auth?.login?.currentUser) || {};
     const cart = useSelector((state) => state.cart?.carts) || [];
-    const [previousCart, setPreviousCart] = useState(cart); // Lưu trữ giỏ hàng trước đó để kiểm tra thay đổi
     const [loadingCart, setLoadingCart] = useState(true);
 
     useFocusEffect(
@@ -48,13 +51,16 @@ export default function Cart() {
                 if (JSON.stringify(cart) !== JSON.stringify(previousCart)) {
                     console.log('Chạy updateCart');
                     updateCart(user.id, cart, accessToken, axiosJWT);
-                    setPreviousCart(cart); // Cập nhật giỏ hàng trước đó sau khi đã lưu
+                    setPreviousCart(cart);
                 }
             };
 
             const unsubscribe = navigation.addListener('blur', handleBlur);
 
-            return () => unsubscribe();
+            // Gỡ bỏ listener cũ khi useFocusEffect chạy lại hoặc component unmount
+            return () => {
+                unsubscribe();
+            };
         }, [cart, previousCart])
     );
 

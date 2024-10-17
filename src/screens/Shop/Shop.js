@@ -16,7 +16,7 @@ const PRODUCT_WIDTH = width * 0.42;
 
 export default function Shop() {
     const navigation = useNavigation();
-    const { fetchDataShop } = useCommonData();
+    const { fetchDataShop, fetchDataCart } = useCommonData();
     const user = useSelector((state) => state.auth?.login?.currentUser) || {};
     const categories = useSelector((state) => state.category?.categories) || [];
     const filteredCategories = categories.filter(category => category.products.length > 0);
@@ -31,7 +31,10 @@ export default function Shop() {
 
     useEffect(() => {
         fetchDataShop(setLoadingShop);
-    }, []);
+        if (user.id) {
+            fetchDataCart(setLoadingShop);
+        }
+    }, [user]);
 
     const { addCart } = useCart();
 

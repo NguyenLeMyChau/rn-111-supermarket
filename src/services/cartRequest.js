@@ -89,5 +89,22 @@ const removeProductCart = async (accountId, productId, accessToken, axiosJWT) =>
     }
 }
 
+const updateProductCart = async (accountId, productId, quantity, accessToken, axiosJWT) => {
+    try {
+        const response = await axiosJWT.post(`/api/customer/update-product-cart`, {
+            accountId,
+            productId,
+            quantity,
+        }, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Update product cart failed:', error);
+    }
+}
 
-export { getCartById, addProductToCart, payCart, updateCart, removeProductCart }
+
+export { getCartById, addProductToCart, payCart, updateCart, removeProductCart, updateProductCart }
