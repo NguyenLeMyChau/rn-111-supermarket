@@ -29,10 +29,11 @@ const cartSlice = createSlice({
             state.error = false;
         },
         updateProductQuantity(state, action) {
-            const { productId, quantity } = action.payload;
+            const { productId, quantity,total } = action.payload;
             const product = state.carts?.find(product => product.product_id === productId);
             if (product) {
                 product.quantity = quantity;
+                product.total =total;
             }
         },
     }

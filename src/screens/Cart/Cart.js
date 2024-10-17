@@ -77,8 +77,8 @@ export default function Cart() {
 
     const calculateTotal = (items) => {
         return items.reduce((total, item) => {
-            if (typeof item.price === 'number') {
-                return total + item.price;
+            if (typeof item.total === 'number') {
+                return total + item.total;
             }
             return total;
         }, 0);

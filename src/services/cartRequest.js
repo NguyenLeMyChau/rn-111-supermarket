@@ -1,3 +1,4 @@
+import axios from "axios";
 import { getCartFailed, getCartStart, getCartSuccess } from "../store/reducers/cartSlice";
 
 
@@ -16,6 +17,15 @@ const getCartById = async (dispatch, accessToken, axiosJWT, accountId) => {
         dispatch(getCartFailed());
     }
 };
+const getPromotionByProductId = async(product_id)=>{
+    try{
+        const response = await axios.post(`http://localhost:5000/api/auth/get-promotion-by-product`,{product_id});
+        console.log(response.data)
+        return response.data;
+    }catch(error){
+        console.error('Get get-promotion-by-product failed:', error);
+    }
+}
 
 const addProductToCart = async (accessToken, axiosJWT, accountId, productId, quantity, price) => {
     try {
@@ -108,4 +118,4 @@ const updateProductCart = async (accountId, productId, quantity, accessToken, ax
 }
 
 
-export { getCartById, addProductToCart, payCart, updateCart, removeProductCart, updateProductCart }
+export { getCartById, addProductToCart, payCart, updateCart, removeProductCart, updateProductCart,getPromotionByProductId}

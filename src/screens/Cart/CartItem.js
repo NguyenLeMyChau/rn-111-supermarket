@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native';
 import colors from '../../constants/Color';
 import Icon from 'react-native-vector-icons/MaterialIcons'; // Import Icon
 import { useDispatch, useSelector } from 'react-redux'; // Import dispatch from Redux
 import { updateProductQuantity } from '../../store/reducers/cartSlice';
-import { removeProductCart } from '../../services/cartRequest';
+import { getPromotionByProductId, removeProductCart } from '../../services/cartRequest';
 import { useAccessToken, useAxiosJWT } from '../../util/axiosInstance';
 import useCommonData from '../../hooks/useCommonData';
 import { loadingContainer } from '../../constants/Loading';
@@ -18,15 +18,64 @@ const CartItem = ({ item }) => {
     const user = useSelector((state) => state.auth?.login?.currentUser) || {};
     const [quantity, setQuantity] = useState(item.quantity);
     const [loadingCart, setLoadingCart] = useState(false);
+console.log(item)
+    const [giakhuyenmai,setGiaKhuyeMai] =useState();
+    const [khuyenMai,setKhuyenMai] =useState('');
+    const [giaBan,setGiaBan] = useState(item.quantity*item.price);
 
-    const giakhuyenmai = 0;
-    const giagoc = 40000;
+    useEffect(() => {
+        const fetchPromotion = async () => {
+            try {
+                const promotions = await getPromotionByProductId(item.product_id);
+                console.log(promotions)
+                if (promotions?.length > 0) {
+                    const promotion = promotions[0]; // Giả sử chỉ sử dụng khuyến mãi đầu tiên tìm thấyi
+                    if(promotion.promotionLine_id.type==='amount'){
+                        setGiaKhuyeMai((item.price-promotion.amount_donate)*quantity);
+                        setKhuyenMai(promotion.promotionLine_id.description); 
+                    }else if(promotion.promotionLine_id.type==='quantity'){
+                        setKhuyenMai(promotion.promotionLine_id.description); 
+                       if(quantity/(promotion.quantity+promotion.quantity_donate) | 0 > 0){
+                        setGiaKhuyeMai((quantity-promotion.quantity_donate)*item.price);
+                       
+                       }  
+                    }
+                
+                }
+            } catch (error) {
+                console.error('Lỗi khi lấy thông tin khuyến mãi:', error);
+            }
+        };
+
+        fetchPromotion();
+    }, [item.product_id, quantity]);
 
     // Cập nhật số lượng sản phẩm
-    const handleUpdateQuantity = (newQuantity) => {
+    const handleUpdateQuantity = async (newQuantity) => {
         setQuantity(newQuantity);
-        dispatch(updateProductQuantity({ productId: item.product_id, quantity: newQuantity }));
-    };
+        setGiaBan(newQuantity * item.price);
+    
+        // Tính lại giá khuyến mãi
+        let updatedGiaKhuyenMai = null;
+        if (khuyenMai) {
+            // Giả sử bạn đã có thông tin khuyến mãi, tính toán lại giá khuyến mãi
+            if (promotions[0].promotionLine_id.type === 'amount') {
+                updatedGiaKhuyenMai = (item.price - promotions[0].amount_donate) * newQuantity;
+            } else if (promotions[0].promotionLine_id.type === 'quantity') {
+                if (newQuantity / (promotions[0].quantity + promotions[0].quantity_donate) | 0 > 0) {
+                    updatedGiaKhuyenMai = (newQuantity - promotions[0].quantity_donate) * item.price;
+                }
+            }
+            setGiaKhuyeMai(updatedGiaKhuyenMai);
+        }
+    
+        // Dispatch cập nhật giỏ hàng với giá trị mới
+        dispatch(updateProductQuantity({ 
+            productId: item.product_id, 
+            quantity: newQuantity, 
+            total: updatedGiaKhuyenMai ? updatedGiaKhuyenMai : newQuantity * item.price
+        }));
+    };  
 
     // Giảm số lượng
     const handleDecreaseQuantity = () => {
@@ -59,13 +108,14 @@ const CartItem = ({ item }) => {
 
     return (
         <View style={styles.itemContainer}>
-            <View style={{ width: '27%', height: 100 }}>
+            <View style={{ width: '28%', height: 100 ,paddingRight:10}}>
                 <Image style={styles.itemImage} source={{ uri: item.img }} />
             </View>
-            <View style={{ width: '50%' }}>
+            <View style={{ width: '45%' }}>
                 <Text style={styles.itemName}>{item.name}</Text>
-                <Text style={styles.itemUnit}>Chai</Text>
-
+                <Text style={styles.itemUnit}>{item.unit.description}</Text>
+                {khuyenMai && <Text style={styles.itemPromotion}>{khuyenMai}</Text>}
+               
                 <View style={styles.quantityContainer}>
                     <TouchableOpacity style={styles.button} onPress={handleDecreaseQuantity}>
                         <Text style={styles.buttonText}>-</Text>
@@ -103,12 +153,12 @@ const CartItem = ({ item }) => {
                                 {giakhuyenmai.toLocaleString('vi-VN')} đ
                             </Text>
                             <Text style={styles.itemOriginalPrice}>
-                                {giagoc.toLocaleString('vi-VN')} đ
+                                {giaBan.toLocaleString('vi-VN')} đ
                             </Text>
                         </View>
                     ) : (
                         <Text style={styles.itemPrice}>
-                            {giagoc.toLocaleString('vi-VN')} đ
+                            {giaBan.toLocaleString('vi-VN')} đ
                         </Text>
                     )}
                 </View>
@@ -133,13 +183,17 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
     },
     itemName: {
-        fontSize: 13,
+        fontSize: 14,
         fontWeight: 'medium',
         width: '100%',
     },
     itemUnit: {
-        fontSize: 12,
+        fontSize: 13,
         color: '#888',
+    },
+    itemPromotion:{
+        color:'red',
+        fontSize: 14,
     },
     itemOriginalPrice: {
         fontSize: 12,

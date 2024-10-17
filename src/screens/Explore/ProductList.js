@@ -82,7 +82,7 @@ export default function ProductList({ route }) {
           )}
           <TouchableOpacity
             style={styles.addToCartButton}
-            onPress={() => handleAddCart(item._id, 1, 20000)}
+            onPress={() => handleAddCart(item._id, 1, item.price)}
           >
             <Icon name="cart" size={24} color="#FFFFFF" />
           </TouchableOpacity>
