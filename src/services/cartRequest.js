@@ -100,6 +100,7 @@ const updateProductCart = async (accountId, productId, quantity, accessToken, ax
                 Authorization: `Bearer ${accessToken}`,
             },
         });
+        alert('Cập nhật giỏ hàng thành công');
         return response.data;
     } catch (error) {
         console.error('Update product cart failed:', error);

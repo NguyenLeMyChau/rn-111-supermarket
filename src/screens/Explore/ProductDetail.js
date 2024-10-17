@@ -69,11 +69,9 @@ const ProductDetail = () => {
         }
         if (!existingCartItem) {
             addCart(productId, quantity, price);
-            alert('Thêm vào giỏ hàng thành công');
         }
         else {
             updateProductToCart(productId, quantity);
-            alert('Cập nhật giỏ hàng thành công');
         }
     };
 
