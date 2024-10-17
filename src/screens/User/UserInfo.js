@@ -6,10 +6,12 @@ import { useSelector } from 'react-redux';
 import colors from '../../constants/Color';
 import { Picker } from '@react-native-picker/picker';
 import { districts } from '../../util/address';
+import useUser from '../../hooks/useUser';
 
 export default function UserInfo() {
     const navigation = useNavigation();
     const user = useSelector(state => state.auth?.login?.currentUser.user);
+    const accountId = useSelector(state => state.auth?.login?.currentUser.id);
     const isDisable = true;
 
     const [phone, setPhone] = useState(user?.phone || '');
@@ -20,6 +22,8 @@ export default function UserInfo() {
     const [ward, setWard] = useState(user?.address?.ward || '');
     const [street, setStreet] = useState(user?.address?.street || '');
     const [wards, setWards] = useState([]);
+
+    const { updateUser } = useUser();
 
     const handleDistrictChange = (itemValue) => {
         setDistrict(itemValue);
@@ -35,6 +39,56 @@ export default function UserInfo() {
             setWard(user?.address?.ward);
         }, [user])
     );
+
+    const validateUserInfo = (userInfo) => {
+        const { phone, gender, name, city, district, ward, street } = userInfo;
+
+        if (!phone.trim()) {
+            return 'Số điện thoại không được để trống.';
+        }
+
+        if (!name.trim()) {
+            return 'Họ và tên không được để trống.';
+        }
+
+        if (!district) {
+            return 'Vui lòng chọn quận/huyện.';
+        }
+
+        if (!ward) {
+            return 'Vui lòng chọn phường/xã.';
+        }
+
+        if (!street.trim()) {
+            return 'Địa chỉ không được để trống.';
+        }
+
+        return null;
+    };
+
+    const handleUpdateUser = () => {
+        const customerInfo = {
+            phone,
+            gender,
+            name,
+            city,
+            district,
+            ward,
+            street,
+        };
+
+        const errorMessage = validateUserInfo(customerInfo);
+
+        if (errorMessage) {
+            alert(errorMessage);
+            return;
+        }
+
+
+        // Gọi API để cập nhật thông tin người dùng
+        updateUser(accountId, customerInfo);
+    };
+
 
     return (
         <ScrollView style={styles.container}>
@@ -146,7 +200,9 @@ export default function UserInfo() {
                 />
             </View>
 
-            <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('EditUserInfo')}>
+            <TouchableOpacity style={styles.editButton} onPress={() => {
+                handleUpdateUser();
+            }}>
                 <Text style={styles.editButtonText}>Lưu chỉnh sửa</Text>
             </TouchableOpacity>
         </ScrollView>

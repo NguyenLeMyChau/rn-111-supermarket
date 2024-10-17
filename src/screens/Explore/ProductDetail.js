@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, TextInput, Animated, LayoutAnimation, UIManager, Platform } from 'react-native';
+import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, TextInput, Animated, LayoutAnimation, UIManager, Platform, FlatList } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import colors from '../../constants/Color';
@@ -16,9 +16,13 @@ const ProductDetail = () => {
     const dispatch = useDispatch();
     const route = useRoute();
     const navigation = useNavigation();
+
     const { product } = route.params;
+
     const user = useSelector((state) => state.auth?.login?.currentUser) || {};
     const cart = useSelector((state) => state.cart?.carts);
+    const categories = useSelector((state) => state.category?.categories) || [];
+
     const { addCart, updateProductToCart } = useCart();
 
     // Kiểm tra sản phẩm trong giỏ hàng và thiết lập số lượng
@@ -26,6 +30,14 @@ const ProductDetail = () => {
 
     const [quantity, setQuantity] = useState(existingCartItem ? existingCartItem.quantity : 1);
     const [detailsVisible, setDetailsVisible] = useState(false);
+
+
+    // Lọc ra các sản phẩm liên quan dựa trên category_id
+    const relatedProducts = categories
+        .filter((category) => category._id === product.category_id)[0]?.products
+        ?.filter((relatedProduct) => relatedProduct._id !== product._id)
+        .slice(0, 5); // Lấy tối đa 5 sản phẩm liên quan
+
     const giagoc = 200000;
 
     // Cập nhật số lượng sản phẩm
@@ -121,6 +133,7 @@ const ProductDetail = () => {
                             </View>
                         )}
                     </View>
+
                 </View>
             </ScrollView>
             <TouchableOpacity style={styles.button} onPress={() => handleAddCart(product._id, quantity, 20000)}>
