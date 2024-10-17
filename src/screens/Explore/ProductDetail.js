@@ -22,7 +22,7 @@ const ProductDetail = () => {
     const { addCart, updateProductToCart } = useCart();
 
     // Kiểm tra sản phẩm trong giỏ hàng và thiết lập số lượng
-    const existingCartItem = cart.find((item) => item.product_id === product._id);
+    const existingCartItem = cart?.find((item) => item.product_id === product._id);
 
     const [quantity, setQuantity] = useState(existingCartItem ? existingCartItem.quantity : 1);
     const [detailsVisible, setDetailsVisible] = useState(false);

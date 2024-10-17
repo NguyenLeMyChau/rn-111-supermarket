@@ -5,7 +5,6 @@ import TouchableOpacityForm from '../../components/button/TouchableOpacityForm';
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import useCommonData from '../../hooks/useCommonData';
 import { loadingContainer } from '../../constants/Loading';
-import Button from '../../components/button/Button';
 import useCart from '../../hooks/useCart';
 import colors from '../../constants/Color';
 import CartItem from './CartItem';
@@ -13,7 +12,6 @@ import PaymentModal from './PaymentModal';
 import { usePaymentModal } from '../../context/PaymentProvider';
 import { updateCart } from '../../services/cartRequest';
 import { useAccessToken, useAxiosJWT } from '../../util/axiosInstance';
-import { useCartContext } from '../../context/CartProvider';
 
 export default function Cart() {
     const navigation = useNavigation();

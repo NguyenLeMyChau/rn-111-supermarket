@@ -25,7 +25,9 @@ export default function ProductList({ route }) {
         const giakhuyenmai = 0;
         const giagoc = 200000;
         return (
-            <View style={styles.productContainer}>
+            <TouchableOpacity style={styles.productContainer}
+                onPress={() => navigation.navigate('ProductDetail', { product: item })}
+            >
                 <Image
                     source={{ uri: item.img }}
                     style={styles.productImage}
@@ -35,7 +37,7 @@ export default function ProductList({ route }) {
                     <Text style={styles.productName} numberOfLines={2} ellipsizeMode="tail">{item.name}</Text>
                     <Text style={styles.productUnit}>Chai</Text>
                 </View>
-                
+
                 <View style={styles.sectionRow}>
                     {giakhuyenmai ? (
                         <View style={{ flexDirection: 'column' }}>
@@ -49,7 +51,7 @@ export default function ProductList({ route }) {
                         <Icon name="cart" size={24} color="#FFFFFF" />
                     </TouchableOpacity>
                 </View>
-            </View>
+            </TouchableOpacity>
         );
     };
 

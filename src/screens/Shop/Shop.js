@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, FlatList, TouchableOpacity, ActivityIndicator, 
 import React, { useCallback, useEffect, useState } from "react";
 import colors from "../../constants/Color";
 import { useSelector } from "react-redux";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { loadingContainer } from "../../constants/Loading";
 import useCommonData from "../../hooks/useCommonData";
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -23,18 +23,17 @@ export default function Shop() {
 
     const [loadingShop, setLoadingShop] = useState(true);
 
-    // useFocusEffect(
-    //     useCallback(() => {
-    //         fetchDataShop(setLoadingShop);
-    //     }, [])
-    // );
-
     useEffect(() => {
-        fetchDataShop(setLoadingShop);
-        if (user.id) {
+        if (user?.id) {
+            // Chỉ gọi fetchDataCart khi có user
             fetchDataCart(setLoadingShop);
         }
     }, [user]);
+
+    useEffect(() => {
+        // fetchDataShop chỉ được gọi một lần khi component mount
+        fetchDataShop(setLoadingShop);
+    }, []); // Dependency mảng rỗng để chỉ gọi một lần
 
     const { addCart } = useCart();
 
