@@ -22,7 +22,7 @@ export default function Shop() {
     const filteredCategories = categories.filter(category => category.products.length > 0);
 
     const [loadingShop, setLoadingShop] = useState(true);
-
+console.log(categories)
     // useFocusEffect(
     //     useCallback(() => {
     //         fetchDataShop(setLoadingShop);
@@ -44,8 +44,9 @@ export default function Shop() {
     };
 
     const renderProduct = ({ item, index }) => {
+        console.log(item)
         const giakhuyenmai = 0;
-        const giagoc = 200000;
+        const giagoc = item.price;
         return (
             <TouchableOpacity style={[styles.productContainer]}
                 onPress={() => navigation.navigate('ProductDetail', { product: item })}
@@ -58,11 +59,11 @@ export default function Shop() {
 
                 <View style={styles.productInfo}>
                     <Text style={styles.productName} numberOfLines={2} ellipsizeMode="tail">{item.name}</Text>
-                    <Text style={styles.productUnit}>Chai</Text>
+                    <Text style={styles.productUnit}>{item.unit_id.description}</Text>
                 </View>
 
                 <View style={styles.sectionRow}>
-                    {giakhuyenmai ? (
+                    {giakhuyenmai.length> 0 ? (
                         <View style={{ flexDirection: 'column' }}>
                             <Text style={styles.discountPrice}>{giakhuyenmai} đ</Text>
                             <Text style={styles.originalPrice}>{giagoc} đ</Text>
@@ -81,9 +82,9 @@ export default function Shop() {
     const renderCategory = ({ item }) => (
         <View style={styles.categoryContainer}>
             <View style={styles.categoryHeader}>
-                <Text style={styles.categoryName}>{item.name}</Text>
+                <Text style={styles.categoryName}>{item.category.name}</Text>
                 <TouchableOpacity style={styles.seeMoreButton} onPress={() => {
-                    navigation.navigate('ProductList', { name: item.name, productList: item.products });
+                    navigation.navigate('ProductList', { name: item.category.name, productList: item.products });
 
                 }}>
                     <Text style={styles.seeMoreText}>Xem thêm</Text>
