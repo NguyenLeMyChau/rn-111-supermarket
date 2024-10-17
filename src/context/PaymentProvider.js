@@ -11,6 +11,9 @@ export const PaymentModalProvider = ({ children }) => {
     const [promoCode, setPromoCode] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('');
 
+    const [previousCart, setPreviousCart] = useState(null);
+
+
     return (
         <PaymentModalContext.Provider value={{
             isPaymentModalVisible,
@@ -22,7 +25,9 @@ export const PaymentModalProvider = ({ children }) => {
             paymentMethod,
             setPaymentMethod,
             isInPaymentProcess,
-            setIsInPaymentProcess
+            setIsInPaymentProcess,
+            previousCart,
+            setPreviousCart
         }}>
             {children}
         </PaymentModalContext.Provider>

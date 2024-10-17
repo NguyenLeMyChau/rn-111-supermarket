@@ -1,9 +1,11 @@
 import React, { useState, useRef } from 'react';
 import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, TextInput, Animated, LayoutAnimation, UIManager, Platform } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/MaterialIcons'; // Import Icon
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import colors from '../../constants/Color';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import useCart from '../../hooks/useCart';
+import { updateProductQuantity } from '../../store/reducers/cartSlice';
 
 // Enable LayoutAnimation on Android
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -13,9 +15,16 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 const ProductDetail = () => {
     const dispatch = useDispatch();
     const route = useRoute();
-    const navigation = useNavigation(); // Hook để điều hướng
+    const navigation = useNavigation();
     const { product } = route.params;
-    const [quantity, setQuantity] = useState(1);
+    const user = useSelector((state) => state.auth?.login?.currentUser) || {};
+    const cart = useSelector((state) => state.cart?.carts);
+    const { addCart, updateProductToCart } = useCart();
+
+    // Kiểm tra sản phẩm trong giỏ hàng và thiết lập số lượng
+    const existingCartItem = cart?.find((item) => item.product_id === product._id);
+
+    const [quantity, setQuantity] = useState(existingCartItem ? existingCartItem.quantity : 1);
     const [detailsVisible, setDetailsVisible] = useState(false);
     const giagoc = 200000;
 
@@ -51,6 +60,19 @@ const ProductDetail = () => {
     const toggleDetails = () => {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setDetailsVisible(!detailsVisible);
+    };
+
+    const handleAddCart = (productId, quantity, price) => {
+        if (!user.id) {
+            Alert.alert("Lưu ý", "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
+            return;
+        }
+        if (!existingCartItem) {
+            addCart(productId, quantity, price);
+        }
+        else {
+            updateProductToCart(productId, quantity);
+        }
     };
 
     return (
@@ -101,8 +123,8 @@ const ProductDetail = () => {
                     </View>
                 </View>
             </ScrollView>
-            <TouchableOpacity style={styles.button}>
-                <Text style={styles.textButton}>Thêm vào giỏ hàng</Text>
+            <TouchableOpacity style={styles.button} onPress={() => handleAddCart(product._id, quantity, 20000)}>
+                <Text style={styles.textButton}>{existingCartItem ? 'Cập nhật giỏ hàng' : 'Thêm vào giỏ hàng'}</Text>
             </TouchableOpacity>
         </View>
     );
