@@ -8,7 +8,7 @@ import { resetCart } from '../store/reducers/cartSlice';
 const loginUser = async (loginData, dispatch, navigation) => {
     dispatch(loginStart());
     try {
-        const response = await axios.post(`https://be-111-supermarket.vercel.app/api/auth/login`, loginData);
+        const response = await axios.post(`http://localhost:5000/api/auth/login`, loginData);
 
         const { accessToken, refreshToken } = response.data;
 

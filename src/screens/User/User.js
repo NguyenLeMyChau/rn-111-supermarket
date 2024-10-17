@@ -9,6 +9,7 @@ import { logoutUser } from "../../services/authRequest";
 import { useAccessToken, useAxiosJWT } from "../../util/axiosInstance";
 import { useNavigation } from "@react-navigation/native";
 import TouchableOpacityForm from "../../components/button/TouchableOpacityForm";
+import Logo from "../../components/logo/Logo";
 
 export default function User() {
     const dispatch = useDispatch();
@@ -62,13 +63,11 @@ export default function User() {
             {user?.accessToken ? (
                 <>
                     <View style={styles.user}>
-                        <Image
-                            style={styles.avt}
-                            source={{ uri: user?.user?.avatar || 'https://inkythuatso.com/uploads/thumbnails/800/2023/03/6-anh-dai-dien-trang-inkythuatso-03-15-26-36.jpg?gidzl=QL-ECEnPjmnbHeyrw4A_3s16W3Bo4xu5BHU2CwWUl0Wd6T4mhH2-N24LZs2h7RDU94-ADcEyCGaEvr-_3W' }}
-                        />
+                        <Logo />
+
                         <View style={styles.columnText}>
                             <Text style={styles.bold}>{user.user.name}</Text>
-                            <Text style={styles.nor}>{user.user.email}</Text>
+                            <Text style={styles.nor}>Điểm tích luỹ: {user.user.loyaltyPoints}</Text>
                         </View>
                     </View>
                     <FlatList
