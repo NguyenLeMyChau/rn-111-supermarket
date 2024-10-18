@@ -8,17 +8,17 @@ import { formatCurrency, formatDate } from '../../util/format';
 export default function Order() {
     const navigation = useNavigation();
     const invoices = useSelector(state => state.invoice?.invoices);
-    console.log('invoices', invoices);
 
     const renderItem = ({ item }) => (
         console.log('item', item),
         <TouchableOpacity style={styles.orderContainer} onPress={() => navigation.navigate('OrderDetail', { itemInvoice: item })}>
             <View style={styles.orderHeader}>
                 <Text style={styles.orderNumber}>Mã đơn hàng: {item._id}</Text>
-                <Text style={styles.orderDate}>{item.date}</Text>
+                {/* <Text style={styles.orderDate}>{item.date}</Text> */}
             </View>
-            <Text style={styles.orderTotal}>Tổng tiền: {formatCurrency(item.total)}</Text>
-            <Text style={styles.orderStatus}>Ngày đặt hàng: {formatDate(item.createdAt)}</Text>
+            <Text style={styles.orderTotal}>Tổng tiền: {formatCurrency(item.paymentAmount)}</Text>
+            <Text style={styles.orderTotal}>Ngày đặt hàng: {formatDate(item.createdAt)}</Text>
+            <Text style={styles.orderTotal}>Phương thức thanh toán: {item.paymentMethod}</Text>
         </TouchableOpacity>
     );
 

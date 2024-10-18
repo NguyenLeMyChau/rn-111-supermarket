@@ -8,6 +8,7 @@ export default function OrderDetail() {
     const navigation = useNavigation();
     const route = useRoute();
     const { itemInvoice } = route.params;
+    console.log('itemInvoice', itemInvoice);
 
     return (
         <ScrollView style={styles.container}>
@@ -20,16 +21,21 @@ export default function OrderDetail() {
 
             <View style={styles.orderInfoContainer}>
                 <View style={styles.orderInfoRow}>
-                    <View style={styles.orderInfoRow2}>
-                        <Text style={styles.label}>Mã đơn hàng:</Text>
-                        <Text style={styles.value}>{itemInvoice._id}</Text>
+                    <View style={styles.orderInfo}>
+                        <Text style={styles.label}>Người nhận:</Text>
+                        <Text style={styles.value}>{itemInvoice.paymentInfo.name}</Text>
+                    </View>
+
+                    <View style={styles.orderInfo}>
+                        <Text style={styles.label}>Số điện thoại:</Text>
+                        <Text style={styles.value}>{itemInvoice.paymentInfo.phone}</Text>
                     </View>
 
                 </View>
                 <View style={styles.orderInfoRow}>
                     <View style={styles.orderInfo}>
                         <Text style={styles.label}>Tổng tiền:</Text>
-                        <Text style={styles.value}>{formatCurrency(itemInvoice.total)}</Text>
+                        <Text style={styles.value}>{formatCurrency(itemInvoice.paymentAmount)}</Text>
                     </View>
                     <View style={styles.orderInfo}>
                         <Text style={styles.label}>Ngày đặt hàng:</Text>
@@ -40,11 +46,12 @@ export default function OrderDetail() {
 
             <Text style={styles.productTitle}>Sản phẩm trong đơn hàng:</Text>
 
-            {itemInvoice.details.map((item) => (
+            {itemInvoice.detail.map((item) => (
                 <View key={item.id} style={styles.productContainer}>
                     <Image source={{ uri: item.productImg }} style={styles.productImage} />
                     <View style={styles.productInfo}>
                         <Text style={styles.productName}>{item.productName}</Text>
+                        <Text style={styles.productQuantity}>Đơn vị tính: {item.unitName}</Text>
                         <Text style={styles.productQuantity}>Số lượng: {item.quantity}</Text>
                         <Text style={styles.productPrice}>Giá: {formatCurrency(item.price)}</Text>
                     </View>
@@ -146,7 +153,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     productName: {
-        fontSize: 16, 
+        fontSize: 16,
         fontWeight: 'bold',
         marginBottom: 4,
     },

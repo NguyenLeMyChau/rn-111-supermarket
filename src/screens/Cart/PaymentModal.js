@@ -10,12 +10,12 @@ import { useSelector } from 'react-redux';
 
 export default function PaymentModal({ isVisible, onClose, total, cart }) {
     const navigation = useNavigation();
-    const accessToken =useAccessToken();
+    const accessToken = useAccessToken();
     const axiosJWT = useAxiosJWT();
     const user = useSelector((state) => state.auth?.login?.currentUser) || {};
     const { promoCode, paymentMethod, setPaymentMethod, paymentInfo } = usePaymentModal();
     const [isPaymentPickerVisible, setPaymentPickerVisible] = useState(false); // Hiển thị modal chọn phương thức thanh toán
-    const [promotion,setPromotion] =useState();
+    const [promotion, setPromotion] = useState();
 
     const paymentMethods = [
         { id: '1', name: 'MoMo', icon: require('../../../assets/icon-momo.png') },
@@ -71,9 +71,18 @@ export default function PaymentModal({ isVisible, onClose, total, cart }) {
             alert('Vui lòng chọn phương thức thanh toán');
             return;
         }
-        console.log('card payment', total);
-        let paymentAmount= total;
-        payCart(navigation, accessToken, axiosJWT, user.id,cart,paymentMethod.name,paymentInfo,promoCode,paymentAmount);
+
+        const address = {
+            street: paymentInfo.street,
+            city: paymentInfo.city,
+            district: paymentInfo.district,
+            ward: paymentInfo.ward,
+        }
+
+        paymentInfo.address = address;
+
+        let paymentAmount = total;
+        payCart(navigation, accessToken, axiosJWT, user.id, cart, paymentMethod.name, paymentInfo, promoCode, paymentAmount);
         onClose();
         // navigation.navigate('OrderSuccess');
     }
