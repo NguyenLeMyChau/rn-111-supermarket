@@ -57,18 +57,23 @@ const addProductToCart = async (accessToken, axiosJWT, accountId, productId, qua
     }
 }
 
-const payCart = async (navigation, accessToken, axiosJWT, customerId, products) => {
+const payCart = async (navigation, accessToken, axiosJWT, customerId, products,paymentMethod,paymentInfo,promoCode,paymentAmount) => {
     try {
+        console.log(promoCode,paymentAmount)
         const response = await axiosJWT.post(`/api/customer/pay-cart`, {
             customerId,
             products,
+            paymentMethod,
+            paymentInfo,
+            promoCode,
+            paymentAmount
         }, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
         });
         alert('Thanh toán giỏ hàng thành công');
-        navigation.navigate('MainTabs');
+        navigation.navigate('OrderSuccess');
         return response.data;
     } catch (error) {
         console.error('Pay cart failed:', error);

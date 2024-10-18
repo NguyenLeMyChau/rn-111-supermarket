@@ -44,7 +44,6 @@ console.log(categories)
     };
 
     const renderProduct = ({ item, index }) => {
-        console.log(item)
         let giakhuyenmai = null;
     const giagoc = item.price;
 

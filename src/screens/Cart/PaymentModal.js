@@ -4,10 +4,15 @@ import colors from '../../constants/Color';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import { usePaymentModal } from '../../context/PaymentProvider';
-import { getPromotionByVoucher } from '../../services/cartRequest';
+import { getPromotionByVoucher, payCart } from '../../services/cartRequest';
+import { useAccessToken, useAxiosJWT } from '../../util/axiosInstance';
+import { useSelector } from 'react-redux';
 
 export default function PaymentModal({ isVisible, onClose, total, cart }) {
     const navigation = useNavigation();
+    const accessToken =useAccessToken();
+    const axiosJWT = useAxiosJWT();
+    const user = useSelector((state) => state.auth?.login?.currentUser) || {};
     const { promoCode, paymentMethod, setPaymentMethod, paymentInfo } = usePaymentModal();
     const [isPaymentPickerVisible, setPaymentPickerVisible] = useState(false); // Hiển thị modal chọn phương thức thanh toán
     const [promotion,setPromotion] =useState();
@@ -25,8 +30,8 @@ export default function PaymentModal({ isVisible, onClose, total, cart }) {
             if (response.data) {
                 setPromotion(response.data); // Lưu thông tin khuyến mãi vào state
             } else {
-                setPromotion(null); // Xóa khuyến mãi nếu không hợp lệ
                 alert('Mã khuyến mãi không hợp lệ');
+                setPromotion(null);
             }
         } catch (error) {
             console.error('Lỗi kiểm tra mã khuyến mãi', error);
@@ -66,9 +71,11 @@ export default function PaymentModal({ isVisible, onClose, total, cart }) {
             alert('Vui lòng chọn phương thức thanh toán');
             return;
         }
-        console.log('card payment', cart);
+        console.log('card payment', total);
+        let paymentAmount= total;
+        payCart(navigation, accessToken, axiosJWT, user.id,cart,paymentMethod.name,paymentInfo,promoCode,paymentAmount);
         onClose();
-        navigation.navigate('OrderSuccess');
+        // navigation.navigate('OrderSuccess');
     }
 
     return (

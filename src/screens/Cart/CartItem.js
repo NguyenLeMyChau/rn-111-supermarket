@@ -18,7 +18,6 @@ const CartItem = ({ item }) => {
     const user = useSelector((state) => state.auth?.login?.currentUser) || {};
     const [quantity, setQuantity] = useState(item.quantity);
     const [loadingCart, setLoadingCart] = useState(false);
-console.log(item)
     const [giakhuyenmai,setGiaKhuyeMai] =useState();
     const [khuyenMai,setKhuyenMai] =useState('');
     const [type,setType] = useState('');
@@ -28,7 +27,6 @@ console.log(item)
         const fetchPromotion = async () => {
             try {
                 const promotions = await getPromotionByProductId(item.product_id);
-                console.log(promotions)
                 if (promotions?.length > 0) {
                     const promotion = promotions[0]; 
                     setKhuyenMai(promotion); // Giả sử chỉ sử dụng khuyến mãi đầu tiên tìm thấyi
@@ -63,8 +61,9 @@ console.log(item)
             if (type === 'amount') {
                 updatedGiaKhuyenMai = (item.price - khuyenMai.amount_donate) * newQuantity;
             } else if (type === 'quantity') {
-                if (newQuantity / (khuyenMai.quantity + khuyenMai.quantity_donate) | 0 > 0) {
-                    updatedGiaKhuyenMai = (newQuantity - khuyenMai.quantity_donate) * item.price;
+                let quantity_donate = newQuantity / (khuyenMai.quantity + khuyenMai.quantity_donate) | 0
+                if (quantity_donate > 0) {
+                    updatedGiaKhuyenMai = (newQuantity - khuyenMai.quantity_donate* quantity_donate) * item.price;
                 }
             }
             setGiaKhuyeMai(updatedGiaKhuyenMai);
@@ -102,7 +101,6 @@ console.log(item)
 
     const handleRemoveItem = async () => {
         // Logic để xóa mục khỏi giỏ hàng
-        console.log('Remove item:', item);
         await removeProductCart(user.id, item.product_id, accessToken, axiosJWT);
         await fetchDataCart(setLoadingCart);
     };
