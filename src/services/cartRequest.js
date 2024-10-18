@@ -27,6 +27,16 @@ const getPromotionByProductId = async(product_id)=>{
     }
 }
 
+const getPromotionByVoucher = async(voucher)=>{
+    try{
+        const response = await axios.post(`http://localhost:5000/api/auth/get-promotion-by-voucher`,{voucher});
+        console.log(response.data)
+        return response.data;
+    }catch(error){
+        console.error('Get get-promotion-by-product failed:', error);
+    }
+}
+
 const addProductToCart = async (accessToken, axiosJWT, accountId, productId, quantity, price) => {
     try {
         const response = await axiosJWT.post(`/api/customer/add-product-to-cart`, {
@@ -105,6 +115,7 @@ const updateProductCart = async (accountId, productId, quantity, accessToken, ax
             accountId,
             productId,
             quantity,
+            total,
         }, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -118,4 +129,4 @@ const updateProductCart = async (accountId, productId, quantity, accessToken, ax
 }
 
 
-export { getCartById, addProductToCart, payCart, updateCart, removeProductCart, updateProductCart,getPromotionByProductId}
+export { getCartById, addProductToCart, payCart, updateCart, removeProductCart, updateProductCart,getPromotionByProductId,getPromotionByVoucher}

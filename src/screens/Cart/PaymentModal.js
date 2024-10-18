@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, View, Text, StyleSheet, TextInput, TouchableOpacity, Image, FlatList, TouchableWithoutFeedback } from 'react-native';
 import colors from '../../constants/Color';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import { usePaymentModal } from '../../context/PaymentProvider';
+import { getPromotionByVoucher } from '../../services/cartRequest';
 
 export default function PaymentModal({ isVisible, onClose, total, cart }) {
     const navigation = useNavigation();
     const { promoCode, paymentMethod, setPaymentMethod, paymentInfo } = usePaymentModal();
     const [isPaymentPickerVisible, setPaymentPickerVisible] = useState(false); // Hiển thị modal chọn phương thức thanh toán
+    const [promotion,setPromotion] =useState();
 
     const paymentMethods = [
         { id: '1', name: 'MoMo', icon: require('../../../assets/icon-momo.png') },
@@ -16,6 +18,30 @@ export default function PaymentModal({ isVisible, onClose, total, cart }) {
         { id: '3', name: 'Ngân hàng', icon: require('../../../assets/icon-ngan-hang.jpg') },
         { id: '4', name: 'Tiền mặt', icon: require('../../../assets/icon-tien-mat.png') },
     ];
+
+    const getPromotion = async (promoCode) => {
+        try {
+            const response = await getPromotionByVoucher(promoCode);
+            if (response.data) {
+                setPromotion(response.data); // Lưu thông tin khuyến mãi vào state
+            } else {
+                setPromotion(null); // Xóa khuyến mãi nếu không hợp lệ
+                alert('Mã khuyến mãi không hợp lệ');
+            }
+        } catch (error) {
+            console.error('Lỗi kiểm tra mã khuyến mãi', error);
+            alert('Có lỗi xảy ra khi kiểm tra mã khuyến mãi');
+            setPromotion(null);
+        }
+    };
+
+    useEffect(() => {
+        if (promoCode) {
+            getPromotion(promoCode);
+        } else {
+            setPromotion(null);
+        }
+    }, [promoCode]);
 
     const renderPaymentMethod = ({ item }) => (
         <TouchableOpacity style={styles.paymentMethod} onPress={() => handleSelectPaymentMethod(item)}>

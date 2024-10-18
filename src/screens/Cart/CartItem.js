@@ -21,6 +21,7 @@ const CartItem = ({ item }) => {
 console.log(item)
     const [giakhuyenmai,setGiaKhuyeMai] =useState();
     const [khuyenMai,setKhuyenMai] =useState('');
+    const [type,setType] = useState('');
     const [giaBan,setGiaBan] = useState(item.quantity*item.price);
 
     useEffect(() => {
@@ -29,15 +30,15 @@ console.log(item)
                 const promotions = await getPromotionByProductId(item.product_id);
                 console.log(promotions)
                 if (promotions?.length > 0) {
-                    const promotion = promotions[0]; // Giả sử chỉ sử dụng khuyến mãi đầu tiên tìm thấyi
+                    const promotion = promotions[0]; 
+                    setKhuyenMai(promotion); // Giả sử chỉ sử dụng khuyến mãi đầu tiên tìm thấyi
                     if(promotion.promotionLine_id.type==='amount'){
                         setGiaKhuyeMai((item.price-promotion.amount_donate)*quantity);
-                        setKhuyenMai(promotion.promotionLine_id.description); 
+                        setType(promotion.promotionLine_id.type)
                     }else if(promotion.promotionLine_id.type==='quantity'){
-                        setKhuyenMai(promotion.promotionLine_id.description); 
+                        setType(promotion.promotionLine_id.type)
                        if(quantity/(promotion.quantity+promotion.quantity_donate) | 0 > 0){
                         setGiaKhuyeMai((quantity-promotion.quantity_donate)*item.price);
-                       
                        }  
                     }
                 
@@ -59,11 +60,11 @@ console.log(item)
         let updatedGiaKhuyenMai = null;
         if (khuyenMai) {
             // Giả sử bạn đã có thông tin khuyến mãi, tính toán lại giá khuyến mãi
-            if (promotions[0].promotionLine_id.type === 'amount') {
-                updatedGiaKhuyenMai = (item.price - promotions[0].amount_donate) * newQuantity;
-            } else if (promotions[0].promotionLine_id.type === 'quantity') {
-                if (newQuantity / (promotions[0].quantity + promotions[0].quantity_donate) | 0 > 0) {
-                    updatedGiaKhuyenMai = (newQuantity - promotions[0].quantity_donate) * item.price;
+            if (type === 'amount') {
+                updatedGiaKhuyenMai = (item.price - khuyenMai.amount_donate) * newQuantity;
+            } else if (type === 'quantity') {
+                if (newQuantity / (khuyenMai.quantity + khuyenMai.quantity_donate) | 0 > 0) {
+                    updatedGiaKhuyenMai = (newQuantity - khuyenMai.quantity_donate) * item.price;
                 }
             }
             setGiaKhuyeMai(updatedGiaKhuyenMai);
@@ -114,7 +115,7 @@ console.log(item)
             <View style={{ width: '45%' }}>
                 <Text style={styles.itemName}>{item.name}</Text>
                 <Text style={styles.itemUnit}>{item.unit.description}</Text>
-                {khuyenMai && <Text style={styles.itemPromotion}>{khuyenMai}</Text>}
+                {khuyenMai && <Text style={styles.itemPromotion}>{khuyenMai.promotionLine_id.description}</Text>}
                
                 <View style={styles.quantityContainer}>
                     <TouchableOpacity style={styles.button} onPress={handleDecreaseQuantity}>

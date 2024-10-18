@@ -21,7 +21,7 @@ const useCart = () => {
     }
 
     const updateProductToCart = async (productId, quantity) => {
-        await updateProductCart(user.id, productId, quantity, accessToken, axiosJWT);
+        await updateProductCart(user.id, productId, quantity,total, accessToken, axiosJWT);
         await fetchDataCart(setLoadingCart);
     }
 
