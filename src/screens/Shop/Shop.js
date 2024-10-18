@@ -22,7 +22,7 @@ export default function Shop() {
     const filteredCategories = categories.filter(category => category.products.length > 0);
 
     const [loadingShop, setLoadingShop] = useState(true);
-console.log(categories)
+    console.log(categories)
     // useFocusEffect(
     //     useCallback(() => {
     //         fetchDataShop(setLoadingShop);
@@ -45,17 +45,17 @@ console.log(categories)
 
     const renderProduct = ({ item, index }) => {
         let giakhuyenmai = null;
-    const giagoc = item.price;
+        const giagoc = item.price;
 
-    if (item.promotions) {
-      item.promotions.forEach((promo) => {
-        if (promo.type === "quantity") {
-          giakhuyenmai = promo.line; // Đảm bảo promo.line là một chuỗi hoặc số
-        } else if (promo.type === "amount") {
-          giakhuyenmai = item.price - promo.amount_donate; // Đảm bảo là chuỗi
+        if (item.promotions) {
+            item.promotions.forEach((promo) => {
+                if (promo.type === "quantity") {
+                    giakhuyenmai = promo.line; // Đảm bảo promo.line là một chuỗi hoặc số
+                } else if (promo.type === "amount") {
+                    giakhuyenmai = item.price - promo.amount_donate; // Đảm bảo là chuỗi
+                }
+            });
         }
-      });
-    }
         return (
             <TouchableOpacity style={[styles.productContainer]}
                 onPress={() => navigation.navigate('ProductDetail', { product: item })}
@@ -72,23 +72,23 @@ console.log(categories)
                 </View>
 
                 <View style={styles.sectionRow}>
-                {giakhuyenmai !== null ? (
-            <View style={{ flexDirection: "column" }}>
-              {typeof(giakhuyenmai) !== "string" ? (
-                <>
-                  <Text style={styles.discountPrice}>{giakhuyenmai} đ</Text>
-                  <Text style={styles.originalPrice}>{giagoc} đ</Text>
-                </>
-              ) : (
-                <>
-                  <Text style={styles.discountPrice}>{giakhuyenmai}</Text>
-                  <Text style={styles.productPrice}>{giagoc} đ</Text>
-                </>
-              )}
-            </View>
-          ) : (
-            <Text style={styles.productPrice}>{giagoc} đ</Text>
-          )}
+                    {giakhuyenmai !== null ? (
+                        <View style={{ flexDirection: "column" }}>
+                            {typeof (giakhuyenmai) !== "string" ? (
+                                <>
+                                    <Text style={styles.discountPrice}>{giakhuyenmai} đ</Text>
+                                    <Text style={styles.originalPrice}>{giagoc} đ</Text>
+                                </>
+                            ) : (
+                                <>
+                                    <Text style={styles.discountPrice}>{giakhuyenmai}</Text>
+                                    <Text style={styles.productPrice}>{giagoc} đ</Text>
+                                </>
+                            )}
+                        </View>
+                    ) : (
+                        <Text style={styles.productPrice}>{giagoc} đ</Text>
+                    )}
                     <TouchableOpacity style={styles.addToCartButton} onPress={() => handleAddCart(item._id, 1, item.price)}>
                         <Icon name="cart" size={24} color="#FFFFFF" />
                     </TouchableOpacity>

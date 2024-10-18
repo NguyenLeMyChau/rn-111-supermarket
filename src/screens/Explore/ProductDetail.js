@@ -18,6 +18,7 @@ const ProductDetail = () => {
     const navigation = useNavigation();
 
     const { product } = route.params;
+    console.log('product', product);
 
     const user = useSelector((state) => state.auth?.login?.currentUser) || {};
     const cart = useSelector((state) => state.cart?.carts);
@@ -38,8 +39,18 @@ const ProductDetail = () => {
         ?.filter((relatedProduct) => relatedProduct._id !== product._id)
         .slice(0, 5); // Lấy tối đa 5 sản phẩm liên quan
 
-    const giagoc = 200000;
-
+    // Tính giá khuyến mãi
+    let giakhuyenmai = null;
+    const giagoc = product.price;
+    if (product.promotions) {
+        product.promotions.forEach((item) => {
+            if (item.type === "quantity") {
+                giakhuyenmai = item.line; // Đảm bảo promo.line là một chuỗi hoặc số
+            } else if (item.type === "amount") {
+                giakhuyenmai = product.price - item.amount_donate; // Đảm bảo là chuỗi
+            }
+        });
+    }
     // Cập nhật số lượng sản phẩm
     const handleUpdateQuantity = (newQuantity) => {
         setQuantity(newQuantity);
@@ -119,7 +130,26 @@ const ProductDetail = () => {
                                 <Text style={styles.buttonTextQuantity}>+</Text>
                             </TouchableOpacity>
                         </View>
-                        <Text style={styles.price}>{giagoc.toLocaleString('vi-VN')} đ</Text>
+                        <View>
+                            {giakhuyenmai !== null ? (
+                                <View style={{ flexDirection: "column" }}>
+                                    {typeof (giakhuyenmai) !== "string" ? (
+                                        <>
+                                            <Text style={styles.discountPriceAmount}>{giakhuyenmai} đ</Text>
+                                            <Text style={styles.originalPrice}>{giagoc} đ</Text>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Text style={styles.productPrice}>{giagoc} đ</Text>
+                                            <Text style={styles.discountPrice}>{giakhuyenmai}</Text>
+                                        </>
+                                    )}
+                                </View>
+                            ) : (
+                                <Text style={styles.productPrice}>{giagoc} đ</Text>
+                            )}
+
+                        </View>
                     </View>
 
                     <View style={{ borderBottomWidth: 1, borderBottomColor: '#ddd', paddingBottom: 5 }}>
@@ -265,6 +295,30 @@ const styles = StyleSheet.create({
     },
     detailsContainer: {
         paddingVertical: 10,
+    },
+    productPrice: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#333',
+        textAlign: 'right'
+    },
+    originalPrice: {
+        textDecorationLine: 'line-through',
+        color: '#888', // Màu sắc cho giá gốc
+        fontSize: 12,
+        textAlign: 'right'
+    },
+    discountPrice: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#e53935', // Màu sắc cho giá khuyến mãi
+        textAlign: 'right',
+    },
+    discountPriceAmount: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#e53935', // Màu sắc cho giá khuyến mãi
+        textAlign: 'right',
     },
 });
 
