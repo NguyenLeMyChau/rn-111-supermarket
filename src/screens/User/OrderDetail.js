@@ -42,6 +42,15 @@ export default function OrderDetail() {
                         <Text style={styles.value}>{formatDate(itemInvoice.createdAt)}</Text>
                     </View>
                 </View>
+
+                <View style={styles.orderInfoRow}>
+                    <View style={styles.orderInfo}>
+                        <Text style={styles.label}>Địa chỉ nhận:</Text>
+                        <Text style={styles.value}>
+                            {`${itemInvoice.paymentInfo.address.street} / ${itemInvoice.paymentInfo.address.ward} / ${itemInvoice.paymentInfo.address.district} / ${itemInvoice.paymentInfo.address.city}`}
+                        </Text>
+                    </View>
+                </View>
             </View>
 
             <Text style={styles.productTitle}>Sản phẩm trong đơn hàng:</Text>
