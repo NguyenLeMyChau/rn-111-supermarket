@@ -33,6 +33,7 @@ export default function Cart() {
     const user = useSelector((state) => state.auth?.login?.currentUser) || {};
     const cart = useSelector((state) => state.cart?.carts) || [];
     const [loadingCart, setLoadingCart] = useState(true);
+    console.log('Cart', cart);
 
     useFocusEffect(
         useCallback(() => {

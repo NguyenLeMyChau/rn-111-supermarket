@@ -13,7 +13,7 @@ export default function PaymentModal({ isVisible, onClose, total, cart }) {
     const accessToken = useAccessToken();
     const axiosJWT = useAxiosJWT();
     const user = useSelector((state) => state.auth?.login?.currentUser) || {};
-    const { promoCode, paymentMethod, setPaymentMethod, paymentInfo } = usePaymentModal();
+    const { paymentMethod, setPaymentMethod, paymentInfo } = usePaymentModal();
     const [isPaymentPickerVisible, setPaymentPickerVisible] = useState(false); // Hiển thị modal chọn phương thức thanh toán
     const [promotion, setPromotion] = useState();
 
@@ -21,32 +21,8 @@ export default function PaymentModal({ isVisible, onClose, total, cart }) {
         { id: '1', name: 'MoMo', icon: require('../../../assets/icon-momo.png') },
         { id: '2', name: 'Thẻ tín dụng', icon: require('../../../assets/icon-the-tin-dung.png') },
         { id: '3', name: 'Ngân hàng', icon: require('../../../assets/icon-ngan-hang.jpg') },
-        { id: '4', name: 'Tiền mặt', icon: require('../../../assets/icon-tien-mat.png') },
+        // { id: '4', name: 'Tiền mặt', icon: require('../../../assets/icon-tien-mat.png') },
     ];
-
-    const getPromotion = async (promoCode) => {
-        try {
-            const response = await getPromotionByVoucher(promoCode);
-            if (response.data) {
-                setPromotion(response.data); // Lưu thông tin khuyến mãi vào state
-            } else {
-                alert('Mã khuyến mãi không hợp lệ');
-                setPromotion(null);
-            }
-        } catch (error) {
-            console.error('Lỗi kiểm tra mã khuyến mãi', error);
-            alert('Có lỗi xảy ra khi kiểm tra mã khuyến mãi');
-            setPromotion(null);
-        }
-    };
-
-    useEffect(() => {
-        if (promoCode) {
-            getPromotion(promoCode);
-        } else {
-            setPromotion(null);
-        }
-    }, [promoCode]);
 
     const renderPaymentMethod = ({ item }) => (
         <TouchableOpacity style={styles.paymentMethod} onPress={() => handleSelectPaymentMethod(item)}>
@@ -82,7 +58,7 @@ export default function PaymentModal({ isVisible, onClose, total, cart }) {
         paymentInfo.address = address;
 
         let paymentAmount = total;
-        payCart(navigation, accessToken, axiosJWT, user.id, cart, paymentMethod.name, paymentInfo, promoCode, paymentAmount);
+        payCart(navigation, accessToken, axiosJWT, user.id, cart, paymentMethod.name, paymentInfo, paymentAmount);
         onClose();
         // navigation.navigate('OrderSuccess');
     }
@@ -113,18 +89,6 @@ export default function PaymentModal({ isVisible, onClose, total, cart }) {
                                         navigation.navigate('PaymentInfo');
                                     }}>
                                     <Text style={styles.selectMethodText}>{paymentInfo ? paymentInfo.phone : 'Nhập thông tin'}</Text>
-                                    <Icon name="keyboard-arrow-right" size={20} />
-                                </TouchableOpacity>
-                            </View>
-
-
-                            <View style={styles.sectionRow}>
-                                <Text style={styles.label}>Mã khuyến mãi</Text>
-                                <TouchableOpacity style={styles.selectMethod} onPress={() => {
-                                    onClose();
-                                    navigation.navigate('Promotion');
-                                }}>
-                                    <Text style={styles.selectMethodText}>{promoCode ? promoCode : 'Nhập mã KM'}</Text>
                                     <Icon name="keyboard-arrow-right" size={20} />
                                 </TouchableOpacity>
                             </View>

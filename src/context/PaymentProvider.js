@@ -8,7 +8,6 @@ export const PaymentModalProvider = ({ children }) => {
     const [isPaymentModalVisible, setPaymentModalVisible] = useState(false);
     const [isInPaymentProcess, setIsInPaymentProcess] = useState(false); // Quản lý trạng thái quá trình thanh toán
     const [paymentInfo, setPaymentInfo] = useState(null);
-    const [promoCode, setPromoCode] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('');
 
     const [previousCart, setPreviousCart] = useState(null);
@@ -20,8 +19,6 @@ export const PaymentModalProvider = ({ children }) => {
             setPaymentModalVisible,
             paymentInfo,
             setPaymentInfo,
-            promoCode,
-            setPromoCode,
             paymentMethod,
             setPaymentMethod,
             isInPaymentProcess,

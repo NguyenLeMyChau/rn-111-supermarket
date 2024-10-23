@@ -35,7 +35,7 @@ export default function OrderDetail() {
                 <View style={styles.orderInfoRow}>
                     <View style={styles.orderInfo}>
                         <Text style={styles.label}>Tổng tiền:</Text>
-                        <Text style={styles.value}>{formatCurrency(itemInvoice.paymentAmount)}</Text>
+                        <Text style={{...styles.value, fontWeight: 'bold'}}>{formatCurrency(itemInvoice.paymentAmount)}</Text>
                     </View>
                     <View style={styles.orderInfo}>
                         <Text style={styles.label}>Ngày đặt hàng:</Text>
@@ -47,7 +47,7 @@ export default function OrderDetail() {
                     <View style={styles.orderInfo}>
                         <Text style={styles.label}>Địa chỉ nhận:</Text>
                         <Text style={styles.value}>
-                            {`${itemInvoice.paymentInfo.address.street} / ${itemInvoice.paymentInfo.address.ward} / ${itemInvoice.paymentInfo.address.district} / ${itemInvoice.paymentInfo.address.city}`}
+                            {`${itemInvoice.paymentInfo.address.street}, ${itemInvoice.paymentInfo.address.ward}, ${itemInvoice.paymentInfo.address.district}, ${itemInvoice.paymentInfo.address.city}`}
                         </Text>
                     </View>
                 </View>
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         borderWidth: 1,
         borderColor: '#ddd',
-        backgroundColor: '#f9f9f9',
+        backgroundColor: 'white',
     },
     productImage: {
         width: 60,

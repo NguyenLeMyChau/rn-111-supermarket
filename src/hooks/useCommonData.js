@@ -1,6 +1,6 @@
 // useFetchDataShop.js
 import { useDispatch, useSelector } from "react-redux";
-import { getAllCategories } from "../services/productRequest";
+import { getAllCategories, getAllProducts } from "../services/productRequest";
 import { useAccessToken, useAxiosJWT } from "../util/axiosInstance";
 import { getCartById } from "../services/cartRequest";
 import { usePaymentModal } from "../context/PaymentProvider";
@@ -16,6 +16,7 @@ const useCommonData = () => {
         try {
             setLoading(true); // Bắt đầu loading
             await getAllCategories(dispatch);
+            await getAllProducts(dispatch);
         } catch (error) {
             console.error('Error fetching categories:', error);
         } finally {

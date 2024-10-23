@@ -18,28 +18,28 @@ const CartItem = ({ item }) => {
     const user = useSelector((state) => state.auth?.login?.currentUser) || {};
     const [quantity, setQuantity] = useState(item.quantity);
     const [loadingCart, setLoadingCart] = useState(false);
-    const [giakhuyenmai,setGiaKhuyeMai] =useState();
-    const [khuyenMai,setKhuyenMai] =useState('');
-    const [type,setType] = useState('');
-    const [giaBan,setGiaBan] = useState(item.quantity*item.price);
+    const [giakhuyenmai, setGiaKhuyeMai] = useState();
+    const [khuyenMai, setKhuyenMai] = useState('');
+    const [type, setType] = useState('');
+    const [giaBan, setGiaBan] = useState(item.quantity * item.price);
 
     useEffect(() => {
         const fetchPromotion = async () => {
             try {
                 const promotions = await getPromotionByProductId(item.product_id);
                 if (promotions?.length > 0) {
-                    const promotion = promotions[0]; 
+                    const promotion = promotions[0];
                     setKhuyenMai(promotion); // Giả sử chỉ sử dụng khuyến mãi đầu tiên tìm thấyi
-                    if(promotion.promotionLine_id.type==='amount'){
-                        setGiaKhuyeMai((item.price-promotion.amount_donate)*quantity);
+                    if (promotion.promotionLine_id.type === 'amount') {
+                        setGiaKhuyeMai((item.price - promotion.amount_donate) * quantity);
                         setType(promotion.promotionLine_id.type)
-                    }else if(promotion.promotionLine_id.type==='quantity'){
+                    } else if (promotion.promotionLine_id.type === 'quantity') {
                         setType(promotion.promotionLine_id.type)
-                       if(quantity/(promotion.quantity+promotion.quantity_donate) | 0 > 0){
-                        setGiaKhuyeMai((quantity-promotion.quantity_donate)*item.price);
-                       }  
+                        if (quantity / (promotion.quantity + promotion.quantity_donate) | 0 > 0) {
+                            setGiaKhuyeMai((quantity - promotion.quantity_donate) * item.price);
+                        }
                     }
-                
+
                 }
             } catch (error) {
                 console.error('Lỗi khi lấy thông tin khuyến mãi:', error);
@@ -53,7 +53,7 @@ const CartItem = ({ item }) => {
     const handleUpdateQuantity = async (newQuantity) => {
         setQuantity(newQuantity);
         setGiaBan(newQuantity * item.price);
-    
+
         // Tính lại giá khuyến mãi
         let updatedGiaKhuyenMai = null;
         if (khuyenMai) {
@@ -63,19 +63,19 @@ const CartItem = ({ item }) => {
             } else if (type === 'quantity') {
                 let quantity_donate = newQuantity / (khuyenMai.quantity + khuyenMai.quantity_donate) | 0
                 if (quantity_donate > 0) {
-                    updatedGiaKhuyenMai = (newQuantity - khuyenMai.quantity_donate* quantity_donate) * item.price;
+                    updatedGiaKhuyenMai = (newQuantity - khuyenMai.quantity_donate * quantity_donate) * item.price;
                 }
             }
             setGiaKhuyeMai(updatedGiaKhuyenMai);
         }
-    
+
         // Dispatch cập nhật giỏ hàng với giá trị mới
-        dispatch(updateProductQuantity({ 
-            productId: item.product_id, 
-            quantity: newQuantity, 
+        dispatch(updateProductQuantity({
+            productId: item.product_id,
+            quantity: newQuantity,
             total: updatedGiaKhuyenMai ? updatedGiaKhuyenMai : newQuantity * item.price
         }));
-    };  
+    };
 
     // Giảm số lượng
     const handleDecreaseQuantity = () => {
@@ -107,14 +107,14 @@ const CartItem = ({ item }) => {
 
     return (
         <View style={styles.itemContainer}>
-            <View style={{ width: '28%', height: 100 ,paddingRight:10}}>
+            <View style={{ width: '28%', height: 100, paddingRight: 10 }}>
                 <Image style={styles.itemImage} source={{ uri: item.img }} />
             </View>
             <View style={{ width: '45%' }}>
                 <Text style={styles.itemName}>{item.name}</Text>
                 <Text style={styles.itemUnit}>{item.unit.description}</Text>
                 {khuyenMai && <Text style={styles.itemPromotion}>{khuyenMai.promotionLine_id.description}</Text>}
-               
+
                 <View style={styles.quantityContainer}>
                     <TouchableOpacity style={styles.button} onPress={handleDecreaseQuantity}>
                         <Text style={styles.buttonText}>-</Text>
@@ -190,8 +190,8 @@ const styles = StyleSheet.create({
         fontSize: 13,
         color: '#888',
     },
-    itemPromotion:{
-        color:'red',
+    itemPromotion: {
+        color: 'red',
         fontSize: 14,
     },
     itemOriginalPrice: {

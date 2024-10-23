@@ -65,15 +65,15 @@ export default function ProductList({ route }) {
         <View style={styles.sectionRow}>
           {giakhuyenmai !== null ? (
             <View style={{ flexDirection: "column" }}>
-              {typeof(giakhuyenmai) !== "string" ? (
+              {typeof (giakhuyenmai) !== "string" ? (
                 <>
                   <Text style={styles.discountPrice}>{giakhuyenmai} đ</Text>
                   <Text style={styles.originalPrice}>{giagoc} đ</Text>
                 </>
               ) : (
                 <>
-                  <Text style={styles.discountPrice}>{giakhuyenmai}</Text>
                   <Text style={styles.productPrice}>{giagoc} đ</Text>
+                  <Text style={styles.discountPrice}>{giakhuyenmai}</Text>
                 </>
               )}
             </View>
@@ -197,7 +197,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#e53935",
     textAlign: "left",
-    marginTop: 10,
   },
   addToCartButton: {
     backgroundColor: colors.button,

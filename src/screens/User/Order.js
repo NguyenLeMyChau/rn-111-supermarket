@@ -9,6 +9,8 @@ export default function Order() {
     const navigation = useNavigation();
     const invoices = useSelector(state => state.invoice?.invoices);
 
+    const sortedInvoices = invoices?.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
     const renderItem = ({ item }) => (
         console.log('item', item),
         <TouchableOpacity style={styles.orderContainer} onPress={() => navigation.navigate('OrderDetail', { itemInvoice: item })}>
@@ -31,7 +33,7 @@ export default function Order() {
                 <Text style={styles.title}>Đơn hàng của bạn</Text>
             </View>
             <FlatList
-                data={invoices}
+                data={sortedInvoices}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
                 contentContainerStyle={styles.list}
