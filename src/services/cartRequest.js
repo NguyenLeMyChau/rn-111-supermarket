@@ -131,5 +131,36 @@ const updateProductCart = async (accountId, productId, quantity, accessToken, ax
     }
 }
 
+const checkStockQuantityInCart = async (item_code, quantity, accessToken, axiosJWT) => {
+    try {
+        // Gửi yêu cầu GET với item_code và quantity qua query params
+        const response = await axiosJWT.get(`/api/customer/check-stock-quantity-in-cart`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+            params: { // Thêm params ở đây
+                item_code: item_code,
+                quantity: quantity
+            }
+        });
+        console.log('response.data', response.data)
+        return response.data;
+    } catch (error) {
+        console.error('Check stock quantity failed:', error);
+        alert(error.response ? error.response.data.message : error.message);
+    }
+}
 
-export { getCartById, addProductToCart, payCart, updateCart, removeProductCart, updateProductCart, getPromotionByProductId, getPromotionByVoucher }
+
+
+export {
+    getCartById,
+    addProductToCart,
+    payCart,
+    updateCart,
+    removeProductCart,
+    updateProductCart,
+    getPromotionByProductId,
+    getPromotionByVoucher,
+    checkStockQuantityInCart
+}

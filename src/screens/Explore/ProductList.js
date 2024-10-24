@@ -22,7 +22,7 @@ export default function ProductList({ route }) {
   const { addCart } = useCart();
 
   const handleAddCart = (productId, quantity, price) => {
-    if (!user.id) {
+    if (!user || Object.keys(user).length === 0) {
       Alert.alert("Lưu ý", "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
       return;
     }

@@ -67,14 +67,16 @@ export default function OrderDetail() {
                         </View>
 
                         <View style={styles.productInfoRight}>
-                            <Text style={styles.productPrice}>{formatCurrency(item.price)}</Text>
                             {
                                 item.discountedPrice ?
                                     <>
-                                        <Text style={styles.itemOriginalPrice}>{formatCurrency(item.discountedPrice)}</Text>
+                                        <Text style={styles.productPrice}>{formatCurrency(item.discountedPrice)}</Text>
+                                        <Text style={styles.itemOriginalPrice}>{formatCurrency(item.price)}</Text>
                                     </>
                                     :
-                                    <></>
+                                    <>
+                                        <Text style={styles.productPrice}>{formatCurrency(item.price)}</Text>
+                                    </>
                             }
                         </View>
                     </View>

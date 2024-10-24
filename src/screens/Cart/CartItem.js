@@ -4,7 +4,7 @@ import colors from '../../constants/Color';
 import Icon from 'react-native-vector-icons/MaterialIcons'; // Import Icon
 import { useDispatch, useSelector } from 'react-redux'; // Import dispatch from Redux
 import { updateProductQuantity } from '../../store/reducers/cartSlice';
-import { getPromotionByProductId, removeProductCart } from '../../services/cartRequest';
+import { checkStockQuantityInCart, getPromotionByProductId, removeProductCart } from '../../services/cartRequest';
 import { useAccessToken, useAxiosJWT } from '../../util/axiosInstance';
 import useCommonData from '../../hooks/useCommonData';
 import { loadingContainer } from '../../constants/Loading';
@@ -92,10 +92,17 @@ const CartItem = ({ item }) => {
     };
 
     // Xử lý thay đổi số lượng qua TextInput
-    const handleInputChange = (text) => {
+    const handleInputChange = async (text) => {
         const newQuantity = Number(text);
         if (!isNaN(newQuantity) && newQuantity > 0) {
-            handleUpdateQuantity(newQuantity);
+            // Gọi checkStockQuantity trước khi cập nhật
+            const isStockAvailable = await checkStockQuantityInCart(item.item_code, newQuantity, accessToken, axiosJWT);
+            console.log('isStockAvailable', isStockAvailable)
+            if (isStockAvailable.inStock) {
+                handleUpdateQuantity(newQuantity);
+            } else {
+                alert(isStockAvailable.message);
+            }
         }
     };
 

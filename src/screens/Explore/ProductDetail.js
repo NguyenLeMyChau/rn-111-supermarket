@@ -86,8 +86,8 @@ const ProductDetail = () => {
     };
 
     const handleAddCart = (productId, quantity, price) => {
-        if (!user.id) {
-            Alert.alert("Lưu ý", "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
+        if (!user || Object.keys(user).length === 0) {
+            alert("Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
             return;
         }
         if (!existingCartItem) {
