@@ -11,11 +11,13 @@ import Feather from '@expo/vector-icons/Feather';
 import Input from '../../components/input/Input';
 import Button from '../../components/button/Button';
 import TouchableOpacityForm from '../../components/button/TouchableOpacityForm';
+import { usePaymentModal } from '../../context/PaymentProvider';
 
 
 export default function Login() {
     const dispatch = useDispatch();
     const navigation = useNavigation();
+    const { setPaymentInfo } = usePaymentModal();
 
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
@@ -30,6 +32,7 @@ export default function Login() {
             password: password,
         };
         await loginUser(loginData, dispatch, navigation);
+        setPaymentInfo(null);
         setIsLoading(false); // Kết thúc quá trình đăng nhập
     };
 
