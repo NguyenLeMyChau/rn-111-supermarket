@@ -78,17 +78,29 @@ const CartItem = ({ item }) => {
     };
 
     // Giảm số lượng
-    const handleDecreaseQuantity = () => {
+    const handleDecreaseQuantity = async () => {
         if (quantity > 1) {
             const newQuantity = quantity - 1;
-            handleUpdateQuantity(newQuantity);
+            // Gọi checkStockQuantity trước khi cập nhật
+            const isStockAvailable = await checkStockQuantityInCart(item.item_code, newQuantity, accessToken, axiosJWT);
+            if (isStockAvailable.inStock) {
+                handleUpdateQuantity(newQuantity);
+            } else {
+                alert(isStockAvailable.message);
+            }
         }
     };
 
     // Tăng số lượng
-    const handleIncreaseQuantity = () => {
+    const handleIncreaseQuantity = async () => {
         const newQuantity = quantity + 1;
-        handleUpdateQuantity(newQuantity);
+        // Gọi checkStockQuantity trước khi cập nhật
+        const isStockAvailable = await checkStockQuantityInCart(item.item_code, newQuantity, accessToken, axiosJWT);
+        if (isStockAvailable.inStock) {
+            handleUpdateQuantity(newQuantity);
+        } else {
+            alert(isStockAvailable.message);
+        }
     };
 
     // Xử lý thay đổi số lượng qua TextInput
@@ -97,7 +109,6 @@ const CartItem = ({ item }) => {
         if (!isNaN(newQuantity) && newQuantity > 0) {
             // Gọi checkStockQuantity trước khi cập nhật
             const isStockAvailable = await checkStockQuantityInCart(item.item_code, newQuantity, accessToken, axiosJWT);
-            console.log('isStockAvailable', isStockAvailable)
             if (isStockAvailable.inStock) {
                 handleUpdateQuantity(newQuantity);
             } else {

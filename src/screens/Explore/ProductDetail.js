@@ -6,6 +6,8 @@ import colors from '../../constants/Color';
 import { useDispatch, useSelector } from 'react-redux';
 import useCart from '../../hooks/useCart';
 import { updateProductQuantity } from '../../store/reducers/cartSlice';
+import { useAccessToken, useAxiosJWT } from '../../util/axiosInstance';
+import { checkStockQuantityInCart } from '../../services/cartRequest';
 
 // Enable LayoutAnimation on Android
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -16,6 +18,8 @@ const ProductDetail = () => {
     const dispatch = useDispatch();
     const route = useRoute();
     const navigation = useNavigation();
+    const accessToken = useAccessToken();
+    const axiosJWT = useAxiosJWT();
 
     const { product } = route.params;
     console.log('product', product);
@@ -58,24 +62,42 @@ const ProductDetail = () => {
     };
 
     // Giảm số lượng
-    const handleDecreaseQuantity = () => {
+    const handleDecreaseQuantity = async () => {
         if (quantity > 1) {
             const newQuantity = quantity - 1;
-            handleUpdateQuantity(newQuantity);
+            // Gọi checkStockQuantity trước khi cập nhật
+            const isStockAvailable = await checkStockQuantityInCart(product.item_code, newQuantity, accessToken, axiosJWT);
+            if (isStockAvailable.inStock) {
+                handleUpdateQuantity(newQuantity);
+            } else {
+                alert(isStockAvailable.message);
+            }
         }
     };
 
     // Tăng số lượng
-    const handleIncreaseQuantity = () => {
+    const handleIncreaseQuantity = async () => {
         const newQuantity = quantity + 1;
-        handleUpdateQuantity(newQuantity);
+        // Gọi checkStockQuantity trước khi cập nhật
+        const isStockAvailable = await checkStockQuantityInCart(product.item_code, newQuantity, accessToken, axiosJWT);
+        if (isStockAvailable.inStock) {
+            handleUpdateQuantity(newQuantity);
+        } else {
+            alert(isStockAvailable.message);
+        }
     };
 
     // Xử lý thay đổi số lượng qua TextInput
-    const handleInputChange = (text) => {
+    const handleInputChange = async (text) => {
         const newQuantity = Number(text);
         if (!isNaN(newQuantity) && newQuantity > 0) {
-            handleUpdateQuantity(newQuantity);
+            // Gọi checkStockQuantity trước khi cập nhật
+            const isStockAvailable = await checkStockQuantityInCart(product.item_code, newQuantity, accessToken, axiosJWT);
+            if (isStockAvailable.inStock) {
+                handleUpdateQuantity(newQuantity);
+            } else {
+                alert(isStockAvailable.message);
+            }
         }
     };
 
