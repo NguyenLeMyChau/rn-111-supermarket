@@ -4,7 +4,7 @@ import colors from '../../constants/Color';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import { usePaymentModal } from '../../context/PaymentProvider';
-import { getPromotionByVoucher, payCart } from '../../services/cartRequest';
+import { getPromotions, payCart } from '../../services/cartRequest';
 import { useAccessToken, useAxiosJWT } from '../../util/axiosInstance';
 import { useSelector } from 'react-redux';
 
@@ -16,6 +16,50 @@ export default function PaymentModal({ isVisible, onClose, total, cart }) {
     const { paymentMethod, setPaymentMethod, paymentInfo } = usePaymentModal();
     const [isPaymentPickerVisible, setPaymentPickerVisible] = useState(false); // Hiển thị modal chọn phương thức thanh toán
     const [promotion, setPromotion] = useState();
+    const [discountedTotal, setDiscountedTotal] = useState(total);
+
+    useEffect(() => {
+        // Gọi API để lấy danh sách khuyến mãi
+        const fetchPromotions = async () => {
+            try {
+                const response = await getPromotions(); 
+                if (response?.data) {
+                    // Lọc ra những khuyến mãi có type là 'percentage'
+                    const percentagePromotions = response.data.filter(promo => promo.type === 'percentage');
+                  
+                    setPromotion(percentagePromotions);
+                }
+            } catch (error) {
+                console.error('Error fetching promotions:', error);
+            }
+        };
+
+        fetchPromotions();
+
+    }, [isVisible]);
+
+    useEffect(() => {
+        // Tính toán tổng tiền đã giảm mỗi khi promotion thay đổi
+        if (promotion.length > 0) {
+            let finalTotal = total; // Bắt đầu từ tổng ban đầu
+
+            promotion.forEach(applicablePromotion => {
+                const discountAmount = (finalTotal * applicablePromotion.percent) / 100; // Giảm theo phần trăm
+                const amountLimit = applicablePromotion.amount_limit;
+
+                // Giảm giá không vượt quá amount_limit
+                if (discountAmount > amountLimit) {
+                    finalTotal -= amountLimit;
+                } else {
+                    finalTotal -= discountAmount;
+                }
+            });
+
+            setDiscountedTotal(finalTotal); // Cập nhật tổng tiền đã giảm
+        } else {
+            setDiscountedTotal(total); // Nếu không có khuyến mãi, giữ nguyên tổng
+        }
+    }, [promotion, total]);
 
     const paymentMethods = [
         { id: '1', name: 'MoMo', icon: require('../../../assets/icon-momo.png') },
@@ -57,8 +101,7 @@ export default function PaymentModal({ isVisible, onClose, total, cart }) {
 
         paymentInfo.address = address;
 
-        let paymentAmount = total;
-        payCart(navigation, accessToken, axiosJWT, user.id, cart, paymentMethod.name, paymentInfo, paymentAmount);
+        payCart(navigation, accessToken, axiosJWT, user.id, cart, paymentMethod.name, paymentInfo, discountedTotal);
         onClose();
         // navigation.navigate('OrderSuccess');
     }
@@ -105,7 +148,7 @@ export default function PaymentModal({ isVisible, onClose, total, cart }) {
                                     <Icon name="arrow-drop-down" size={24} color={colors.text} />
                                 </TouchableOpacity>
                             </View>
-
+                            
                             <View style={styles.sectionRow}>
                                 <Text style={styles.label}>Tổng tiền</Text>
                                 <Text style={styles.total}>{total.toLocaleString('vi-VN')} đ</Text>

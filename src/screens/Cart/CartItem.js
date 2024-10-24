@@ -36,7 +36,7 @@ console.log(item)
                     } else if (promotion.promotionLine_id.type === 'quantity') {
                         setType(promotion.promotionLine_id.type)
                         if (quantity / (promotion.quantity + promotion.quantity_donate) | 0 > 0) {
-                            setGiaKhuyeMai((quantity - promotion.quantity_donate) * item.price);
+                            setGiaKhuyeMai((quantity - quantity / (promotion.quantity + promotion.quantity_donate)| 0) * item.price);
                         }
                     }
 
