@@ -22,8 +22,8 @@ export default function Explore() {
                     navigation.navigate('ProductList', { name: item.name, productList: item.products });
                 }}
             >
-                <Image source={{ uri: item.img }} style={styles.itemImage} />
-                <Text style={styles.itemText}>{item.name}</Text>
+                <Image source={{ uri: item.category?.img }} style={styles.itemImage} />
+                <Text style={styles.itemText}>{item.category?.name}</Text>
             </TouchableOpacity>
         );
     };
@@ -35,9 +35,8 @@ export default function Explore() {
                 <FlatList
                     data={categories}
                     renderItem={renderItem}
-                    keyExtractor={item => item._id}
+                    keyExtractor={item => item.category._id}
                     numColumns={2}
-                    key={(2).toString()}
                 />
             </View>
         </View>

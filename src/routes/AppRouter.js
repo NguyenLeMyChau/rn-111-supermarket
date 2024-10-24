@@ -20,7 +20,6 @@ import Support from '../screens/User/Support';
 import UserInfo from '../screens/User/UserInfo';
 import Order from '../screens/User/Order';
 import OrderDetail from '../screens/User/OrderDetail';
-import Promotion from '../screens/Cart/Promotion';
 import { PaymentModalProvider } from '../context/PaymentProvider';
 import PaymentInfo from '../screens/Cart/PaymentInfo';
 import OrderSuccess from '../screens/Cart/OrderSuccess';
@@ -102,7 +101,6 @@ export default function AppRouter() {
                     <Stack.Screen name="UserInfo" component={UserInfo} />
                     <Stack.Screen name="Order" component={Order} />
                     <Stack.Screen name="OrderDetail" component={OrderDetail} />
-                    <Stack.Screen name="Promotion" component={Promotion} />
                     <Stack.Screen name="PaymentInfo" component={PaymentInfo} />
                     <Stack.Screen name="OrderSuccess" component={OrderSuccess} />
                     <Stack.Screen name="ProductDetail" component={ProductDetail} />

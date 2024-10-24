@@ -9,15 +9,17 @@ export default function Order() {
     const navigation = useNavigation();
     const invoices = useSelector(state => state.invoice?.invoices);
 
+    const sortedInvoices = invoices?.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
     const renderItem = ({ item }) => (
         console.log('item', item),
         <TouchableOpacity style={styles.orderContainer} onPress={() => navigation.navigate('OrderDetail', { itemInvoice: item })}>
             <View style={styles.orderHeader}>
                 <Text style={styles.orderNumber}>Mã đơn hàng: {item._id}</Text>
-                {/* <Text style={styles.orderDate}>{item.date}</Text> */}
+                <Text style={styles.orderDate}>{formatDate(item.createdAt)}</Text>
             </View>
             <Text style={styles.orderTotal}>Tổng tiền: {formatCurrency(item.paymentAmount)}</Text>
-            <Text style={styles.orderTotal}>Ngày đặt hàng: {formatDate(item.createdAt)}</Text>
+            {/* <Text style={styles.orderTotal}>Ngày đặt hàng: {formatDate(item.createdAt)}</Text> */}
             <Text style={styles.orderTotal}>Phương thức thanh toán: {item.paymentMethod}</Text>
         </TouchableOpacity>
     );
@@ -31,7 +33,7 @@ export default function Order() {
                 <Text style={styles.title}>Đơn hàng của bạn</Text>
             </View>
             <FlatList
-                data={invoices}
+                data={sortedInvoices}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
                 contentContainerStyle={styles.list}

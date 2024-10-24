@@ -17,22 +17,22 @@ const getCartById = async (dispatch, accessToken, axiosJWT, accountId) => {
         dispatch(getCartFailed());
     }
 };
-const getPromotionByProductId = async(product_id)=>{
-    try{
-        const response = await axios.post(`http://localhost:5000/api/auth/get-promotion-by-product`,{product_id});
+const getPromotionByProductId = async (product_id) => {
+    try {
+        const response = await axios.post(`http://localhost:5000/api/auth/get-promotion-by-product`, { product_id });
         console.log(response.data)
         return response.data;
-    }catch(error){
+    } catch (error) {
         console.error('Get get-promotion-by-product failed:', error);
     }
 }
 
-const getPromotionByVoucher = async(voucher)=>{
-    try{
-        const response = await axios.post(`http://localhost:5000/api/auth/get-promotion-by-voucher`,{voucher});
+const getPromotionByVoucher = async (voucher) => {
+    try {
+        const response = await axios.post(`http://localhost:5000/api/auth/get-promotion-by-voucher`, { voucher });
         console.log(response.data)
         return response.data;
-    }catch(error){
+    } catch (error) {
         console.error('Get get-promotion-by-product failed:', error);
     }
 }
@@ -59,7 +59,6 @@ const addProductToCart = async (accessToken, axiosJWT, accountId, productId, qua
 
 const payCart = async (navigation, accessToken, axiosJWT, customerId, products,paymentMethod,paymentInfo,paymentAmount) => {
     try {
-        console.log(promoCode,paymentAmount)
         const response = await axiosJWT.post(`/api/customer/pay-cart`, {
             customerId,
             products,
@@ -132,5 +131,36 @@ const updateProductCart = async (accountId, productId, quantity, accessToken, ax
     }
 }
 
+const checkStockQuantityInCart = async (item_code, quantity, accessToken, axiosJWT) => {
+    try {
+        // Gửi yêu cầu GET với item_code và quantity qua query params
+        const response = await axiosJWT.get(`/api/customer/check-stock-quantity-in-cart`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+            params: { // Thêm params ở đây
+                item_code: item_code,
+                quantity: quantity
+            }
+        });
+        console.log('response.data', response.data)
+        return response.data;
+    } catch (error) {
+        console.error('Check stock quantity failed:', error);
+        alert(error.response ? error.response.data.message : error.message);
+    }
+}
 
-export { getCartById, addProductToCart, payCart, updateCart, removeProductCart, updateProductCart,getPromotionByProductId,getPromotionByVoucher}
+
+
+export {
+    getCartById,
+    addProductToCart,
+    payCart,
+    updateCart,
+    removeProductCart,
+    updateProductCart,
+    getPromotionByProductId,
+    getPromotionByVoucher,
+    checkStockQuantityInCart
+}

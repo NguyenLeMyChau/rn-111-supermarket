@@ -19,16 +19,13 @@ export default function Shop() {
     const { fetchDataShop } = useCommonData();
     const user = useSelector((state) => state.auth?.login?.currentUser) || {};
     const categories = useSelector((state) => state.category?.categories) || [];
+    const products = useSelector((state) => state.product?.products) || [];
+    const productsWithPromotions = products.filter(product => product.promotions && product.promotions.length > 0);
+
     const filteredCategories = categories.filter(category => category.products.length > 0);
-
     const [loadingShop, setLoadingShop] = useState(true);
-    console.log(categories)
-    // useFocusEffect(
-    //     useCallback(() => {
-    //         fetchDataShop(setLoadingShop);
-    //     }, [])
-    // );
 
+    // useEffect to fetch shop data
     useEffect(() => {
         fetchDataShop(setLoadingShop);
     }, []);
@@ -36,35 +33,34 @@ export default function Shop() {
     const { addCart } = useCart();
 
     const handleAddCart = (productId, quantity, price) => {
-        if (!user.id) {
-            Alert.alert("Lưu ý", "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
+        console.log('user', user)
+        if (!user || Object.keys(user).length === 0) {
+            alert("Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
             return;
         }
         addCart(productId, quantity, price);
     };
 
-    const renderProduct = ({ item, index }) => {
+    const renderProduct = ({ item }) => {
         let giakhuyenmai = null;
         const giagoc = item.price;
 
         if (item.promotions) {
             item.promotions.forEach((promo) => {
                 if (promo.type === "quantity") {
-                    giakhuyenmai = promo.line; // Đảm bảo promo.line là một chuỗi hoặc số
+                    giakhuyenmai = promo.line;
                 } else if (promo.type === "amount") {
-                    giakhuyenmai = item.price - promo.amount_donate; // Đảm bảo là chuỗi
+                    giakhuyenmai = item.price - promo.amount_donate;
                 }
             });
         }
+
         return (
-            <TouchableOpacity style={[styles.productContainer]}
+            <TouchableOpacity
+                style={[styles.productContainer]}
                 onPress={() => navigation.navigate('ProductDetail', { product: item })}
             >
-                <Image
-                    source={{ uri: item.img }}
-                    style={styles.productImage}
-                    resizeMode="contain"
-                />
+                <Image source={{ uri: item.img }} style={styles.productImage} resizeMode="contain" />
 
                 <View style={styles.productInfo}>
                     <Text style={styles.productName} numberOfLines={2} ellipsizeMode="tail">{item.name}</Text>
@@ -81,8 +77,8 @@ export default function Shop() {
                                 </>
                             ) : (
                                 <>
-                                    <Text style={styles.discountPrice}>{giakhuyenmai}</Text>
                                     <Text style={styles.productPrice}>{giagoc} đ</Text>
+                                    <Text style={styles.discountPrice}>{giakhuyenmai}</Text>
                                 </>
                             )}
                         </View>
@@ -101,10 +97,10 @@ export default function Shop() {
         <View style={styles.categoryContainer}>
             <View style={styles.categoryHeader}>
                 <Text style={styles.categoryName}>{item.category?.name}</Text>
-                <TouchableOpacity style={styles.seeMoreButton} onPress={() => {
-                    navigation.navigate('ProductList', { name: item.category.name, productList: item.products });
-
-                }}>
+                <TouchableOpacity
+                    style={styles.seeMoreButton}
+                    onPress={() => navigation.navigate('ProductList', { name: item.category.name, productList: item.products })}
+                >
                     <Text style={styles.seeMoreText}>Xem thêm</Text>
                 </TouchableOpacity>
             </View>
@@ -119,6 +115,40 @@ export default function Shop() {
             </View>
         </View>
     );
+
+    // Combine "Khuyến mãi" and categories into one list
+    const combinedData = [
+        { type: 'promotion', products: productsWithPromotions },
+        ...filteredCategories.map(category => ({ type: 'category', ...category }))
+    ];
+
+    const renderCombinedItem = ({ item }) => {
+        if (item.type === 'promotion') {
+            return (
+                <View style={{ ...styles.promotionContainer, marginBottom: 20 }}>
+                    <View style={styles.categoryHeader}>
+                        <Text style={styles.categoryName}>Khuyến mãi</Text>
+                        <TouchableOpacity
+                            style={styles.seeMoreButton}
+                            onPress={() => navigation.navigate('ProductList', { name: 'Khuyến mãi', productList: item.products })}
+                        >
+                            <Text style={styles.seeMoreText}>Xem thêm</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.listContainer}>
+
+                        <FlatList
+                            data={item.products}
+                            renderItem={renderProduct}
+                            keyExtractor={product => product._id}
+                            horizontal
+                        />
+                    </View>
+                </View>
+            );
+        }
+        return renderCategory({ item });
+    };
 
     if (loadingShop) {
         return (
@@ -135,20 +165,18 @@ export default function Shop() {
                 <Logo width={50} height={50} />
             </View>
 
-            <Input
-                placeholder="Tìm kiếm sản phẩm"
-                Icon={EvilIcons}
-                nameIcon="search"
-            />
+            <Input placeholder="Tìm kiếm sản phẩm" Icon={EvilIcons} nameIcon="search" />
 
+            {/* FlatList to render combined "Khuyến mãi" and categories */}
             <FlatList
-                data={filteredCategories}
-                renderItem={renderCategory}
-                keyExtractor={category => category._id}
+                data={combinedData}
+                renderItem={renderCombinedItem}
+                keyExtractor={(item, index) => index.toString()}
             />
         </View>
     );
 }
+
 
 const styles = StyleSheet.create({
     container: {
@@ -220,7 +248,6 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: 'bold',
         color: '#333',
-        marginVertical: 10,
         textAlign: 'left'
     },
     originalPrice: {
@@ -234,7 +261,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#e53935', // Màu sắc cho giá khuyến mãi
         textAlign: 'left',
-        marginTop: 10
     },
     addToCartButton: {
         backgroundColor: colors.button,
