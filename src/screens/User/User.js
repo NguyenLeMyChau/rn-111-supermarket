@@ -11,12 +11,14 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import TouchableOpacityForm from "../../components/button/TouchableOpacityForm";
 import Logo from "../../components/logo/Logo";
 import { getInvoicesByAccountId } from "../../services/userRequest";
+import { usePaymentModal } from "../../context/PaymentProvider";
 
 export default function User() {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const accessToken = useAccessToken();
     const axiosJWT = useAxiosJWT();
+    const { setPaymentInfo } = usePaymentModal();
 
     const user = useSelector((state) => state.auth?.login?.currentUser) || {};
 
@@ -65,6 +67,7 @@ export default function User() {
 
     const handleLogout = () => {
         logoutUser(dispatch, navigation, accessToken, axiosJWT);
+        setPaymentInfo(null);
     };
 
     return (

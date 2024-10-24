@@ -22,11 +22,11 @@ export default function PaymentModal({ isVisible, onClose, total, cart }) {
         // Gọi API để lấy danh sách khuyến mãi
         const fetchPromotions = async () => {
             try {
-                const response = await getPromotions(); 
+                const response = await getPromotions();
                 if (response?.data) {
                     // Lọc ra những khuyến mãi có type là 'percentage'
                     const percentagePromotions = response.data.filter(promo => promo.type === 'percentage');
-                  
+
                     setPromotion(percentagePromotions);
                 }
             } catch (error) {
@@ -40,7 +40,7 @@ export default function PaymentModal({ isVisible, onClose, total, cart }) {
 
     useEffect(() => {
         // Tính toán tổng tiền đã giảm mỗi khi promotion thay đổi
-        if (promotion.length > 0) {
+        if (promotion?.length > 0) {
             let finalTotal = total; // Bắt đầu từ tổng ban đầu
 
             promotion.forEach(applicablePromotion => {
@@ -103,7 +103,7 @@ export default function PaymentModal({ isVisible, onClose, total, cart }) {
 
         payCart(navigation, accessToken, axiosJWT, user.id, cart, paymentMethod.name, paymentInfo, discountedTotal);
         onClose();
-        // navigation.navigate('OrderSuccess');
+        navigation.navigate('OrderSuccess');
     }
 
     return (
@@ -148,7 +148,7 @@ export default function PaymentModal({ isVisible, onClose, total, cart }) {
                                     <Icon name="arrow-drop-down" size={24} color={colors.text} />
                                 </TouchableOpacity>
                             </View>
-                            
+
                             <View style={styles.sectionRow}>
                                 <Text style={styles.label}>Tổng tiền</Text>
                                 <Text style={styles.total}>{total.toLocaleString('vi-VN')} đ</Text>
