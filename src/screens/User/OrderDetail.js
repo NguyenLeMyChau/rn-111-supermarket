@@ -35,7 +35,7 @@ export default function OrderDetail() {
                 <View style={styles.orderInfoRow}>
                     <View style={styles.orderInfo}>
                         <Text style={styles.label}>Tổng tiền:</Text>
-                        <Text style={{...styles.value, fontWeight: 'bold'}}>{formatCurrency(itemInvoice.paymentAmount)}</Text>
+                        <Text style={{ ...styles.value, fontWeight: 'bold' }}>{formatCurrency(itemInvoice.paymentAmount)}</Text>
                     </View>
                     <View style={styles.orderInfo}>
                         <Text style={styles.label}>Ngày đặt hàng:</Text>
@@ -56,13 +56,27 @@ export default function OrderDetail() {
             <Text style={styles.productTitle}>Sản phẩm trong đơn hàng:</Text>
 
             {itemInvoice.detail.map((item) => (
-                <View key={item.id} style={styles.productContainer}>
+                <View key={item._id} style={styles.productContainer}>
                     <Image source={{ uri: item.productImg }} style={styles.productImage} />
-                    <View style={styles.productInfo}>
-                        <Text style={styles.productName}>{item.productName}</Text>
-                        <Text style={styles.productQuantity}>Đơn vị tính: {item.unitName}</Text>
-                        <Text style={styles.productQuantity}>Số lượng: {item.quantity}</Text>
-                        <Text style={styles.productPrice}>Giá: {formatCurrency(item.price)}</Text>
+                    <View style={styles.productInfoRow}>
+                        <View style={styles.productInfoLeft}>
+                            <Text style={styles.productName}>{item.productName} - {item.unitName}</Text>
+                            {/* <Text style={styles.productQuantity}>{item.unitName}</Text> */}
+                            <Text style={styles.productQuantity}>Số lượng: {item.quantity}</Text>
+                            <Text style={styles.itemDiscountPrice}>{item.promotion?.description}</Text>
+                        </View>
+
+                        <View style={styles.productInfoRight}>
+                            <Text style={styles.productPrice}>{formatCurrency(item.price)}</Text>
+                            {
+                                item.discountedPrice ?
+                                    <>
+                                        <Text style={styles.itemOriginalPrice}>{formatCurrency(item.discountedPrice)}</Text>
+                                    </>
+                                    :
+                                    <></>
+                            }
+                        </View>
                     </View>
                 </View>
             ))}
@@ -158,8 +172,17 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         marginRight: 10,
     },
-    productInfo: {
+    productInfoRow: {
         flex: 1,
+        flexDirection: 'row'
+    },
+    productInfoLeft: {
+        width: '70%',
+    },
+    productInfoRight: {
+        width: '30%',
+        alignItems: 'flex-end',
+        justifyContent: 'center'
     },
     productName: {
         fontSize: 16,
@@ -172,7 +195,18 @@ const styles = StyleSheet.create({
         marginBottom: 4,
     },
     productPrice: {
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    itemOriginalPrice: {
+        fontSize: 12,
+        textDecorationLine: 'line-through',
+        color: '#888',
+        textAlign: 'right',
+    },
+    itemDiscountPrice: {
         fontSize: 14,
         fontWeight: 'bold',
+        color: 'red',
     },
 });
