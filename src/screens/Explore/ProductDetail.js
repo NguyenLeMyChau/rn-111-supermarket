@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, TextInput, Animated, LayoutAnimation, UIManager, Platform, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, TextInput, Animated, LayoutAnimation, UIManager, Platform, FlatList, Dimensions } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import colors from '../../constants/Color';
@@ -8,11 +8,14 @@ import useCart from '../../hooks/useCart';
 import { updateProductQuantity } from '../../store/reducers/cartSlice';
 import { useAccessToken, useAxiosJWT } from '../../util/axiosInstance';
 import { checkStockQuantityInCart } from '../../services/cartRequest';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // Enable LayoutAnimation on Android
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
     UIManager.setLayoutAnimationEnabledExperimental(true);
 }
+const { width } = Dimensions.get('window');
+const PRODUCT_WIDTH = width * 0.42;
 
 const ProductDetail = () => {
     const dispatch = useDispatch();
@@ -26,7 +29,7 @@ const ProductDetail = () => {
 
     const user = useSelector((state) => state.auth?.login?.currentUser) || {};
     const cart = useSelector((state) => state.cart?.carts);
-    const categories = useSelector((state) => state.category?.categories) || [];
+    const products = useSelector((state) => state.product?.products) || [];
 
     const { addCart, updateProductToCart } = useCart();
 
@@ -36,12 +39,12 @@ const ProductDetail = () => {
     const [quantity, setQuantity] = useState(existingCartItem ? existingCartItem.quantity : 1);
     const [detailsVisible, setDetailsVisible] = useState(false);
 
-
-    // Lọc ra các sản phẩm liên quan dựa trên category_id
-    const relatedProducts = categories
-        .filter((category) => category._id === product.category_id)[0]?.products
-        ?.filter((relatedProduct) => relatedProduct._id !== product._id)
-        .slice(0, 5); // Lấy tối đa 5 sản phẩm liên quan
+    // Lọc sản phẩm liên quan
+    const relatedProducts = products.filter(p => p.item_code === product.item_code && p._id !== product._id);
+    if (relatedProducts.length < 7) {
+        const additionalProducts = products.filter(p => p.category_id === product.category_id && p._id !== product._id && !relatedProducts.includes(p));
+        relatedProducts.push(...additionalProducts.slice(0, 7 - relatedProducts.length));
+    }
 
     // Tính giá khuyến mãi
     let giakhuyenmai = null;
@@ -56,9 +59,9 @@ const ProductDetail = () => {
         });
     }
     // Cập nhật số lượng sản phẩm
-    const handleUpdateQuantity = (newQuantity,total) => {
+    const handleUpdateQuantity = (newQuantity, total) => {
         setQuantity(newQuantity);
-        dispatch(updateProductQuantity({ productId: product.id, quantity: newQuantity,total:total }));
+        dispatch(updateProductQuantity({ productId: product.id, quantity: newQuantity, total: total }));
     };
 
     // Giảm số lượng
@@ -116,8 +119,60 @@ const ProductDetail = () => {
             addCart(productId, quantity, total);
         }
         else {
-            updateProductToCart(productId, quantity,total);
+            updateProductToCart(productId, quantity, total);
         }
+    };
+
+    const renderProduct = ({ item }) => {
+        let giakhuyenmai = null;
+        const giagoc = item.price;
+
+        if (item.promotions) {
+            item.promotions.forEach((promo) => {
+                if (promo.type === "quantity") {
+                    giakhuyenmai = promo.line;
+                } else if (promo.type === "amount") {
+                    giakhuyenmai = item.price - promo.amount_donate;
+                }
+            });
+        }
+
+        return (
+            <TouchableOpacity
+                style={[styles.productContainer]}
+                onPress={() => navigation.push('ProductDetail', { product: item })}
+            >
+                <Image source={{ uri: item.img }} style={styles.productImage} resizeMode="contain" />
+
+                <View style={styles.productInfo}>
+                    <Text style={styles.productName} numberOfLines={2} ellipsizeMode="tail">{item.name}</Text>
+                    <Text style={styles.productUnit}>{item.unit_id.description}</Text>
+                </View>
+
+                <View style={styles.sectionRow}>
+                    {giakhuyenmai !== null ? (
+                        <View style={{ flexDirection: "column" }}>
+                            {typeof (giakhuyenmai) !== "string" ? (
+                                <>
+                                    <Text style={styles.discountPrice}>{giakhuyenmai} đ</Text>
+                                    <Text style={styles.originalPrice}>{giagoc} đ</Text>
+                                </>
+                            ) : (
+                                <>
+                                    <Text style={styles.productPrice}>{giagoc} đ</Text>
+                                    <Text style={styles.discountPrice}>{giakhuyenmai}</Text>
+                                </>
+                            )}
+                        </View>
+                    ) : (
+                        <Text style={styles.productPrice}>{giagoc} đ</Text>
+                    )}
+                    <TouchableOpacity style={styles.addToCartButton} onPress={() => handleAddCart(item._id, 1, giakhuyenmai !== null && typeof (giakhuyenmai) !== "string" ? giakhuyenmai : giagoc)}>
+                        <Ionicons name="cart" size={24} color="#FFFFFF" />
+                    </TouchableOpacity>
+                </View>
+            </TouchableOpacity>
+        );
     };
 
     return (
@@ -186,9 +241,20 @@ const ProductDetail = () => {
                         )}
                     </View>
 
+
+                    <View style={styles.relatedProductsContainer}>
+                        <Text style={styles.relatedProductsTitle}>Sản phẩm liên quan</Text>
+                        <FlatList
+                            data={relatedProducts}
+                            horizontal
+                            keyExtractor={(item) => item._id}
+                            renderItem={renderProduct}
+                        />
+                    </View>
+
                 </View>
             </ScrollView>
-            <TouchableOpacity style={styles.button} onPress={() => handleAddCart(product._id, quantity, giakhuyenmai !== null && typeof(giakhuyenmai) !== "string" ? giakhuyenmai:giagoc)}>
+            <TouchableOpacity style={styles.button} onPress={() => handleAddCart(product._id, quantity, giakhuyenmai !== null && typeof (giakhuyenmai) !== "string" ? giakhuyenmai : giagoc)}>
                 <Text style={styles.textButton}>{existingCartItem ? 'Cập nhật giỏ hàng' : 'Thêm vào giỏ hàng'}</Text>
             </TouchableOpacity>
         </View>
@@ -341,6 +407,86 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#e53935', // Màu sắc cho giá khuyến mãi
         textAlign: 'right',
+    },
+
+    relatedProductsContainer: {
+        marginTop: 20,
+    },
+    relatedProductsTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    relatedProductItem: {
+        marginRight: 10,
+        alignItems: 'center',
+    },
+    relatedProductImage: {
+        width: 100,
+        height: 100,
+        resizeMode: 'contain',
+    },
+    relatedProductName: {
+        fontSize: 14,
+        textAlign: 'center',
+    },
+    productContainer: {
+        flex: 1,
+        padding: 10,
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        width: PRODUCT_WIDTH,
+        marginRight: 15,
+        height: 250,
+        justifyContent: 'space-between',
+    },
+    productImage: {
+        width: '100%',
+        height: 100,
+        borderRadius: 8,
+        marginBottom: 8,
+        alignSelf: 'center',
+    },
+    productName: {
+        fontSize: 13,
+    },
+    productUnit: {
+        fontSize: 11,
+        color: '#888',
+    },
+    productPrice: {
+        fontSize: 12,
+        fontWeight: 'bold',
+        color: '#333',
+        textAlign: 'left'
+    },
+    originalPrice: {
+        textDecorationLine: 'line-through',
+        color: '#888', // Màu sắc cho giá gốc
+        fontSize: 12,
+        textAlign: 'left'
+    },
+    discountPrice: {
+        fontSize: 12,
+        fontWeight: 'bold',
+        color: '#e53935', // Màu sắc cho giá khuyến mãi
+        textAlign: 'left',
+    },
+    addToCartButton: {
+        backgroundColor: colors.button,
+        padding: 8,
+        borderRadius: 4,
+        alignItems: 'center',
+    },
+    addToCartText: {
+        color: '#FFFFFF',
+        fontSize: 14,
+    },
+    sectionRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
     },
 });
 
