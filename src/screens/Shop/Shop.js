@@ -8,8 +8,7 @@ import useCommonData from "../../hooks/useCommonData";
 import Icon from 'react-native-vector-icons/Ionicons';
 import useCart from "../../hooks/useCart";
 import Logo from '../../components/logo/Logo';
-import Input from "../../components/input/Input";
-import EvilIcons from '@expo/vector-icons/EvilIcons';
+import Search from "./Search";
 
 const { width } = Dimensions.get('window');
 const PRODUCT_WIDTH = width * 0.42;
@@ -85,7 +84,7 @@ export default function Shop() {
                     ) : (
                         <Text style={styles.productPrice}>{giagoc} đ</Text>
                     )}
-                    <TouchableOpacity style={styles.addToCartButton} onPress={() => handleAddCart(item._id, 1,giakhuyenmai !== null && typeof(giakhuyenmai) !== "string" ? giakhuyenmai:giagoc)}>
+                    <TouchableOpacity style={styles.addToCartButton} onPress={() => handleAddCart(item._id, 1, giakhuyenmai !== null && typeof (giakhuyenmai) !== "string" ? giakhuyenmai : giagoc)}>
                         <Icon name="cart" size={24} color="#FFFFFF" />
                     </TouchableOpacity>
                 </View>
@@ -165,7 +164,7 @@ export default function Shop() {
                 <Logo width={50} height={50} />
             </View>
 
-            <Input placeholder="Tìm kiếm sản phẩm" Icon={EvilIcons} nameIcon="search" />
+            <Search />
 
             {/* FlatList to render combined "Khuyến mãi" and categories */}
             <FlatList
