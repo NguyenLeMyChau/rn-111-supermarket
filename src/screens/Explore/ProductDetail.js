@@ -135,7 +135,7 @@ const ProductDetail = () => {
                 <View style={styles.info}>
                     <View style={styles.productInfo}>
                         <Text style={styles.title}>{product.name}</Text>
-                        <Text style={styles.productUnit}>Chai</Text>
+                        <Text style={styles.productUnit}>{product.unit_id.description}</Text>
                     </View>
                     <View style={styles.sectionRow}>
                         <View style={styles.quantityContainer}>
