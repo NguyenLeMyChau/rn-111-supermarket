@@ -37,13 +37,13 @@ const getPromotionByVoucher = async(voucher)=>{
     }
 }
 
-const addProductToCart = async (accessToken, axiosJWT, accountId, productId, quantity, price) => {
+const addProductToCart = async (accessToken, axiosJWT, accountId, productId, quantity, total) => {
     try {
         const response = await axiosJWT.post(`/api/customer/add-product-to-cart`, {
             accountId,
             productId,
             quantity,
-            price,
+            total,
         }, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -57,7 +57,7 @@ const addProductToCart = async (accessToken, axiosJWT, accountId, productId, qua
     }
 }
 
-const payCart = async (navigation, accessToken, axiosJWT, customerId, products,paymentMethod,paymentInfo,promoCode,paymentAmount) => {
+const payCart = async (navigation, accessToken, axiosJWT, customerId, products,paymentMethod,paymentInfo,paymentAmount) => {
     try {
         console.log(promoCode,paymentAmount)
         const response = await axiosJWT.post(`/api/customer/pay-cart`, {
@@ -65,7 +65,6 @@ const payCart = async (navigation, accessToken, axiosJWT, customerId, products,p
             products,
             paymentMethod,
             paymentInfo,
-            promoCode,
             paymentAmount
         }, {
             headers: {

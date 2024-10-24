@@ -12,7 +12,7 @@ import { loadingContainer } from '../../constants/Loading';
 const CartItem = ({ item }) => {
     const dispatch = useDispatch();
     const { fetchDataCart } = useCommonData();
-
+console.log(item)
     const accessToken = useAccessToken();
     const axiosJWT = useAxiosJWT();
     const user = useSelector((state) => state.auth?.login?.currentUser) || {};

@@ -21,12 +21,12 @@ export default function ProductList({ route }) {
 
   const { addCart } = useCart();
 
-  const handleAddCart = (productId, quantity, price) => {
+  const handleAddCart = (productId, quantity, total) => {
     if (!user.id) {
       Alert.alert("Lưu ý", "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
       return;
     }
-    addCart(productId, quantity, price);
+    addCart(productId, quantity, total);
   };
 
   const renderProduct = ({ item }) => {
@@ -82,7 +82,7 @@ export default function ProductList({ route }) {
           )}
           <TouchableOpacity
             style={styles.addToCartButton}
-            onPress={() => handleAddCart(item._id, 1, item.price)}
+            onPress={() => handleAddCart(item._id, 1,giakhuyenmai !== null && typeof(giakhuyenmai) !== "string" ? giakhuyenmai:giagoc)}
           >
             <Icon name="cart" size={24} color="#FFFFFF" />
           </TouchableOpacity>

@@ -52,9 +52,9 @@ const ProductDetail = () => {
         });
     }
     // Cập nhật số lượng sản phẩm
-    const handleUpdateQuantity = (newQuantity) => {
+    const handleUpdateQuantity = (newQuantity,total) => {
         setQuantity(newQuantity);
-        dispatch(updateProductQuantity({ productId: product.id, quantity: newQuantity }));
+        dispatch(updateProductQuantity({ productId: product.id, quantity: newQuantity,total:total }));
     };
 
     // Giảm số lượng
@@ -85,16 +85,16 @@ const ProductDetail = () => {
         setDetailsVisible(!detailsVisible);
     };
 
-    const handleAddCart = (productId, quantity, price) => {
+    const handleAddCart = (productId, quantity, total) => {
         if (!user.id) {
             Alert.alert("Lưu ý", "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
             return;
         }
         if (!existingCartItem) {
-            addCart(productId, quantity, price);
+            addCart(productId, quantity, total);
         }
         else {
-            updateProductToCart(productId, quantity);
+            updateProductToCart(productId, quantity,total);
         }
     };
 
@@ -166,7 +166,7 @@ const ProductDetail = () => {
 
                 </View>
             </ScrollView>
-            <TouchableOpacity style={styles.button} onPress={() => handleAddCart(product._id, quantity, 20000)}>
+            <TouchableOpacity style={styles.button} onPress={() => handleAddCart(product._id, quantity, giakhuyenmai !== null && typeof(giakhuyenmai) !== "string" ? giakhuyenmai:giagoc)}>
                 <Text style={styles.textButton}>{existingCartItem ? 'Cập nhật giỏ hàng' : 'Thêm vào giỏ hàng'}</Text>
             </TouchableOpacity>
         </View>
