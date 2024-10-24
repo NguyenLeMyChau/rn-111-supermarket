@@ -10,6 +10,32 @@ export default function OrderDetail() {
     const { itemInvoice } = route.params;
     console.log('itemInvoice', itemInvoice);
 
+    // Hàm xử lý hiển thị promotion
+    const renderPromotion = (promotion, promotionDetail, price) => {
+        if (!promotion) return null;
+
+        switch (promotion.type) {
+            case 'amount':
+                return (
+                    <>
+                        <Text style={{ ...styles.productPrice, fontSize: 15, fontWeight: 600 }}>{formatCurrency(promotionDetail?.discountedPrice)}</Text>
+                        <Text style={styles.itemOriginalPrice}>{formatCurrency(price)}</Text>
+                        <Text style={styles.productPrice}>Tổng: {formatCurrency(promotionDetail?.total)}</Text>
+                    </>
+                );
+            case 'quantity':
+                return (
+                    <>
+                        <Text style={{ ...styles.productPrice, fontSize: 15, fontWeight: 600 }}>{formatCurrency(price)}</Text>
+                        <Text style={styles.productPrice}>Tổng: {formatCurrency(promotionDetail?.total)}</Text>
+                    </>
+                );
+            // Thêm các loại promotion khác nếu cần
+            default:
+                return <Text>Khuyến mãi không hợp lệ</Text>;
+        }
+    };
+
     return (
         <ScrollView style={styles.container}>
             <View style={styles.header}>
@@ -62,22 +88,21 @@ export default function OrderDetail() {
                         <View style={styles.productInfoLeft}>
                             <Text style={styles.productName}>{item.productName} - {item.unitName}</Text>
                             {/* <Text style={styles.productQuantity}>{item.unitName}</Text> */}
-                            <Text style={styles.productQuantity}>Số lượng: {item.quantity}</Text>
+                            <Text style={styles.productQuantity}>Số lượng: <Text style={{ fontWeight: 'bold' }}>{item.quantity}</Text></Text>
                             <Text style={styles.itemDiscountPrice}>{item.promotion?.description}</Text>
                         </View>
 
                         <View style={styles.productInfoRight}>
-                            {
-                                item.discountedPrice ?
-                                    <>
-                                        <Text style={styles.productPrice}>{formatCurrency(item.discountedPrice)}</Text>
-                                        <Text style={styles.itemOriginalPrice}>{formatCurrency(item.price)}</Text>
-                                    </>
-                                    :
-                                    <>
-                                        <Text style={styles.productPrice}>{formatCurrency(item.price)}</Text>
-                                    </>
-                            }
+                            {item.promotion ? (
+                                <>
+                                    {renderPromotion(item.promotion, item.promotion.promotionDetail, item.price)}
+                                </>
+                            ) : (
+                                <>
+                                    <Text style={{ ...styles.productPrice, fontSize: 15, fontWeight: 600 }}>{formatCurrency(item.price)}</Text>
+                                    <Text style={styles.productPrice}>Tổng: {formatCurrency(item.total)}</Text>
+                                </>
+                            )}
                         </View>
                     </View>
                 </View>
