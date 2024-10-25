@@ -49,12 +49,11 @@ const CartItem = ({ item }) => {
           } else if (promotion.promotionLine_id.type === "quantity") {
             setType(promotion.promotionLine_id.type);
             if (promotion.product_donate === item.product_id && promotion.product_id===item.product_id) {
-                const eligibleQuantity =Math.floor(quantity / (khuyenMai.quantity + khuyenMai.quantity_donate))
+                const eligibleQuantity =Math.floor(quantity / (promotion.quantity + promotion.quantity_donate))
                 console.log(eligibleQuantity)
               if (eligibleQuantity>0) {
-                updatedGiaKhuyenMai =  (quantity - eligibleQuantity) *  item.price
+                setGiaKhuyeMai((quantity - eligibleQuantity) *  item.price)
                 console.log( quantity)
-                console.log(updatedGiaKhuyenMai)
               }
             } else if(promotion.product_donate === item.product_id && promotion.product_id!==item.product_id){
                 // If product_donate !== item.product_id, check the cart for product_id === item.product_id
