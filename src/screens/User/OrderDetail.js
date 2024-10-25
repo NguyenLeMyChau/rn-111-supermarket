@@ -18,7 +18,7 @@ export default function OrderDetail() {
             case 'amount':
                 return (
                     <>
-                        <Text style={{ ...styles.productPrice, fontSize: 15, fontWeight: 600 }}>{formatCurrency(promotionDetail?.discountedPrice)}</Text>
+                        <Text style={{ ...styles.productPrice, fontSize: 14, fontWeight: 600 }}>{formatCurrency(promotionDetail?.discountedPrice)}</Text>
                         <Text style={styles.itemOriginalPrice}>{formatCurrency(price)}</Text>
                         <Text style={styles.productPrice}>Tổng: {formatCurrency(promotionDetail?.total)}</Text>
                     </>
@@ -26,7 +26,7 @@ export default function OrderDetail() {
             case 'quantity':
                 return (
                     <>
-                        <Text style={{ ...styles.productPrice, fontSize: 15, fontWeight: 600 }}>{formatCurrency(price)}</Text>
+                        <Text style={{ ...styles.productPrice, fontSize: 12, fontWeight: 600 }}>{formatCurrency(price)}</Text>
                         <Text style={styles.productPrice}>Tổng: {formatCurrency(promotionDetail?.total)}</Text>
                     </>
                 );
@@ -204,12 +204,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     productInfoLeft: {
-        width: '70%',
+        width: '60%',
     },
     productInfoRight: {
-        width: '30%',
+        width: '40%',
         alignItems: 'flex-end',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     productName: {
         fontSize: 16,
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
         marginBottom: 4,
     },
     productPrice: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: 'bold',
     },
     itemOriginalPrice: {
