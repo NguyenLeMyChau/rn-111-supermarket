@@ -9,6 +9,7 @@ import { updateProductQuantity } from '../../store/reducers/cartSlice';
 import { useAccessToken, useAxiosJWT } from '../../util/axiosInstance';
 import { checkStockQuantityInCart } from '../../services/cartRequest';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { formatCurrency } from '../../util/format';
 
 // Enable LayoutAnimation on Android
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -25,7 +26,6 @@ const ProductDetail = () => {
     const axiosJWT = useAxiosJWT();
 
     const { product } = route.params;
-    console.log('product', product);
 
     const user = useSelector((state) => state.auth?.login?.currentUser) || {};
     const cart = useSelector((state) => state.cart?.carts);
@@ -34,13 +34,14 @@ const ProductDetail = () => {
     const { addCart, updateProductToCart } = useCart();
 
     // Kiểm tra sản phẩm trong giỏ hàng và thiết lập số lượng
-    const existingCartItem = cart?.find((item) => item.product_id === product._id);
+    const existingCartItem = cart?.find((item) => item.product_id._id === product._id && item.unit._id === product.unit_id._id);
 
     const [quantity, setQuantity] = useState(existingCartItem ? existingCartItem.quantity : 1);
     const [detailsVisible, setDetailsVisible] = useState(false);
 
     // Lọc sản phẩm liên quan
-    const relatedProducts = products.filter(p => p.item_code === product.item_code && p._id !== product._id);
+    const relatedProducts = products.filter(p => p.item_code === product.item_code && p.unit_id._id !== product.unit_id._id);
+
     if (relatedProducts.length < 7) {
         const additionalProducts = products.filter(p => p.category_id === product.category_id && p._id !== product._id && !relatedProducts.includes(p));
         relatedProducts.push(...additionalProducts.slice(0, 7 - relatedProducts.length));
@@ -110,16 +111,18 @@ const ProductDetail = () => {
         setDetailsVisible(!detailsVisible);
     };
 
-    const handleAddCart = (productId, quantity, total) => {
+    const handleAddCart = (quantity, total) => {
         if (!user.id) {
             Alert.alert("Lưu ý", "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
             return;
         }
         if (!existingCartItem) {
-            addCart(productId, quantity, total);
+            addCart(product._id, product.unit_id._id, quantity, total);
         }
         else {
-            updateProductToCart(productId, quantity, total);
+            console.log('Chạy updateProductToCart');
+            console.log('total', total);
+            updateProductToCart(product._id, product.unit_id._id, quantity, total);
         }
     };
 
@@ -138,6 +141,7 @@ const ProductDetail = () => {
         }
 
         return (
+            // console.log('item', item),
             <TouchableOpacity
                 style={[styles.productContainer]}
                 onPress={() => navigation.push('ProductDetail', { product: item })}
@@ -154,20 +158,20 @@ const ProductDetail = () => {
                         <View style={{ flexDirection: "column" }}>
                             {typeof (giakhuyenmai) !== "string" ? (
                                 <>
-                                    <Text style={styles.discountPrice}>{giakhuyenmai} đ</Text>
-                                    <Text style={styles.originalPrice}>{giagoc} đ</Text>
+                                    <Text style={styles.discountPrice}>{formatCurrency(giakhuyenmai)}</Text>
+                                    <Text style={styles.originalPrice}>{formatCurrency(giagoc)}</Text>
                                 </>
                             ) : (
                                 <>
-                                    <Text style={styles.productPrice}>{giagoc} đ</Text>
+                                    <Text style={styles.productPrice}>{formatCurrency(giagoc)}</Text>
                                     <Text style={styles.discountPrice}>{giakhuyenmai}</Text>
                                 </>
                             )}
                         </View>
                     ) : (
-                        <Text style={styles.productPrice}>{giagoc} đ</Text>
+                        <Text style={styles.productPrice}>{formatCurrency(giagoc)}</Text>
                     )}
-                    <TouchableOpacity style={styles.addToCartButton} onPress={() => handleAddCart(item._id, 1, giakhuyenmai !== null && typeof (giakhuyenmai) !== "string" ? giakhuyenmai : giagoc)}>
+                    <TouchableOpacity style={styles.addToCartButton} onPress={() => handleAddCart(1, giakhuyenmai !== null && typeof (giakhuyenmai) !== "string" ? giakhuyenmai : giagoc)}>
                         <Ionicons name="cart" size={24} color="#FFFFFF" />
                     </TouchableOpacity>
                 </View>
@@ -212,18 +216,18 @@ const ProductDetail = () => {
                                 <View style={{ flexDirection: "column" }}>
                                     {typeof (giakhuyenmai) !== "string" ? (
                                         <>
-                                            <Text style={styles.discountPriceAmount}>{giakhuyenmai} đ</Text>
-                                            <Text style={styles.originalPrice}>{giagoc} đ</Text>
+                                            <Text style={styles.discountPriceAmount}>{formatCurrency(giakhuyenmai)}</Text>
+                                            <Text style={styles.originalPrice}>{formatCurrency(giagoc)}</Text>
                                         </>
                                     ) : (
                                         <>
-                                            <Text style={styles.productPrice}>{giagoc} đ</Text>
+                                            <Text style={styles.productPrice}>{formatCurrency(giagoc)}</Text>
                                             <Text style={styles.discountPrice}>{giakhuyenmai}</Text>
                                         </>
                                     )}
                                 </View>
                             ) : (
-                                <Text style={styles.productPrice}>{giagoc} đ</Text>
+                                <Text style={styles.productPrice}>{formatCurrency(giagoc)}</Text>
                             )}
 
                         </View>
@@ -247,14 +251,14 @@ const ProductDetail = () => {
                         <FlatList
                             data={relatedProducts}
                             horizontal
-                            keyExtractor={(item) => item._id}
+                            keyExtractor={(item, index) => `${item._id}-${item.unit_id._id}`}
                             renderItem={renderProduct}
                         />
                     </View>
 
                 </View>
             </ScrollView>
-            <TouchableOpacity style={styles.button} onPress={() => handleAddCart(product._id, quantity, giakhuyenmai !== null && typeof (giakhuyenmai) !== "string" ? giakhuyenmai : giagoc)}>
+            <TouchableOpacity style={styles.button} onPress={() => handleAddCart(quantity, giakhuyenmai !== null && typeof (giakhuyenmai) !== "string" ? giakhuyenmai : giagoc)}>
                 <Text style={styles.textButton}>{existingCartItem ? 'Cập nhật giỏ hàng' : 'Thêm vào giỏ hàng'}</Text>
             </TouchableOpacity>
         </View>
@@ -459,19 +463,19 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: 'bold',
         color: '#333',
-        textAlign: 'left'
+        textAlign: 'right'
     },
     originalPrice: {
         textDecorationLine: 'line-through',
         color: '#888', // Màu sắc cho giá gốc
         fontSize: 12,
-        textAlign: 'left'
+        textAlign: 'right'
     },
     discountPrice: {
         fontSize: 12,
         fontWeight: 'bold',
         color: '#e53935', // Màu sắc cho giá khuyến mãi
-        textAlign: 'left',
+        textAlign: 'right',
     },
     addToCartButton: {
         backgroundColor: colors.button,

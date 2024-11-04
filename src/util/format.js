@@ -16,13 +16,17 @@ export function formatDate(date) {
 
 /**
  * Định dạng tiền tệ theo định dạng 'vi-VN' cho React Native
- * @param {number} amount - Số tiền cần định dạng
+ * @param {number|string} amount - Số tiền cần định dạng
  * @returns {string} - Chuỗi tiền tệ đã định dạng
  */
 export function formatCurrency(amount) {
-    if (typeof amount !== 'number') {
+    const numberAmount = typeof amount === 'string' ? parseFloat(amount.replace(/,/g, '')) : amount;
+
+    // Kiểm tra xem giá trị đã chuyển đổi có phải là số hợp lệ không
+    if (isNaN(numberAmount)) {
         throw new TypeError('Invalid amount');
     }
+    
     return new Intl.NumberFormat('vi-VN', {
         style: 'currency',
         currency: 'VND',

@@ -13,6 +13,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import useCart from "../../hooks/useCart";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
+import { formatCurrency } from "../../util/format";
 
 export default function ProductList({ route }) {
   const { name, productList } = route.params; // Nhận productList từ route.params
@@ -21,12 +22,13 @@ export default function ProductList({ route }) {
 
   const { addCart } = useCart();
 
-  const handleAddCart = (productId, quantity, total) => {
+  const handleAddCart = (product, quantity, total) => {
+    console.log('product', product);
     if (!user.id) {
       Alert.alert("Lưu ý", "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
       return;
     }
-    addCart(productId, quantity, total);
+    addCart(product._id, product.unit_id._id, quantity, total);
   };
 
   const renderProduct = ({ item }) => {
@@ -45,7 +47,9 @@ export default function ProductList({ route }) {
     }
 
     return (
-      <View style={styles.productContainer}>
+      <TouchableOpacity style={styles.productContainer}
+        onPress={() => navigation.navigate("ProductDetail", { product: item })}
+      >
         <Image
           source={{ uri: item.img }}
           style={styles.productImage}
@@ -67,35 +71,35 @@ export default function ProductList({ route }) {
             <View style={{ flexDirection: "column" }}>
               {typeof (giakhuyenmai) !== "string" ? (
                 <>
-                  <Text style={styles.discountPrice}>{giakhuyenmai} đ</Text>
-                  <Text style={styles.originalPrice}>{giagoc} đ</Text>
+                  <Text style={styles.discountPrice}>{formatCurrency(giakhuyenmai)}</Text>
+                  <Text style={styles.originalPrice}>{formatCurrency(giagoc)}</Text>
                 </>
               ) : (
                 <>
-                  <Text style={styles.productPrice}>{giagoc} đ</Text>
+                  <Text style={styles.productPrice}>{formatCurrency(giagoc)}</Text>
                   <Text style={styles.discountPrice}>{giakhuyenmai}</Text>
                 </>
               )}
             </View>
           ) : (
-            <Text style={styles.productPrice}>{giagoc} đ</Text>
+            <Text style={styles.productPrice}>{formatCurrency(giagoc)}</Text>
           )}
           <TouchableOpacity
             style={styles.addToCartButton}
-            onPress={() => handleAddCart(item._id, 1,giakhuyenmai !== null && typeof(giakhuyenmai) !== "string" ? giakhuyenmai:giagoc)}
+            onPress={() => handleAddCart(item, 1, giakhuyenmai !== null && typeof (giakhuyenmai) !== "string" ? giakhuyenmai : giagoc)}
           >
             <Icon name="cart" size={24} color="#FFFFFF" />
           </TouchableOpacity>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
   const renderRow = ({ item }) => {
     return (
       <View style={styles.row}>
-        {item.map((product) => (
-          <View key={product._id} style={styles.column}>
+        {item.map((product, index) => (
+          <View key={index} style={styles.column}>
             {renderProduct({ item: product })}
           </View>
         ))}
@@ -184,19 +188,19 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "bold",
     color: "#333",
-    textAlign: "left",
+    textAlign: "right",
   },
   originalPrice: {
     textDecorationLine: "line-through",
     color: "#888",
     fontSize: 12,
-    textAlign: "left",
+    textAlign: "right",
   },
   discountPrice: {
     fontSize: 12,
     fontWeight: "bold",
     color: "#e53935",
-    textAlign: "left",
+    textAlign: "right",
   },
   addToCartButton: {
     backgroundColor: colors.button,

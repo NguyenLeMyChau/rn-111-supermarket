@@ -15,13 +15,13 @@ const useCart = () => {
     const user = useSelector((state) => state.auth?.login?.currentUser) || {};
     const [loadingCart, setLoadingCart] = useState(false);
 
-    const addCart = async (productId, quantity, total) => {
-        await addProductToCart(accessToken, axiosJWT, user.id, productId, quantity, total);
+    const addCart = async (productId, unitId, quantity, total) => {
+        await addProductToCart(accessToken, axiosJWT, user.id, productId, unitId, quantity, total);
         await fetchDataCart(setLoadingCart);
     }
 
-    const updateProductToCart = async (productId, quantity, total) => {
-        await updateProductCart(user.id, productId, quantity,total, accessToken, axiosJWT);
+    const updateProductToCart = async (productId, unitId, quantity, total) => {
+        await updateProductCart(user.id, productId, unitId, quantity,total, accessToken, axiosJWT);
         await fetchDataCart(setLoadingCart);
     }
 

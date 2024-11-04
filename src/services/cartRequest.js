@@ -37,11 +37,12 @@ const getPromotions= async () => {
 }
 
 
-const addProductToCart = async (accessToken, axiosJWT, accountId, productId, quantity, total) => {
+const addProductToCart = async (accessToken, axiosJWT, accountId, productId, unitId, quantity, total) => {
     try {
         const response = await axiosJWT.post(`/api/customer/add-product-to-cart`, {
             accountId,
             productId,
+            unitId,
             quantity,
             total,
         }, {
@@ -112,11 +113,12 @@ const removeProductCart = async (accountId, productId, accessToken, axiosJWT) =>
     }
 }
 
-const updateProductCart = async (accountId, productId, quantity, accessToken, axiosJWT) => {
+const updateProductCart = async (accountId, productId, unitId, quantity, accessToken, axiosJWT) => {
     try {
         const response = await axiosJWT.post(`/api/customer/update-product-cart`, {
             accountId,
             productId,
+            unitId,
             quantity,
             total,
         }, {
