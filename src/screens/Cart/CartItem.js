@@ -34,17 +34,19 @@ const CartItem = ({ item }) => {
   const [giakhuyenmai, setGiaKhuyeMai] = useState(-1);
   const [khuyenMai, setKhuyenMai] = useState("");
   const [type, setType] = useState("");
-  const [giaBan, setGiaBan] = useState(item.quantity * item.price);
+  const [giaBan, setGiaBan] = useState(item.quantity * item.price.price);
 
   useEffect(() => {
     const fetchPromotion = async () => {
       try {
-        const promotions = await getPromotionByProductId(item.product_id);
+        const promotions = await getPromotionByProductId(item.product_id._id,item.unit._id);
+
         if (promotions?.length > 0) {
+          console.log(promotions)
           const promotion = promotions[0];
           setKhuyenMai(promotion); // Assuming only the first promotion found is used
           if (promotion.promotionLine_id.type === "amount") {
-            setGiaKhuyeMai((item.price - promotion.amount_donate) * quantity);
+            setGiaKhuyeMai((item.price.price - promotion.amount_donate) * quantity);
             setType(promotion.promotionLine_id.type);
           } else if (promotion.promotionLine_id.type === "quantity") {
             setType(promotion.promotionLine_id.type);
@@ -52,7 +54,7 @@ const CartItem = ({ item }) => {
                 const eligibleQuantity =Math.floor(quantity / (promotion.quantity + promotion.quantity_donate))
                 console.log(eligibleQuantity)
               if (eligibleQuantity>0) {
-                setGiaKhuyeMai((quantity - eligibleQuantity) *  item.price)
+                setGiaKhuyeMai((quantity - eligibleQuantity) *  item.price.price)
                 console.log( quantity)
               }
             } else if(promotion.product_donate === item.product_id && promotion.product_id!==item.product_id){
@@ -68,10 +70,10 @@ const CartItem = ({ item }) => {
                         setGiaKhuyeMai(
                            0
                           );
-                    console.log((quantity - num * promotion.quantity_donate) * item.price)
+                    console.log((quantity - num * promotion.quantity_donate) * item.price.price)
                         }
                   else setGiaKhuyeMai(
-                    (quantity - num * promotion.quantity_donate) * item.price
+                    (quantity - num * promotion.quantity_donate) * item.price.price
                   );
                 }
               }
@@ -86,64 +88,70 @@ const CartItem = ({ item }) => {
     fetchPromotion();
   }, [item.product_id, quantity,cart]);
   
+  useEffect(()=>{
+    console.log('123')
+    dispatch(
+      updateProductQuantity({
+        productId: item.product_id._id,
+        quantity: quantity,
+        total: giakhuyenmai,
+        unit_id:item.unit._id
+      })
+    );
+  },[giakhuyenmai])
 
   // Cập nhật số lượng sản phẩm
   const handleUpdateQuantity = async (newQuantity) => {
     setQuantity(newQuantity);
-    setGiaBan(newQuantity * item.price);
+    setGiaBan(newQuantity * item.price.price);
 
-    // Tính lại giá khuyến mãi
-    let updatedGiaKhuyenMai = -1;
-    if (khuyenMai) {
-        console.log(khuyenMai)
-      // Giả sử bạn đã có thông tin khuyến mãi, tính toán lại giá khuyến mãi
-      if (type === "amount") {
-        updatedGiaKhuyenMai =
-          (item.price - khuyenMai.amount_donate) * newQuantity;
-      } else if (type === "quantity") {
-        if (khuyenMai.product_donate === item.product_id && khuyenMai.product_id === item.product_id) {
-            console.log(khuyenMai.product_donate,item.product_id)
+    // // Tính lại giá khuyến mãi
+    // let updatedGiaKhuyenMai = -1;
+    // if (khuyenMai) {
+    //     console.log(khuyenMai)
+    //   // Giả sử bạn đã có thông tin khuyến mãi, tính toán lại giá khuyến mãi
+    //   if (type === "amount") {
+    //     updatedGiaKhuyenMai =
+    //       (item.price.price - khuyenMai.amount_donate) * newQuantity;
+        
+    //   } else if (type === "quantity") {
+    //     if (khuyenMai.product_donate === item.product_id && khuyenMai.product_id === item.product_id) {
+    //         console.log(khuyenMai.product_donate,item.product_id)
             
-            const eligibleQuantity =Math.floor(newQuantity / (khuyenMai.quantity + khuyenMai.quantity_donate))
-            console.log(eligibleQuantity)
-          if (eligibleQuantity>0) {
-            updatedGiaKhuyenMai =  (newQuantity - eligibleQuantity) *  item.price
-            console.log( newQuantity)
-            console.log(updatedGiaKhuyenMai)
-          }
-        } else if(khuyenMai.product_donate === item.product_id && khuyenMai.product_id!==item.product_id){
-            // If product_donate !== item.product_id, check the cart for product_id === item.product_id
-            const cartItem = cart.find(cartItem => cartItem.product_id === khuyenMai.product_id);
-            console.log(cartItem)
-          if (cartItem) {
-            // Compare cartItem.quantity / promotion.quantity
-            const num = (cartItem.quantity / khuyenMai.quantity) | 0;
-            console.log(num)
-            if (num > 0) {
-                if(num > quantity){
-                    updatedGiaKhuyenMai = 0
-                console.log((quantity - num * khuyenMai.quantity_donate) * item.price)
-                    }
-              else updatedGiaKhuyenMai=
-                (quantity - num * khuyenMai.quantity_donate) * item.price
-             
-            } 
-            }
-          }
-      }
-      setGiaKhuyeMai(updatedGiaKhuyenMai);
-    }
+    //         const eligibleQuantity =Math.floor(newQuantity / (khuyenMai.quantity + khuyenMai.quantity_donate))
+    //         console.log(eligibleQuantity)
+    //       if (eligibleQuantity>0) {
+    //         updatedGiaKhuyenMai =  (newQuantity - eligibleQuantity) *  item.price.price
+    //         console.log( newQuantity)
+    //         console.log(updatedGiaKhuyenMai)
+          
+    //       }
+    //     } else if(khuyenMai.product_donate === item.product_id && khuyenMai.product_id!==item.product_id){
+    //         // If product_donate !== item.product_id, check the cart for product_id === item.product_id
+    //         const cartItem = cart.find(cartItem => cartItem.product_id === khuyenMai.product_id);
+    //         console.log(cartItem)
+    //       if (cartItem) {
+    //         // Compare cartItem.quantity / promotion.quantity
+    //         const num = (cartItem.quantity / khuyenMai.quantity) | 0;
+    //         console.log(num)
+    //         if (num > 0) {
+    //             if(num > quantity){
+    //                 updatedGiaKhuyenMai = 0
+    //             console.log((quantity - num * khuyenMai.quantity_donate) * item.price.price)
+              
+    //                 }
+    //           else updatedGiaKhuyenMai=
+    //             (quantity - num * khuyenMai.quantity_donate) * item.price.price
+              
+    //         } 
+    //         }
+    //       }
+    //   }
+      
+    // }
 
     // Dispatch cập nhật giỏ hàng với giá trị mới
-    dispatch(
-      updateProductQuantity({
-        productId: item.product_id,
-        quantity: newQuantity,
-        total: updatedGiaKhuyenMai >=0
-          ? updatedGiaKhuyenMai
-          : newQuantity * item.price,
-      })
-    );
+    
   };
 
   // Giảm số lượng
@@ -203,7 +211,7 @@ const CartItem = ({ item }) => {
 
   const handleRemoveItem = async () => {
     // Logic để xóa mục khỏi giỏ hàng
-    await removeProductCart(user.id, item.product_id, accessToken, axiosJWT);
+    await removeProductCart(user.id, item.product_id._id,item.unit._id, accessToken, axiosJWT);
     await fetchDataCart(setLoadingCart);
   };
 
