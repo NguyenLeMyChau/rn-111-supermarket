@@ -18,7 +18,7 @@ export default function OrderDetail() {
             case 'amount':
                 return (
                     <>
-                        <Text style={{ ...styles.productPrice, fontSize: 14, fontWeight: 600 }}>{formatCurrency(promotionDetail?.discountedPrice)}</Text>
+                        <Text style={{ ...styles.productPrice, fontSize: 12, fontWeight: 600 }}>{formatCurrency(promotionDetail?.discountedPrice)}</Text>
                         <Text style={styles.itemOriginalPrice}>{formatCurrency(price)}</Text>
                         <Text style={styles.productPrice}>Tổng: {formatCurrency(promotionDetail?.total)}</Text>
                     </>
@@ -222,11 +222,11 @@ const styles = StyleSheet.create({
         marginBottom: 4,
     },
     productPrice: {
-        fontSize: 14,
+        fontSize: 13,
         fontWeight: 'bold',
     },
     itemOriginalPrice: {
-        fontSize: 12,
+        fontSize: 10,
         textDecorationLine: 'line-through',
         color: '#888',
         textAlign: 'right',
