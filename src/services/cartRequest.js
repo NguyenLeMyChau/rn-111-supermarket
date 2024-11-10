@@ -120,14 +120,15 @@ const removeProductCart = async (accountId, productId, unit_id, accessToken, axi
     }
 }
 
-const updateProductCart = async (accountId, productId, unitId, quantity, accessToken, axiosJWT) => {
+const updateProductCart = async (accountId, productId, unitId, quantity, total, accessToken, axiosJWT) => {
     try {
+        console.log(quantity)
         const response = await axiosJWT.post(`/api/customer/update-product-cart`, {
             accountId,
             productId,
             unitId,
             quantity,
-            total,
+            total
         }, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,

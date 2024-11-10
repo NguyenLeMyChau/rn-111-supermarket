@@ -122,8 +122,9 @@ const ProductDetail = () => {
         }
         else {
             console.log('Chạy updateProductToCart');
+            console.log('quanitty', quantity);
             console.log('total', total);
-            updateProductToCart(product._id, product.unit_id._id, quantity, total);
+            updateProductToCart(product, product.unit_id._id, quantity, total);
         }
     };
 
