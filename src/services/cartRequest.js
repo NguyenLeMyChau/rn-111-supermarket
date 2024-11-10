@@ -17,19 +17,19 @@ const getCartById = async (dispatch, accessToken, axiosJWT, accountId) => {
         dispatch(getCartFailed());
     }
 };
-const getPromotionByProductId = async (product_id,unit_id) => {
+const getPromotionByProductId = async (product_id, unit_id) => {
     try {
-        const response = await axios.post(`http://localhost:5000/api/auth/get-promotion-by-product`, { product_id,unit_id });
+        const response = await axios.post(`http://localhost:5000/api/auth/get-promotion-by-product`, { product_id, unit_id });
         if (!response.data) {
             return null; // hoặc return {} hoặc [] tùy thuộc vào nhu cầu của bạn
-          }
+        }
         console.log(response.data)
         return response.data;
     } catch (error) {
         console.error('Get get-promotion-by-product failed:', error);
     }
 }
-const getPromotions= async () => {
+const getPromotions = async () => {
     try {
         const response = await axios.get(`http://localhost:5000/api/auth/get-promotions`);
         console.log(response.data)
@@ -61,7 +61,7 @@ const addProductToCart = async (accessToken, axiosJWT, accountId, productId, uni
     }
 }
 
-const payCart = async (navigation, accessToken, axiosJWT, customerId, products,paymentMethod,paymentInfo,paymentAmount) => {
+const payCart = async (navigation, accessToken, axiosJWT, customerId, products, paymentMethod, paymentInfo, paymentAmount) => {
     try {
         const response = await axiosJWT.post(`/api/customer/pay-cart`, {
             customerId,
@@ -74,11 +74,11 @@ const payCart = async (navigation, accessToken, axiosJWT, customerId, products,p
                 Authorization: `Bearer ${accessToken}`,
             },
         });
-        if(response.data.success){
+        if (response.data.success) {
             alert('Thanh toán giỏ hàng thành công');
             navigation.navigate('OrderSuccess');
-        }else   alert('Thanh toán giỏ hàng thất bại ');
-       
+        } else alert('Thanh toán giỏ hàng thất bại ');
+
         return response.data;
     } catch (error) {
         console.error('Pay cart failed:', error);
@@ -103,7 +103,7 @@ const updateCart = async (accountId, productList, accessToken, axiosJWT) => {
     }
 }
 
-const removeProductCart = async (accountId, productId,unit_id, accessToken, axiosJWT) => {
+const removeProductCart = async (accountId, productId, unit_id, accessToken, axiosJWT) => {
     try {
         const response = await axiosJWT.post(`/api/customer/remove-product-cart`, {
             accountId,
@@ -140,7 +140,7 @@ const updateProductCart = async (accountId, productId, unitId, quantity, accessT
     }
 }
 
-const checkStockQuantityInCart = async (item_code, quantity, accessToken, axiosJWT) => {
+const checkStockQuantityInCart = async (item_code, unit_id, quantity, accessToken, axiosJWT) => {
     try {
         // Gửi yêu cầu GET với item_code và quantity qua query params
         const response = await axiosJWT.get(`/api/customer/check-stock-quantity-in-cart`, {
@@ -149,6 +149,7 @@ const checkStockQuantityInCart = async (item_code, quantity, accessToken, axiosJ
             },
             params: { // Thêm params ở đây
                 item_code: item_code,
+                unit_id: unit_id,
                 quantity: quantity
             }
         });

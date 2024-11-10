@@ -39,7 +39,7 @@ const CartItem = ({ item }) => {
   useEffect(() => {
     const fetchPromotion = async () => {
       try {
-        const promotions = await getPromotionByProductId(item.product_id._id,item.unit._id);
+        const promotions = await getPromotionByProductId(item.product_id._id, item.unit._id);
 
         if (promotions?.length > 0) {
           console.log(promotions)
@@ -50,28 +50,28 @@ const CartItem = ({ item }) => {
             setType(promotion.promotionLine_id.type);
           } else if (promotion.promotionLine_id.type === "quantity") {
             setType(promotion.promotionLine_id.type);
-            if (promotion.product_donate === item.product_id && promotion.product_id===item.product_id) {
-                const eligibleQuantity =Math.floor(quantity / (promotion.quantity + promotion.quantity_donate))
-                console.log(eligibleQuantity)
-              if (eligibleQuantity>0) {
-                setGiaKhuyeMai((quantity - eligibleQuantity) *  item.price.price)
-                console.log( quantity)
+            if (promotion.product_donate === item.product_id && promotion.product_id === item.product_id) {
+              const eligibleQuantity = Math.floor(quantity / (promotion.quantity + promotion.quantity_donate))
+              console.log(eligibleQuantity)
+              if (eligibleQuantity > 0) {
+                setGiaKhuyeMai((quantity - eligibleQuantity) * item.price.price)
+                console.log(quantity)
               }
-            } else if(promotion.product_donate === item.product_id && promotion.product_id!==item.product_id){
-                // If product_donate !== item.product_id, check the cart for product_id === item.product_id
-                const cartItem = cart.find(cartItem => cartItem.product_id === promotion.product_id);
-                console.log(cartItem)
+            } else if (promotion.product_donate === item.product_id && promotion.product_id !== item.product_id) {
+              // If product_donate !== item.product_id, check the cart for product_id === item.product_id
+              const cartItem = cart.find(cartItem => cartItem.product_id === promotion.product_id);
+              console.log(cartItem)
               if (cartItem) {
                 // Compare cartItem.quantity / promotion.quantity
                 const num = (cartItem.quantity / promotion.quantity) | 0;
                 console.log(num)
                 if (num > 0) {
-                    if(num > quantity){
-                        setGiaKhuyeMai(
-                           0
-                          );
+                  if (num > quantity) {
+                    setGiaKhuyeMai(
+                      0
+                    );
                     console.log((quantity - num * promotion.quantity_donate) * item.price.price)
-                        }
+                  }
                   else setGiaKhuyeMai(
                     (quantity - num * promotion.quantity_donate) * item.price.price
                   );
@@ -84,21 +84,21 @@ const CartItem = ({ item }) => {
         console.error("Lỗi khi lấy thông tin khuyến mãi:", error);
       }
     };
-  
+
     fetchPromotion();
-  }, [item.product_id, quantity,cart]);
-  
-  useEffect(()=>{
+  }, [item.product_id, quantity, cart]);
+
+  useEffect(() => {
     console.log('123')
     dispatch(
       updateProductQuantity({
         productId: item.product_id._id,
         quantity: quantity,
         total: giakhuyenmai,
-        unit_id:item.unit._id
+        unit_id: item.unit._id
       })
     );
-  },[giakhuyenmai])
+  }, [giakhuyenmai])
 
   // Cập nhật số lượng sản phẩm
   const handleUpdateQuantity = async (newQuantity) => {
@@ -113,18 +113,18 @@ const CartItem = ({ item }) => {
     //   if (type === "amount") {
     //     updatedGiaKhuyenMai =
     //       (item.price.price - khuyenMai.amount_donate) * newQuantity;
-        
+
     //   } else if (type === "quantity") {
     //     if (khuyenMai.product_donate === item.product_id && khuyenMai.product_id === item.product_id) {
     //         console.log(khuyenMai.product_donate,item.product_id)
-            
+
     //         const eligibleQuantity =Math.floor(newQuantity / (khuyenMai.quantity + khuyenMai.quantity_donate))
     //         console.log(eligibleQuantity)
     //       if (eligibleQuantity>0) {
     //         updatedGiaKhuyenMai =  (newQuantity - eligibleQuantity) *  item.price.price
     //         console.log( newQuantity)
     //         console.log(updatedGiaKhuyenMai)
-          
+
     //       }
     //     } else if(khuyenMai.product_donate === item.product_id && khuyenMai.product_id!==item.product_id){
     //         // If product_donate !== item.product_id, check the cart for product_id === item.product_id
@@ -138,20 +138,20 @@ const CartItem = ({ item }) => {
     //             if(num > quantity){
     //                 updatedGiaKhuyenMai = 0
     //             console.log((quantity - num * khuyenMai.quantity_donate) * item.price.price)
-              
+
     //                 }
     //           else updatedGiaKhuyenMai=
     //             (quantity - num * khuyenMai.quantity_donate) * item.price.price
-              
+
     //         } 
     //         }
     //       }
     //   }
-      
+
     // }
 
     // Dispatch cập nhật giỏ hàng với giá trị mới
-    
+
   };
 
   // Giảm số lượng
@@ -161,6 +161,7 @@ const CartItem = ({ item }) => {
       // Gọi checkStockQuantity trước khi cập nhật
       const isStockAvailable = await checkStockQuantityInCart(
         item.item_code,
+        item.unit._id,
         newQuantity,
         accessToken,
         axiosJWT
@@ -179,6 +180,7 @@ const CartItem = ({ item }) => {
     // Gọi checkStockQuantity trước khi cập nhật
     const isStockAvailable = await checkStockQuantityInCart(
       item.item_code,
+      item.unit._id,
       newQuantity,
       accessToken,
       axiosJWT
@@ -197,6 +199,7 @@ const CartItem = ({ item }) => {
       // Gọi checkStockQuantity trước khi cập nhật
       const isStockAvailable = await checkStockQuantityInCart(
         item.item_code,
+        item.unit._id,
         newQuantity,
         accessToken,
         axiosJWT
@@ -211,7 +214,7 @@ const CartItem = ({ item }) => {
 
   const handleRemoveItem = async () => {
     // Logic để xóa mục khỏi giỏ hàng
-    await removeProductCart(user.id, item.product_id._id,item.unit._id, accessToken, axiosJWT);
+    await removeProductCart(user.id, item.product_id._id, item.unit._id, accessToken, axiosJWT);
     await fetchDataCart(setLoadingCart);
   };
 
@@ -266,8 +269,8 @@ const CartItem = ({ item }) => {
           </TouchableOpacity>
         )}
         <View style={styles.priceTextContainer}>
-          {giakhuyenmai >= 0&& khuyenMai ? (
-      
+          {giakhuyenmai >= 0 && khuyenMai ? (
+
             <View>
               <Text style={styles.itemDiscountPrice}>
                 {giakhuyenmai.toLocaleString("vi-VN")} đ

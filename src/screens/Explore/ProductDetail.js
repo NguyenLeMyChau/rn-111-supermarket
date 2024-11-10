@@ -26,6 +26,7 @@ const ProductDetail = () => {
     const axiosJWT = useAxiosJWT();
 
     const { product } = route.params;
+    console.log('product', product);
 
     const user = useSelector((state) => state.auth?.login?.currentUser) || {};
     const cart = useSelector((state) => state.cart?.carts);
@@ -70,7 +71,7 @@ const ProductDetail = () => {
         if (quantity > 1) {
             const newQuantity = quantity - 1;
             // Gọi checkStockQuantity trước khi cập nhật
-            const isStockAvailable = await checkStockQuantityInCart(product.item_code, newQuantity, accessToken, axiosJWT);
+            const isStockAvailable = await checkStockQuantityInCart(product.item_code, product.unit_id._id, newQuantity, accessToken, axiosJWT);
             if (isStockAvailable.inStock) {
                 handleUpdateQuantity(newQuantity);
             } else {
@@ -83,7 +84,7 @@ const ProductDetail = () => {
     const handleIncreaseQuantity = async () => {
         const newQuantity = quantity + 1;
         // Gọi checkStockQuantity trước khi cập nhật
-        const isStockAvailable = await checkStockQuantityInCart(product.item_code, newQuantity, accessToken, axiosJWT);
+        const isStockAvailable = await checkStockQuantityInCart(product.item_code, product.unit_id._id, newQuantity, accessToken, axiosJWT);
         if (isStockAvailable.inStock) {
             handleUpdateQuantity(newQuantity);
         } else {
@@ -96,7 +97,7 @@ const ProductDetail = () => {
         const newQuantity = Number(text);
         if (!isNaN(newQuantity) && newQuantity > 0) {
             // Gọi checkStockQuantity trước khi cập nhật
-            const isStockAvailable = await checkStockQuantityInCart(product.item_code, newQuantity, accessToken, axiosJWT);
+            const isStockAvailable = await checkStockQuantityInCart(product.item_code, product.unit_id._id, newQuantity, accessToken, axiosJWT);
             if (isStockAvailable.inStock) {
                 handleUpdateQuantity(newQuantity);
             } else {

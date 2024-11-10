@@ -21,7 +21,7 @@ const useCart = () => {
     }
 
     const updateProductToCart = async (productId, unitId, quantity, total) => {
-        await updateProductCart(user.id, productId, unitId, quantity,total, accessToken, axiosJWT);
+        await updateProductCart(user.id, productId, unitId, quantity, total, accessToken, axiosJWT);
         await fetchDataCart(setLoadingCart);
     }
 
@@ -29,8 +29,8 @@ const useCart = () => {
         await payCart(navigation, accessToken, axiosJWT, customerId, products);
     }
 
-    const checkStockQuantity = async (item_code, quantity) => {
-        await checkStockQuantityInCart(item_code, quantity, accessToken, axiosJWT);
+    const checkStockQuantity = async (item_code, unit_id, quantity) => {
+        await checkStockQuantityInCart(item_code, unit_id, quantity, accessToken, axiosJWT);
     }
 
     return { addCart, payProductInCart, updateProductToCart, checkStockQuantity };
