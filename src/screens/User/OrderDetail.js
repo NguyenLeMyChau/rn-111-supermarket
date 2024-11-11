@@ -3,12 +3,15 @@ import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image } from 'rea
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { formatCurrency, formatDate } from '../../util/format';
+import { useSelector } from 'react-redux';
 
 export default function OrderDetail() {
     const navigation = useNavigation();
     const route = useRoute();
     const { itemInvoice } = route.params;
+    const products = useSelector((state) => state.product?.products) || [];
     console.log('itemInvoice', itemInvoice);
+    console.log('products', products);
 
     // Hàm xử lý hiển thị promotion
     const renderPromotion = (promotion, promotionDetail, price) => {
@@ -81,32 +84,43 @@ export default function OrderDetail() {
 
             <Text style={styles.productTitle}>Sản phẩm trong đơn hàng:</Text>
 
-            {itemInvoice.detail.map((item) => (
-                <View key={item._id} style={styles.productContainer}>
-                    <Image source={{ uri: item.productImg }} style={styles.productImage} />
-                    <View style={styles.productInfoRow}>
-                        <View style={styles.productInfoLeft}>
-                            <Text style={styles.productName}>{item.productName} - {item.unitName}</Text>
-                            {/* <Text style={styles.productQuantity}>{item.unitName}</Text> */}
-                            <Text style={styles.productQuantity}>Số lượng: <Text style={{ fontWeight: 'bold' }}>{item.quantity}</Text></Text>
-                            <Text style={styles.itemDiscountPrice}>{item.promotion?.description}</Text>
-                        </View>
+            {itemInvoice.detail.map((item) => {
+                console.log('item', item);
+                // Find the product in the productList based on item_code
+                const productFind = products.find((p) => p._id === item.product);
+                console.log('productFind', productFind);
+                // If productFind exists, search for the unit in unit_convert based on unit._id
+                const unitImage = productFind?.unit_convert?.find((u) => u.unit === item.unit._id)?.img || null;
+                console.log('unitImage', unitImage);
 
-                        <View style={styles.productInfoRight}>
-                            {item.promotion ? (
-                                <>
-                                    {renderPromotion(item.promotion, item.promotion.promotionDetail, item.price)}
-                                </>
-                            ) : (
-                                <>
-                                    <Text style={{ ...styles.productPrice, fontSize: 15, fontWeight: 600 }}>{formatCurrency(item.price)}</Text>
-                                    <Text style={styles.productPrice}>Tổng: {formatCurrency(item.total)}</Text>
-                                </>
-                            )}
+                return (
+                    <View key={item._id} style={styles.productContainer}>
+                        <Image
+                            source={{ uri: unitImage || item.productImg }}
+                            style={styles.productImage}
+                        />
+                        <View style={styles.productInfoRow}>
+                            <View style={styles.productInfoLeft}>
+                                <Text style={styles.productName}>{item.productName} - {item.unit.description}</Text>
+                                <Text style={styles.productQuantity}>Số lượng: <Text style={{ fontWeight: 'bold' }}>{item.quantity}</Text></Text>
+                                <Text style={styles.itemDiscountPrice}>{item.promotion?.description}</Text>
+                            </View>
+                            <View style={styles.productInfoRight}>
+                                {item.promotion ? (
+                                    <>
+                                        {renderPromotion(item.promotion, item.promotion.promotionDetail, item.price)}
+                                    </>
+                                ) : (
+                                    <>
+                                        <Text style={{ ...styles.productPrice, fontSize: 15, fontWeight: '600' }}>{formatCurrency(item.price)}</Text>
+                                        <Text style={styles.productPrice}>Tổng: {formatCurrency(item.total)}</Text>
+                                    </>
+                                )}
+                            </View>
                         </View>
                     </View>
-                </View>
-            ))}
+                );
+            })}
         </ScrollView>
     );
 }
