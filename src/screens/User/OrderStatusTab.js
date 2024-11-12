@@ -8,6 +8,7 @@ export default function OrderStatusTab({ route, navigation }) {
     const { status } = route.params;  // Lấy trạng thái đơn hàng từ params
     console.log('status', status);
     const invoices = useSelector(state => state.invoice?.invoices);
+    console.log('invoices', invoices);
     const dispatch = useDispatch();
     const { updateStatusOrderUser } = useUser();  // Sử dụng custom hook useUser
 
@@ -53,7 +54,7 @@ export default function OrderStatusTab({ route, navigation }) {
             onPress={() => navigation.navigate('OrderDetail', { itemInvoice: item })}  // Sử dụng navigation ở đây
         >
             <View style={styles.orderHeader}>
-                <Text style={styles.orderNumber}>Mã đơn hàng: {item._id}</Text>
+                <Text style={styles.orderNumber}>Mã đơn hàng: {item.invoiceCode}</Text>
                 <Text style={styles.orderDate}>{formatDate(item.createdAt)}</Text>
             </View>
             <Text style={styles.orderTotal}>Tổng tiền: {formatCurrency(item.paymentAmount)}</Text>

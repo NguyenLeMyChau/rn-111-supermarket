@@ -75,7 +75,7 @@ function MainTabs() {
         >
             <Tab.Screen name="Shop" component={Shop} options={{ tabBarLabel: 'Cửa hàng' }} />
             <Tab.Screen name="Explore" component={Explore} options={{ tabBarLabel: 'Khám phá' }} />
-            <Tab.Screen name="QRCodeScanner" component={QRCodeScanner} options={{ tabBarLabel: 'Quét QR' }} />
+            {/* <Tab.Screen name="QRCodeScanner" component={QRCodeScanner} options={{ tabBarLabel: 'Quét QR' }} /> */}
             <Tab.Screen name="Cart" component={Cart}
                 options={{
                     tabBarLabel: 'Giỏ hàng',
