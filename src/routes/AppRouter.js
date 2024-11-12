@@ -25,6 +25,7 @@ import PaymentInfo from '../screens/Cart/PaymentInfo';
 import OrderSuccess from '../screens/Cart/OrderSuccess';
 import ProductDetail from '../screens/Explore/ProductDetail';
 import { useSelector } from 'react-redux';
+import OrderStatusTab from '../screens/User/OrderStatusTab';
 
 
 const Stack = createStackNavigator();
@@ -100,6 +101,7 @@ export default function AppRouter() {
                     <Stack.Screen name="Support" component={Support} />
                     <Stack.Screen name="UserInfo" component={UserInfo} />
                     <Stack.Screen name="Order" component={Order} />
+                    <Stack.Screen name="OrderStatusTab" component={OrderStatusTab} />
                     <Stack.Screen name="OrderDetail" component={OrderDetail} />
                     <Stack.Screen name="PaymentInfo" component={PaymentInfo} />
                     <Stack.Screen name="OrderSuccess" component={OrderSuccess} />

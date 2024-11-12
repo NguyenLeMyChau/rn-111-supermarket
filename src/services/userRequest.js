@@ -34,4 +34,20 @@ const getInvoicesByAccountId = async (accountId, accessToken, axiosJWT, dispatch
     }
 }
 
-export { updateCustomerInfo, getInvoicesByAccountId };
+const updateStatusOrder = async (invoice_id, status, accessToken, axiosJWT) => {
+    try {
+        const response = await axiosJWT.put(`/api/invoice/update-status-order`, {
+            invoice_id,
+            status,
+        }, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Update status order failed:', error);
+    }
+}
+
+export { updateCustomerInfo, getInvoicesByAccountId, updateStatusOrder };
