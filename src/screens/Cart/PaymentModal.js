@@ -205,18 +205,24 @@ export default function PaymentModal({ isVisible, onClose, total, cart }) {
                 </TouchableOpacity>
               </View>
 
+              {/* Display Total, Discount, and Final Total */}
+              <View style={styles.sectionRow}>
+                <Text style={styles.label}>Tổng tiền sản phẩm</Text>
+                <Text style={styles.total}>
+                  {total.toLocaleString("vi-VN")} đ
+                </Text>
+              </View>
+
               {appliedPromotion ? (
                 <>
                   <View style={styles.sectionRow}>
-                    <Text style={styles.label}>Tổng tiền</Text>
-                    <Text style={styles.originalPrice}>
-                      {total.toLocaleString("vi-VN")} đ
+                    <Text style={[styles.label,{fontWeight:'bold'}]}>{appliedPromotion.description}</Text>
+                    <Text style={styles.discountText}>
+                      - {(total - discountedTotal).toLocaleString("vi-VN")} đ
                     </Text>
                   </View>
                   <View style={styles.sectionRow}>
-                    <Text style={styles.promotionText}>
-                      Khuyến mãi : {appliedPromotion.description}
-                    </Text>
+                    <Text style={styles.label}>Tổng thanh toán</Text>
                     <Text style={styles.total}>
                       {discountedTotal.toLocaleString("vi-VN")} đ
                     </Text>
@@ -224,7 +230,7 @@ export default function PaymentModal({ isVisible, onClose, total, cart }) {
                 </>
               ) : (
                 <View style={styles.sectionRow}>
-                  <Text style={styles.label}>Tổng tiền</Text>
+                  <Text style={styles.label}>Tổng thanh toán</Text>
                   <Text style={styles.total}>
                     {total.toLocaleString("vi-VN")} đ
                   </Text>
@@ -291,6 +297,12 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     padding: 5,
+  },
+  discountText: {
+    fontSize: 18,
+    color: "red",
+    marginTop: 10,
+    marginBottom: 20,
   },
   label: {
     fontSize: 16,
@@ -383,7 +395,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
-    paddingVertical: 20,
+    paddingVertical: 5,
   },
   promoInput: {
     borderBottomWidth: 1,
