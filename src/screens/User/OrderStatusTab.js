@@ -12,8 +12,10 @@ export default function OrderStatusTab({ route, navigation }) {
     const dispatch = useDispatch();
     const { updateStatusOrderUser } = useUser();  // Sử dụng custom hook useUser
 
-    // Lọc các đơn hàng theo trạng thái
-    const filteredInvoices = invoices?.filter(item => item.status === status);
+    // Lọc và sắp xếp các đơn hàng theo trạng thái và ngày tạo từ mới nhất đến cũ nhất
+    const filteredInvoices = invoices
+        ?.filter(item => item.status === status)
+        ?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
     const handleConfirmDelivery = (invoice) => {
         // Xác nhận và thay đổi trạng thái đơn hàng
@@ -66,7 +68,7 @@ export default function OrderStatusTab({ route, navigation }) {
                     style={styles.confirmButton}
                     onPress={() => handleConfirmDelivery(item)}
                 >
-                    <Text style={styles.confirmButtonText}>Xác nhận đã giao hàng</Text>
+                    <Text style={styles.confirmButtonText}>Xác nhận đã nhận hàng</Text>
                 </TouchableOpacity>
             )}
         </TouchableOpacity>
@@ -109,6 +111,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         color: '#333',
+        width: '50%',
     },
     orderDate: {
         fontSize: 14,

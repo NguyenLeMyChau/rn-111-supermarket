@@ -11,7 +11,9 @@ export function formatDate(date) {
     const day = String(d.getDate()).padStart(2, '0');
     const month = String(d.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
     const year = d.getFullYear();
-    return `${day}/${month}/${year}`;
+    const hours = d.getHours().toString().padStart(2, '0');
+    const minutes = d.getMinutes().toString().padStart(2, '0');
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
 }
 
 /**
@@ -26,7 +28,7 @@ export function formatCurrency(amount) {
     if (isNaN(numberAmount)) {
         throw new TypeError('Invalid amount');
     }
-    
+
     return new Intl.NumberFormat('vi-VN', {
         style: 'currency',
         currency: 'VND',
