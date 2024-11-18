@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { loginFailed, loginStart, loginSuccess, logoutFailed, logoutStart, logoutSuccess, resetLogoutState } from '../store/reducers/authSlice';
 import { jwtDecode } from "jwt-decode";
 import { resetCart } from '../store/reducers/cartSlice';
+import { Alert } from 'react-native';
 
 
 const loginUser = async (loginData, dispatch, navigation) => {
@@ -71,4 +72,16 @@ const logoutUser = async (dispatch, navigation, accessToken, axiosJWT) => {
     }
 }
 
-export { loginUser, logoutUser };
+
+const registerCustomer = async (registerData) => {
+    try {
+        const response = await axios.post(`/api/auth/register-customer`, registerData);
+        Alert.alert('Đăng ký khách hàng thành công');
+        return response.data;
+    } catch (error) {
+        console.error('Resign customer failed:', error);
+        Alert.alert(error.response ? error.response.data.message : error.message);
+    }
+}
+
+export { loginUser, logoutUser, registerCustomer };

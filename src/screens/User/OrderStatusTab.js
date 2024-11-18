@@ -61,15 +61,22 @@ export default function OrderStatusTab({ route, navigation }) {
             </View>
             <Text style={styles.orderTotal}>Tổng tiền: {formatCurrency(item.paymentAmount)}</Text>
             <Text style={styles.orderTotal}>Phương thức thanh toán: {item.paymentMethod}</Text>
-
             {/* Nếu trạng thái là "Đang giao hàng", hiển thị nút xác nhận đã giao hàng */}
             {item.status === 'Đang giao hàng' && (
-                <TouchableOpacity
-                    style={styles.confirmButton}
-                    onPress={() => handleConfirmDelivery(item)}
-                >
-                    <Text style={styles.confirmButtonText}>Xác nhận đã nhận hàng</Text>
-                </TouchableOpacity>
+                <>
+                    <TouchableOpacity
+                        style={styles.confirmButton}
+                        onPress={() => handleConfirmDelivery(item)}
+                    >
+                        <Text style={styles.confirmButtonText}>Xác nhận đã nhận hàng</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.returnButton}
+                        onPress={() => handleRequestReturn(item)}
+                    >
+                        <Text style={styles.returnButtonText}>Yêu cầu hoàn trả</Text>
+                    </TouchableOpacity>
+                </>
             )}
         </TouchableOpacity>
     );
@@ -130,6 +137,18 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     confirmButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    returnButton: {
+        marginTop: 12,
+        padding: 10,
+        backgroundColor: '#FF6347',
+        borderRadius: 8,
+        alignItems: 'center',
+    },
+    returnButtonText: {
         color: '#fff',
         fontSize: 16,
         fontWeight: 'bold',

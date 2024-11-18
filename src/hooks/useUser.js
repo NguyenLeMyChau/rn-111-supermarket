@@ -2,6 +2,7 @@ import { useSelector } from "react-redux";
 import { useAccessToken, useAxiosJWT } from "../util/axiosInstance";
 import { useNavigation } from "@react-navigation/native";
 import { getInvoicesByAccountId, updateCustomerInfo, updateStatusOrder } from "../services/userRequest";
+import { registerCustomer } from "../services/authRequest";
 
 const useUser = () => {
     const navigation = useNavigation();

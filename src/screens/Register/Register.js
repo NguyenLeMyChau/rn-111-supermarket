@@ -10,6 +10,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import Input from '../../components/input/Input';
 import Button from '../../components/button/Button';
 import TouchableOpacityForm from '../../components/button/TouchableOpacityForm';
+import { registerCustomer } from '../../services/authRequest';
 
 const CELL_COUNT = 6;
 const { width } = Dimensions.get('window');
@@ -17,31 +18,25 @@ const BUTTON_WIDTH = width * 0.8;
 const CELL_WIDTH = BUTTON_WIDTH / CELL_COUNT;
 
 export default function Register({ navigation }) {
-    const [username, setUsername] = useState('');
+    const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
 
-    const [isModalOTP, setIsModalOTP] = useState(false);
-    const [value, setValue] = useState('');
-    const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
-    const [props, getCellOnLayoutHandler] = useClearByFocusCell({
-        value,
-        setValue,
-    });
-
-    const sendOTP = async () => {
-        console.log('Gửi mã OTP');
-        setIsModalOTP(true);
-    };
-
-    const closeModalOTP = () => {
-        setIsModalOTP(false);
-    };
-
-    const handleConfirmCode = async () => {
-        console.log('Xác nhận mã OTP');
-    };
+    const handleRegister = async () => {
+        if (!name || !phone || !password) {
+            Alert.alert('Thông báo', 'Vui lòng nhập đầy đủ thông tin');
+            console.log('Vui lòng nhập đầy đủ thông tin');
+        } else {
+            const registerData = {
+                name,
+                phone,
+                password,
+                role: 'customer',
+            };
+            await registerCustomer(registerData);
+        }
+    }
 
     return (
         <View style={styles.container}>
@@ -51,9 +46,9 @@ export default function Register({ navigation }) {
             <Input
                 Icon={AntDesign}
                 nameIcon={'user'}
-                placeholder={'Username'}
-                value={username}
-                onChangeText={setUsername}
+                placeholder={'Nhập tên'}
+                value={name}
+                onChangeText={setName}
             />
 
             <Input
@@ -76,7 +71,7 @@ export default function Register({ navigation }) {
                 onPressIconEnd={() => setShowPassword(!showPassword)}
             />
 
-            <Button TextValue={'Đăng ký'} onPress={sendOTP} />
+            <Button TextValue={'Đăng ký'} onPress={handleRegister} />
 
             <TouchableOpacityForm
                 TextBegin={"Bạn đã có tài khoản?"}
@@ -84,46 +79,6 @@ export default function Register({ navigation }) {
                 onPress={() => navigation.navigate('Login')}
             />
 
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={isModalOTP}
-                onRequestClose={closeModalOTP}
-            >
-                <View style={styles.modalContainer}>
-                    <View style={styles.modalContent}>
-                        <Text style={styles.modalTitle}>Nhập mã OTP</Text>
-                        <CodeField
-                            ref={ref}
-                            {...props}
-                            value={value}
-                            onChangeText={setValue}
-                            cellCount={CELL_COUNT}
-                            rootStyle={styles.codeFieldRoot}
-                            keyboardType="number-pad"
-                            textContentType="oneTimeCode"
-                            renderCell={({ index, symbol, isFocused }) => (
-                                <View
-                                    key={index}
-                                    style={[styles.cell, isFocused && styles.focusCell]}
-                                    onLayout={getCellOnLayoutHandler(index)}>
-                                    <Text style={styles.cellText}>
-                                        {symbol || (isFocused ? <Cursor /> : null)}
-                                    </Text>
-                                </View>
-                            )}
-                        />
-
-                        <TouchableOpacity style={styles.button} onPress={handleConfirmCode}>
-                            <Text style={styles.buttonText}>Xác nhận</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity onPress={closeModalOTP}>
-                            <Text style={styles.closeModalText}>Đóng</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </Modal>
 
         </View>
 
