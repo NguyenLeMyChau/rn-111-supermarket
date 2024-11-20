@@ -36,7 +36,7 @@ const CartItem = ({ item }) => {
   const [giaBan, setGiaBan] = useState(item.quantity * item.price.price);
   const [quantity_donate,setQuantity_donate] = useState(0);
   const [promotionApply,setPromotionApply] = useState(null);
-
+console.log(item)
   useEffect(() => {
     const fetchPromotion = async () => {
       try {
@@ -136,7 +136,7 @@ const CartItem = ({ item }) => {
         promotion:promotionApply,
       })
     );
-  }, [giakhuyenmai])
+  }, [giakhuyenmai,giaBan])
 
   // Cập nhật số lượng sản phẩm
   const handleUpdateQuantity = async (newQuantity) => {

@@ -62,14 +62,18 @@ const addProductToCart = async (accessToken, axiosJWT, accountId, productId, uni
     }
 }
 
-const payCart = async (navigation, accessToken, axiosJWT, customerId, products, paymentMethod, paymentInfo, paymentAmount) => {
+const payCart = async (navigation, accessToken, axiosJWT, customerId, products, paymentMethod, paymentInfo, paymentAmount,promotionOnInvoice,discountPayment,
+    totalPayment) => {
     try {
         const response = await axiosJWT.post(`/api/customer/pay-cart`, {
             customerId,
             products,
             paymentMethod,
             paymentInfo,
-            paymentAmount
+            paymentAmount,
+            promotionOnInvoice,
+            discountPayment,
+            totalPayment
         }, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,

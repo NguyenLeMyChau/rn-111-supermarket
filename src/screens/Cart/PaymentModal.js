@@ -89,17 +89,8 @@ export default function PaymentModal({ isVisible, onClose, total, cart }) {
   }, [promotion, total]);
 
   const paymentMethods = [
-    { id: "1", name: "MoMo", icon: require("../../../assets/icon-momo.png") },
-    {
-      id: "2",
-      name: "Thẻ tín dụng",
-      icon: require("../../../assets/icon-the-tin-dung.png"),
-    },
-    {
-      id: "3",
-      name: "Ngân hàng",
-      icon: require("../../../assets/icon-ngan-hang.jpg"),
-    },
+    { id: "1", name: "ZaloPay", icon: require("../../../assets/icon-zalopay.jpg") },
+    
     // { id: '4', name: 'Tiền mặt', icon: require('../../../assets/icon-tien-mat.png') },
   ];
 
@@ -149,7 +140,10 @@ export default function PaymentModal({ isVisible, onClose, total, cart }) {
       cart,
       paymentMethod.name,
       paymentInfo,
-      discountedTotal
+      discountedTotal,
+      appliedPromotion,
+      total-discountedTotal,
+      total
     );
     onClose();
     // navigation.navigate('OrderSuccess');
