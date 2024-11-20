@@ -54,7 +54,7 @@ const ProductDetail = () => {
     if (product.promotions) {
         product.promotions.forEach((item) => {
             if (item.type === "quantity") {
-                giakhuyenmai = item.line; // Đảm bảo promo.line là một chuỗi hoặc số
+                giakhuyenmai = item.description; // Đảm bảo promo.line là một chuỗi hoặc số
             } else if (item.type === "amount") {
                 giakhuyenmai = product.price - item.amount_donate; // Đảm bảo là chuỗi
             }
@@ -118,7 +118,7 @@ const ProductDetail = () => {
             return;
         }
         if (!existingCartItem) {
-            addCart(product._id, product.unit_id._id, quantity, total);
+            addCart(product._id, product.unit_id._id, quantity, total,product.promotions[0]);
         }
         else {
             console.log('Chạy updateProductToCart');
@@ -135,7 +135,7 @@ const ProductDetail = () => {
         if (item.promotions) {
             item.promotions.forEach((promo) => {
                 if (promo.type === "quantity") {
-                    giakhuyenmai = promo.line;
+                    giakhuyenmai =  promo.description;
                 } else if (promo.type === "amount") {
                     giakhuyenmai = item.price - promo.amount_donate;
                 }
@@ -478,6 +478,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#e53935', // Màu sắc cho giá khuyến mãi
         textAlign: 'right',
+        maxWidth:100,
     },
     addToCartButton: {
         backgroundColor: colors.button,

@@ -28,7 +28,7 @@ export default function ProductList({ route }) {
       Alert.alert("Lưu ý", "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
       return;
     }
-    addCart(product._id, product.unit_id._id, quantity, total);
+    addCart(product._id, product.unit_id._id, quantity, total,product.promotions[0]);
   };
 
   const renderProduct = ({ item }) => {
@@ -39,7 +39,7 @@ export default function ProductList({ route }) {
     if (item.promotions) {
       item.promotions.forEach((promo) => {
         if (promo.type === "quantity") {
-          giakhuyenmai = promo.line; // Đảm bảo promo.line là một chuỗi hoặc số
+          giakhuyenmai = promo.description; // Đảm bảo promo.line là một chuỗi hoặc số
         } else if (promo.type === "amount") {
           giakhuyenmai = item.price - promo.amount_donate; // Đảm bảo là chuỗi
         }
@@ -188,19 +188,20 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "bold",
     color: "#333",
-    textAlign: "right",
+    textAlign: "left",
   },
   originalPrice: {
     textDecorationLine: "line-through",
     color: "#888",
     fontSize: 12,
-    textAlign: "right",
+    textAlign: "left",
   },
   discountPrice: {
     fontSize: 12,
     fontWeight: "bold",
     color: "#e53935",
-    textAlign: "right",
+    textAlign: "left",
+    maxWidth:100,
   },
   addToCartButton: {
     backgroundColor: colors.button,

@@ -38,7 +38,7 @@ export default function Shop() {
             alert("Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
             return;
         }
-        addCart(product._id, product.unit_id._id, quantity, price);
+        addCart(product._id, product.unit_id._id, quantity, price,product.promotions[0]);
     };
 
     const renderProduct = ({ item }) => {

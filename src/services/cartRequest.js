@@ -40,7 +40,7 @@ const getPromotions = async () => {
 }
 
 
-const addProductToCart = async (accessToken, axiosJWT, accountId, productId, unitId, quantity, total) => {
+const addProductToCart = async (accessToken, axiosJWT, accountId, productId, unitId, quantity, total,promotions) => {
     try {
         const response = await axiosJWT.post(`/api/customer/add-product-to-cart`, {
             accountId,
@@ -48,6 +48,7 @@ const addProductToCart = async (accessToken, axiosJWT, accountId, productId, uni
             unitId,
             quantity,
             total,
+            promotions,
         }, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,

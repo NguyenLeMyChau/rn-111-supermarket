@@ -29,7 +29,7 @@ const cartSlice = createSlice({
             state.error = false;
         },
         updateProductQuantity(state, action) {
-            const { productId, quantity, total,unit_id } = action.payload;
+            const { productId, quantity, total,unit_id,quantity_donate ,promotion} = action.payload;
             console.log(state.carts)
             console.log(productId, quantity, total,unit_id)
             const product = state.carts?.find(
@@ -38,6 +38,8 @@ const cartSlice = createSlice({
             if (product) {
                 product.quantity = quantity;
                 product.total = total;
+                product.quantity_donate= quantity_donate;
+                product.promotions= promotion;
             }
         },
     }
