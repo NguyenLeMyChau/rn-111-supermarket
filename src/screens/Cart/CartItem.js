@@ -66,7 +66,7 @@ console.log(item)
            
               if (eligibleQuantity > 0) {
                 setQuantity_donate(eligibleQuantity)
-                setPromotionApply(promotion._id)
+                setPromotionApply(promotion)
                 setGiaKhuyeMai((quantity - eligibleQuantity) * item.price.price)
               }
                // Trường hợp 2: product_id === promotion.product_id và product_id !== promotion.product_donate
@@ -110,7 +110,7 @@ console.log(item)
                 setGiaKhuyeMai(-1)
               }
               setQuantity_donate(eligibleQuantity)
-              setPromotionApply(promotion._id)
+              setPromotionApply(promotion)
               const gia = (quantity - eligibleQuantity) * item.price.price;
               setGiaKhuyeMai(gia>=0?gia:0);
             }

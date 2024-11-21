@@ -19,6 +19,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "newArchEnabled": true, 
       "package": "com.nguyenlemychau.rn111supermarket"
     },
     "web": {

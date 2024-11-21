@@ -10,6 +10,7 @@ const getCartById = async (dispatch, accessToken, axiosJWT, accountId) => {
                 Authorization: `Bearer ${accessToken}`,
             },
         });
+        console.log(response.data)
         dispatch(getCartSuccess(response.data));
         return response.data;
     } catch (error) {
