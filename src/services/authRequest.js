@@ -4,12 +4,13 @@ import { loginFailed, loginStart, loginSuccess, logoutFailed, logoutStart, logou
 import { jwtDecode } from "jwt-decode";
 import { resetCart } from '../store/reducers/cartSlice';
 import { Alert } from 'react-native';
+import { BASE_URL } from '../util/url';
 
 
 const loginUser = async (loginData, dispatch, navigation) => {
     dispatch(loginStart());
     try {
-        const response = await axios.post(`http://localhost:5000/api/auth/login`, loginData);
+        const response = await axios.post(`${BASE_URL}/api/auth/login`, loginData);
 
         const { accessToken, refreshToken } = response.data;
 

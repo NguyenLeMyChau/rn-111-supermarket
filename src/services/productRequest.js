@@ -1,6 +1,7 @@
 import axios from "axios";
 import { getCategoryFailed, getCategoryStart, getCategorySuccess } from "../store/reducers/categorySlice";
 import { getProductFailed, getProductStart, getProductSuccess } from "../store/reducers/productSlice";
+import { BASE_URL } from "../util/url";
 
 // const getAllCategories = async (dispatch) => {
 //     dispatch(getCategoryStart());
@@ -21,7 +22,7 @@ import { getProductFailed, getProductStart, getProductSuccess } from "../store/r
 const getAllCategories = async (dispatch) => {
     dispatch(getCategoryStart());
     try {
-        const response = await axios.get(`http://localhost:5000/api/auth/get-products-with-price-and-promotion`);
+        const response = await axios.get(`${BASE_URL}/api/auth/get-products-with-price-and-promotion`);
         console.log(response.data)
         dispatch(getCategorySuccess(response.data));
         return response.data;
@@ -34,7 +35,7 @@ const getAllCategories = async (dispatch) => {
 const getAllProducts = async (dispatch) => {
     dispatch(getProductStart());
     try {
-        const response = await axios.get(`http://localhost:5000/api/auth/get-products-with-price-and-promotion-no-category`);
+        const response = await axios.get(`${BASE_URL}/api/auth/get-products-with-price-and-promotion-no-category`);
         console.log(response.data)
         dispatch(getProductSuccess(response.data));
         return response.data;

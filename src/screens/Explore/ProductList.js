@@ -51,7 +51,7 @@ export default function ProductList({ route }) {
         onPress={() => navigation.navigate("ProductDetail", { product: item })}
       >
         <Image
-          source={{ uri: item.img }}
+          source={{ uri: item?.img }}
           style={styles.productImage}
           resizeMode="contain"
         />

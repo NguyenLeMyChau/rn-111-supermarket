@@ -60,7 +60,7 @@ export default function Shop() {
                 style={[styles.productContainer]}
                 onPress={() => navigation.navigate('ProductDetail', { product: item })}
             >
-                <Image source={{ uri: item.img }} style={styles.productImage} resizeMode="contain" />
+                <Image source={{ uri: item?.img }} style={styles.productImage} resizeMode="contain" />
 
                 <View style={styles.productInfo}>
                     <Text style={styles.productName} numberOfLines={2} ellipsizeMode="tail">{item.name}</Text>

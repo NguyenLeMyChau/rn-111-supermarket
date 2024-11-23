@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { jwtDecode } from "jwt-decode";
 import { logoutSuccess, resetLogoutState } from "../store/reducers/authSlice";
 import { resetCart } from "../store/reducers/cartSlice";
+import { BASE_URL } from "./url";
 
 const refreshToken = async () => {
     try {
@@ -23,7 +24,8 @@ const refreshToken = async () => {
 
 export const createAxiosInstance = (user, dispatch, stateSuccess) => {
     const newInstance = axios.create({
-        baseURL: 'http://localhost:5000',
+        // baseURL: 'http://localhost:5000',
+        baseURL: `${BASE_URL}`,
     });
 
     newInstance.interceptors.request.use(

@@ -36,7 +36,8 @@ export default function Search() {
                 <View style={styles.container}>
                     <FlatList
                         data={filteredProducts}
-                        keyExtractor={(item) => item._id.toString()}
+                        keyExtractor={(item) => `${item._id.toString()}-${item.unit_id._id.toString()}`}
+
                         renderItem={({ item }) => (
                             <TouchableOpacity
                                 style={styles.itemContainer}

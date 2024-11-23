@@ -1,5 +1,6 @@
 import axios from "axios";
 import { getCartFailed, getCartStart, getCartSuccess } from "../store/reducers/cartSlice";
+import { BASE_URL } from "../util/url";
 
 
 const getCartById = async (dispatch, accessToken, axiosJWT, accountId) => {
@@ -20,7 +21,7 @@ const getCartById = async (dispatch, accessToken, axiosJWT, accountId) => {
 };
 const getPromotionByProductId = async (product_id, unit_id) => {
     try {
-        const response = await axios.post(`http://localhost:5000/api/auth/get-promotion-by-product`, { product_id, unit_id });
+        const response = await axios.post(`${BASE_URL}/api/auth/get-promotion-by-product`, { product_id, unit_id });
         if (!response.data) {
             return null; // hoặc return {} hoặc [] tùy thuộc vào nhu cầu của bạn
         }
@@ -32,7 +33,7 @@ const getPromotionByProductId = async (product_id, unit_id) => {
 }
 const getPromotions = async () => {
     try {
-        const response = await axios.get(`http://localhost:5000/api/auth/get-promotions`);
+        const response = await axios.get(`${BASE_URL}/api/auth/get-promotions`);
         console.log(response.data)
         return response.data;
     } catch (error) {

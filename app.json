@@ -16,10 +16,10 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/favicon.png",
         "backgroundColor": "#ffffff"
       },
-      "newArchEnabled": true, 
+      "newArchEnabled": true,
       "package": "com.nguyenlemychau.rn111supermarket"
     },
     "web": {
@@ -27,8 +27,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "952e9b94-cf48-400d-b522-e9e87784b24c"
+        "projectId": "9ac114af-0dad-4b55-b09a-e023ddb82891"
       }
-    }
+    },
+    "owner": "nguyenvanhoangiuh2k2"
   }
 }

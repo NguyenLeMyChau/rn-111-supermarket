@@ -148,7 +148,7 @@ const ProductDetail = () => {
                 style={[styles.productContainer]}
                 onPress={() => navigation.push('ProductDetail', { product: item })}
             >
-                <Image source={{ uri: item.img }} style={styles.productImage} resizeMode="contain" />
+                <Image source={{ uri: item?.img }} style={styles.productImage} resizeMode="contain" />
 
                 <View style={styles.productInfo}>
                     <Text style={styles.productName} numberOfLines={2} ellipsizeMode="tail">{item.name}</Text>
@@ -191,7 +191,7 @@ const ProductDetail = () => {
                     <Text>{product.name}</Text>
                 </View>
                 <View style={styles.imgContainer}>
-                    <Image source={{ uri: product.img }} style={styles.image} />
+                    <Image source={{ uri: product?.img }} style={styles.image} />
                 </View>
                 <View style={styles.info}>
                     <View style={styles.productInfo}>
