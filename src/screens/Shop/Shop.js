@@ -20,7 +20,7 @@ export default function Shop() {
     const user = useSelector((state) => state.auth?.login?.currentUser) || {};
     const categories = useSelector((state) => state.category?.categories) || [];
     const products = useSelector((state) => state.product?.products) || [];
-    const productsWithPromotions = products.filter(product => product.promotions && product.promotions.length > 0);
+    const productsWithPromotions = products?.filter(product => product.promotions && product.promotions.length > 0);
 
     const filteredCategories = categories.filter(category => category.products.length > 0);
     const [loadingShop, setLoadingShop] = useState(true);
@@ -60,7 +60,7 @@ export default function Shop() {
                 style={[styles.productContainer]}
                 onPress={() => navigation.navigate('ProductDetail', { product: item })}
             >
-                <Image source={{ uri: item?.img }} style={styles.productImage} resizeMode="contain" />
+                <Image source={{ uri: item.img }} style={styles.productImage} resizeMode="contain" />
 
                 <View style={styles.productInfo}>
                     <Text style={styles.productName} numberOfLines={2} ellipsizeMode="tail">{item.name}</Text>

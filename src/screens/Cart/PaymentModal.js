@@ -112,42 +112,50 @@ export default function PaymentModal({ isVisible, onClose, total, cart }) {
     setPaymentPickerVisible(false);
   };
 
-  const handleOrder = () => {
+  const handleOrder = async () => {
     if (!paymentInfo) {
       alert("Vui lòng nhập thông tin nhận hàng");
       return;
     }
-
+  
     if (!paymentMethod) {
       alert("Vui lòng chọn phương thức thanh toán");
       return;
     }
-
-    const address = {
-      street: paymentInfo.street,
-      city: paymentInfo.city,
-      district: paymentInfo.district,
-      ward: paymentInfo.ward,
-    };
-
-    paymentInfo.address = address;
-
-    payCart(
-      navigation,
-      accessToken,
-      axiosJWT,
-      user.id,
-      cart,
-      paymentMethod.name,
-      paymentInfo,
-      discountedTotal,
-      appliedPromotion,
-      total-discountedTotal,
-      total
-    );
-    onClose();
-    // navigation.navigate('OrderSuccess');
+  
+    if (paymentMethod.name === "ZaloPay") {
+      try {
+        // Gửi yêu cầu thanh toán đến backend để tạo đơn thanh toán ZaloPay
+        const response = await axiosJWT.post("/api/payment/paymentapp", {
+          amount:discountedTotal
+        });
+    console.log(response)
+        if (response.data.paymentUrl.return_message === "Giao dịch thành công") {
+          // Lấy URL thanh toán ZaloPay từ backend
+          const zaloPayUrl = response.data.paymentUrl.order_url;
+  
+          // Chuyển hướng người dùng đến WebView để thanh toán ZaloPay
+          navigation.navigate("ViewPayZalo", { 
+            url: zaloPayUrl,
+            paymentInfo: paymentInfo, 
+            cart: cart,
+            discountedTotal: discountedTotal,
+            appliedPromotion: appliedPromotion,
+            paymentMethod: paymentMethod,
+            total: total,
+            user: user,
+            accessToken: accessToken
+          });
+        } else {
+          alert("Có lỗi xảy ra khi tạo yêu cầu thanh toán ZaloPay");
+        }
+      } catch (error) {
+        console.error("Error calling backend for ZaloPay payment:", error);
+        alert("Có lỗi xảy ra trong quá trình thanh toán.");
+      }
+    }
   };
+  
 
   return (
     <Modal

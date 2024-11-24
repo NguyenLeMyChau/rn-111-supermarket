@@ -26,6 +26,7 @@ import OrderSuccess from '../screens/Cart/OrderSuccess';
 import ProductDetail from '../screens/Explore/ProductDetail';
 import { useSelector } from 'react-redux';
 import OrderStatusTab from '../screens/User/OrderStatusTab';
+import ViewPayZalo from '../screens/Cart/ViewPayZalo';
 
 
 const Stack = createStackNavigator();
@@ -106,6 +107,7 @@ export default function AppRouter() {
                     <Stack.Screen name="PaymentInfo" component={PaymentInfo} />
                     <Stack.Screen name="OrderSuccess" component={OrderSuccess} />
                     <Stack.Screen name="ProductDetail" component={ProductDetail} />
+                    <Stack.Screen name="ViewPayZalo" component={ViewPayZalo} />
                 </Stack.Navigator>
             </NavigationContainer>
         </PaymentModalProvider>
