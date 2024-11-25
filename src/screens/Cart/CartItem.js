@@ -13,6 +13,7 @@ import Icon from "react-native-vector-icons/MaterialIcons"; // Import Icon
 import { useDispatch, useSelector } from "react-redux"; // Import dispatch from Redux
 import { updateProductQuantity } from "../../store/reducers/cartSlice";
 import {
+  addProductToCart,
   checkStockQuantityInCart,
   getPromotionByProductId,
   removeProductCart,
@@ -20,6 +21,8 @@ import {
 import { useAccessToken, useAxiosJWT } from "../../util/axiosInstance";
 import useCommonData from "../../hooks/useCommonData";
 import { loadingContainer } from "../../constants/Loading";
+import useCart from "../../hooks/useCart";
+
 
 const CartItem = ({ item }) => {
   const dispatch = useDispatch();
@@ -36,7 +39,11 @@ const CartItem = ({ item }) => {
   const [giaBan, setGiaBan] = useState(item.quantity * item.price.price);
   const [quantity_donate,setQuantity_donate] = useState(0);
   const [promotionApply,setPromotionApply] = useState(null);
-console.log(item)
+  const [notProductDonate,setNotProductDonate] = useState();
+  const products = useSelector((state) => state.product?.products) || [];
+  const { addCart,removeProductFromCart } = useCart();
+  console.log('item test code',item)
+
   useEffect(() => {
     const fetchPromotion = async () => {
       try {
@@ -80,8 +87,10 @@ console.log(item)
             );
           
               const donateProductExists = cart.find(cartItem => cartItem.product_id._id === promotion.product_id && cartItem.unit._id === promotion.unit_id_donate._id);
-            
+           
               if(!donateProductExists){
+                const donateProduct = products.find(cartItem => cartItem._id === promotion.product_id && cartItem.unit_id._id === promotion.unit_id_donate._id);
+                setNotProductDonate(donateProduct)
                 setPromotionApply(null);
                 setQuantity_donate(0);
                 setGiaKhuyeMai(-1)
@@ -252,12 +261,19 @@ console.log(item)
   };
 
   const handleRemoveItem = async () => {
-    // Logic để xóa mục khỏi giỏ hàng
-    await removeProductCart(user.id, item.product_id._id, item.unit._id, accessToken, axiosJWT);
+    removeProductFromCart(user.id, item.product_id._id, item.unit._id);
+  
     await fetchDataCart(setLoadingCart);
+    
   };
 
+  const handleAddItem = async () => {
+    console.log('product', notProductDonate)
+    addCart(notProductDonate._id, notProductDonate.unit_id._id, 1, notProductDonate.price);
+    setNotProductDonate();
+  };
   return (
+    <View>
     <View style={styles.itemContainer}>
       <View style={{ width: "28%", height: 100, paddingRight: 10 }}>
         <Image style={styles.itemImage} source={{ uri: item.img }} />
@@ -325,6 +341,16 @@ console.log(item)
           )}
         </View>
       </View>
+      
+    </View>
+    { notProductDonate &&
+    <View style={styles.itemContainer}>
+       <TouchableOpacity style={styles.buttonForm} onPress={() => handleAddItem()}>
+                            <Text style={styles.textButton}>Thêm sản phẩm quà tặng</Text>
+                        </TouchableOpacity>
+     
+          </View>}
+    
     </View>
   );
 };
@@ -420,6 +446,20 @@ const styles = StyleSheet.create({
     height: 40,
     alignItems: "flex-end",
   },
+  
+  textButton: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+},
+buttonForm: {
+  width: '100%',
+  backgroundColor: 'green',
+  padding: 7,
+  borderRadius: 10,
+  alignItems: 'center',
+  alignSelf: 'center',
+},
 });
 
 export default CartItem;

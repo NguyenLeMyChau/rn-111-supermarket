@@ -1,6 +1,7 @@
 import React from "react";
 import { ActivityIndicator, NativeModules, View } from "react-native";
 import WebView from "react-native-webview";
+import { payCart } from "../../services/cartRequest";
 
 const ViewPayZalo = ({ route, navigation }) => {
   const {
@@ -13,6 +14,7 @@ const ViewPayZalo = ({ route, navigation }) => {
     total,
     user,
     accessToken,
+    emitSocketEvent
   } = route.params; // Lấy thông tin đã truyền qua params
 console.log(url)
   const handleNavigationStateChange = (state) => {
@@ -64,7 +66,8 @@ console.log(url)
         appliedPromotion,
         total - discountedTotal,
         total,
-        transactionId // Gửi transactionId từ ZaloPay
+        emitSocketEvent,
+        transactionId
       );
       navigation.navigate("OrderSuccess"); // Chuyển hướng đến trang thành công
     } catch (error) {

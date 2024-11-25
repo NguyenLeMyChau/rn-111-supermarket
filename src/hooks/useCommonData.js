@@ -26,6 +26,7 @@ const useCommonData = () => {
 
     const fetchDataCart = async (setLoading) => {
         try {
+            console.log('1231');
             setLoading(true); // Bắt đầu loading
             const cart = await getCartById(dispatch, accessToken, axiosJWT, user.id);
             setPreviousCart(cart);

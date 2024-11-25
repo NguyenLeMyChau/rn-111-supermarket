@@ -127,7 +127,7 @@ export default function Cart() {
                     <FlatList
                         data={cart}
                         renderItem={({ item }) => <CartItem item={item} />}
-                        keyExtractor={(item, index) => `${item.product_id}-${index}`}
+                        keyExtractor={(item, index) => `${item.product_id._id}-${item.unit._id}`}
                         contentContainerStyle={styles.list}
                     />
                     <View style={styles.footer}>

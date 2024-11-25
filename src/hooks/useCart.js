@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { useAccessToken, useAxiosJWT } from "../util/axiosInstance";
-import { addProductToCart, checkStockQuantityInCart, payCart, updateProductCart } from "../services/cartRequest";
+import { addProductToCart, checkStockQuantityInCart, payCart, removeProductCart, updateProductCart } from "../services/cartRequest";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import useCommonData from "./useCommonData";
@@ -27,7 +27,10 @@ const useCart = () => {
         await updateProductCart(user.id, productId, unitId, quantity, total, accessToken, axiosJWT);
         await fetchDataCart(setLoadingCart);
     }
-
+    const removeProductFromCart = async (accountId, productId, unit_id) => {
+        await removeProductCart(accountId, productId, unit_id, accessToken, axiosJWT);
+        await fetchDataCart(setLoadingCart);
+    }
     const payProductInCart = async (customerId, products) => {
         await payCart(navigation, accessToken, axiosJWT, customerId, products);
     }
@@ -36,7 +39,7 @@ const useCart = () => {
         await checkStockQuantityInCart(item_code, unit_id, quantity, accessToken, axiosJWT);
     }
 
-    return { addCart, payProductInCart, updateProductToCart, checkStockQuantity };
+    return { addCart, payProductInCart, updateProductToCart, checkStockQuantity,removeProductFromCart };
 }
 
 export default useCart;
