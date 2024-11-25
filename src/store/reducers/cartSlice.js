@@ -31,7 +31,7 @@ const cartSlice = createSlice({
         updateProductQuantity(state, action) {
             const { productId, quantity, total,unit_id,quantity_donate ,promotion} = action.payload;
             console.log(state.carts)
-            console.log(productId, quantity, total,unit_id)
+            console.log("pro",promotion)
             const product = state.carts?.find(
                 (product) => product.product_id._id === productId && product.unit._id === unit_id
               );

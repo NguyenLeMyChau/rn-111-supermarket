@@ -65,7 +65,7 @@ const addProductToCart = async (accessToken, axiosJWT, accountId, productId, uni
 }
 
 const payCart = async (navigation, accessToken, axiosJWT, customerId, products, paymentMethod, paymentInfo, paymentAmount,promotionOnInvoice,discountPayment,
-    totalPayment) => {
+    totalPayment,emitSocketEvent) => {
     try {
         const response = await axiosJWT.post(`/api/customer/pay-cart`, {
             customerId,
@@ -82,7 +82,7 @@ const payCart = async (navigation, accessToken, axiosJWT, customerId, products, 
             },
         });
         if (response.data.success) {
-            alert('Thanh toán giỏ hàng thành công');
+            emitSocketEvent("paymentSuccess", response.data);
             navigation.navigate('OrderSuccess');
         } else alert('Thanh toán giỏ hàng thất bại ');
 

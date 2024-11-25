@@ -77,11 +77,11 @@ const logoutUser = async (dispatch, navigation, accessToken, axiosJWT) => {
 const registerCustomer = async (registerData) => {
     try {
         const response = await axios.post(`/api/auth/register-customer`, registerData);
-        Alert.alert('Đăng ký khách hàng thành công');
+       alert('Đăng ký khách hàng thành công');
         return response.data;
     } catch (error) {
         console.error('Resign customer failed:', error);
-        Alert.alert(error.response ? error.response.data.message : error.message);
+       alert(error.response ? error.response.data.message : error.message);
     }
 }
 

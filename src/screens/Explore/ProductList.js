@@ -5,7 +5,7 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
-  Alert,
+  
 } from "react-native";
 import React from "react";
 import colors from "../../constants/Color";
@@ -25,7 +25,7 @@ export default function ProductList({ route }) {
   const handleAddCart = (product, quantity, total) => {
     console.log('product', product);
     if (!user.id) {
-      Alert.alert("Lưu ý", "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
+      alert("Lưu ý", "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
       return;
     }
     addCart(product._id, product.unit_id._id, quantity, total,product.promotions[0]);

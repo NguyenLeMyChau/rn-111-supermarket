@@ -45,6 +45,7 @@ console.log(item)
           const promotion = promotions[0];
           setKhuyenMai(promotion); // Assuming only the first promotion found is used
           if (promotion.promotionLine_id.type === "amount") {
+            setPromotionApply(promotion)
             setQuantity_donate(quantity)
             setGiaKhuyeMai((item.price.price - promotion.amount_donate) * quantity);
             setType(promotion.promotionLine_id.type);

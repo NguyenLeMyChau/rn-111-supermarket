@@ -17,6 +17,7 @@ import { usePaymentModal } from "../../context/PaymentProvider";
 import { getPromotions, payCart } from "../../services/cartRequest";
 import { useAccessToken, useAxiosJWT } from "../../util/axiosInstance";
 import { useSelector } from "react-redux";
+import { useSocket } from "../../context/SocketContext";
 
 export default function PaymentModal({ isVisible, onClose, total, cart }) {
   const navigation = useNavigation();
@@ -28,6 +29,7 @@ export default function PaymentModal({ isVisible, onClose, total, cart }) {
   const [promotion, setPromotion] = useState([]);
   const [discountedTotal, setDiscountedTotal] = useState(total);
   const [appliedPromotion, setAppliedPromotion] = useState(null);
+  const { emitSocketEvent, onSocketEvent } = useSocket();
 
   useEffect(() => {
     // Gọi API để lấy danh sách khuyến mãi
@@ -123,36 +125,61 @@ export default function PaymentModal({ isVisible, onClose, total, cart }) {
       return;
     }
   
-    if (paymentMethod.name === "ZaloPay") {
-      try {
-        // Gửi yêu cầu thanh toán đến backend để tạo đơn thanh toán ZaloPay
-        const response = await axiosJWT.post("/api/payment/paymentapp", {
-          amount:discountedTotal
-        });
-    console.log(response)
-        if (response.data.paymentUrl.return_message === "Giao dịch thành công") {
-          // Lấy URL thanh toán ZaloPay từ backend
-          const zaloPayUrl = response.data.paymentUrl.order_url;
+    // if (paymentMethod.name === "ZaloPay") {
+    //   try {
+    //     // Gửi yêu cầu thanh toán đến backend để tạo đơn thanh toán ZaloPay
+    //     const response = await axiosJWT.post("/api/payment/paymentapp", {
+    //       amount:discountedTotal
+    //     });
+    //     console.log(response)
+    //     if (response.data.paymentUrl.return_message === "Giao dịch thành công") {
+    //       // Lấy URL thanh toán ZaloPay từ backend
+    //       const zaloPayUrl = response.data.paymentUrl.order_url;
   
-          // Chuyển hướng người dùng đến WebView để thanh toán ZaloPay
-          navigation.navigate("ViewPayZalo", { 
-            url: zaloPayUrl,
-            paymentInfo: paymentInfo, 
-            cart: cart,
-            discountedTotal: discountedTotal,
-            appliedPromotion: appliedPromotion,
-            paymentMethod: paymentMethod,
-            total: total,
-            user: user,
-            accessToken: accessToken
-          });
-        } else {
-          alert("Có lỗi xảy ra khi tạo yêu cầu thanh toán ZaloPay");
-        }
-      } catch (error) {
-        console.error("Error calling backend for ZaloPay payment:", error);
-        alert("Có lỗi xảy ra trong quá trình thanh toán.");
-      }
+    //       // Chuyển hướng người dùng đến WebView để thanh toán ZaloPay
+    //       navigation.navigate("ViewPayZalo", { 
+    //         url: zaloPayUrl,
+    //         paymentInfo: paymentInfo, 
+    //         cart: cart,
+    //         discountedTotal: discountedTotal,
+    //         appliedPromotion: appliedPromotion,
+    //         paymentMethod: paymentMethod,
+    //         total: total,
+    //         user: user,
+    //         accessToken: accessToken
+    //       });
+    //     } else {
+    //       alert("Có lỗi xảy ra khi tạo yêu cầu thanh toán ZaloPay");
+    //     }
+    //   } catch (error) {
+    //     console.error("Error calling backend for ZaloPay payment:", error);
+    //     alert("Có lỗi xảy ra trong quá trình thanh toán.");
+    //   }
+    // }
+    if (paymentMethod.name === "ZaloPay") {
+      const address = {
+        street: paymentInfo.street,
+        city: paymentInfo.city,
+        district: paymentInfo.district,
+        ward: paymentInfo.ward,
+      };
+  
+      paymentInfo.address = address;
+      payCart(
+        navigation,
+        accessToken,
+        axiosJWT,
+        user.id,
+        cart,
+        paymentMethod.name,
+        paymentInfo,
+        discountedTotal,
+        appliedPromotion,
+        total-discountedTotal,
+        total,
+        emitSocketEvent
+      );
+      onClose();
     }
   };
   

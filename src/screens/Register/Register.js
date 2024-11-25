@@ -25,7 +25,7 @@ export default function Register({ navigation }) {
 
     const handleRegister = async () => {
         if (!name || !phone || !password) {
-            Alert.alert('Thông báo', 'Vui lòng nhập đầy đủ thông tin');
+           alert('Thông báo', 'Vui lòng nhập đầy đủ thông tin');
             console.log('Vui lòng nhập đầy đủ thông tin');
         } else {
             const registerData = {

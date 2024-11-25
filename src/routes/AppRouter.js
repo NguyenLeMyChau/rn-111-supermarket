@@ -27,6 +27,7 @@ import ProductDetail from '../screens/Explore/ProductDetail';
 import { useSelector } from 'react-redux';
 import OrderStatusTab from '../screens/User/OrderStatusTab';
 import ViewPayZalo from '../screens/Cart/ViewPayZalo';
+import { SocketProvider } from '../context/SocketContext';
 
 
 const Stack = createStackNavigator();
@@ -91,6 +92,7 @@ function MainTabs() {
 
 export default function AppRouter() {
     return (
+        <SocketProvider>
         <PaymentModalProvider>
             <NavigationContainer>
                 <Stack.Navigator initialRouteName="MainTabs" screenOptions={{ headerShown: false }}>
@@ -111,5 +113,6 @@ export default function AppRouter() {
                 </Stack.Navigator>
             </NavigationContainer>
         </PaymentModalProvider>
+        </SocketProvider>
     );
 }

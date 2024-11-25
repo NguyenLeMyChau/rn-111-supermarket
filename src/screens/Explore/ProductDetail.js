@@ -114,7 +114,7 @@ const ProductDetail = () => {
 
     const handleAddCart = (quantity, total) => {
         if (!user.id) {
-            Alert.alert("Lưu ý", "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
+            alert("Lưu ý", "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
             return;
         }
         if (!existingCartItem) {

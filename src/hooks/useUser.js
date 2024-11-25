@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { useAccessToken, useAxiosJWT } from "../util/axiosInstance";
 import { useNavigation } from "@react-navigation/native";
-import { getInvoicesByAccountId, updateCustomerInfo, updateStatusOrder } from "../services/userRequest";
+import { getInvoicesByAccountId, getInvoicesByInvoiceCode, updateCustomerInfo, updateStatusOrder } from "../services/userRequest";
 import { registerCustomer } from "../services/authRequest";
 
 const useUser = () => {
@@ -18,12 +18,17 @@ const useUser = () => {
         await getInvoicesByAccountId(user.id, accessToken, axiosJWT);
     }
 
-    const updateStatusOrderUser = async (invoice_id, status) => {
+    const updateStatusOrderUser = async (invoice, status,emitSocketEvent) => {
         // Call API to update status order
-        await updateStatusOrder(invoice_id, status, accessToken, axiosJWT);
+        await updateStatusOrder(invoice, status, accessToken, axiosJWT,emitSocketEvent);
     }
 
-    return { updateUser, getInvoice, updateStatusOrderUser };
+    const getInvoicesByInvoiceCodeUser = async (dispatch,invoiceCode) => {
+        // Call API to update status order
+        await getInvoicesByInvoiceCode(accessToken, axiosJWT,dispatch,invoiceCode);
+    }
+
+    return { updateUser, getInvoice, updateStatusOrderUser,getInvoicesByInvoiceCodeUser };
 }
 
 export default useUser;

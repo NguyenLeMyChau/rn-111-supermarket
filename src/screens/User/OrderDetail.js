@@ -94,7 +94,8 @@ export default function OrderDetail() {
                 console.log('unitImage', unitImage);
 
                 return (
-                    <View key={item._id} style={styles.productContainer}>
+                    <View key={`${item._id}-${item.unit_id._id}`} style={styles.productContainer}>
+                      
                         <Image
                             source={{ uri: unitImage || item.productImg }}
                             style={styles.productImage}

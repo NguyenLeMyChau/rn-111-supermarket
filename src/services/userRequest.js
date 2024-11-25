@@ -33,21 +33,39 @@ const getInvoicesByAccountId = async (accountId, accessToken, axiosJWT, dispatch
         dispatch(getInvoiceFailed());
     }
 }
+const getInvoicesByInvoiceCode = async (accessToken, axiosJWT,dispatch,invoiceCode) => {
+    
+    try {
+        const response = await axiosJWT.post(`/api/invoice/get-invoice-by-invoiceCode`,{invoiceCode}, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+        dispatch(addInvoice(response.data));
+        console.log(response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Get One invoices failed:', error);
+        dispatch(getInvoiceFailed());
+    }
+};
 
-const updateStatusOrder = async (invoice_id, status, accessToken, axiosJWT) => {
+const updateStatusOrder = async (invoice, status, accessToken, axiosJWT,emitSocketEvent) => {
     try {
         const response = await axiosJWT.put(`/api/invoice/update-status-order`, {
-            invoice_id,
+            invoice_id:invoice._id,
             status,
         }, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
         });
+        emitSocketEvent("updateStatusSuccess",{invoiceCode:invoice.invoiceCode, status});
+
         return response.data;
     } catch (error) {
         console.error('Update status order failed:', error);
     }
 }
 
-export { updateCustomerInfo, getInvoicesByAccountId, updateStatusOrder };
+export { updateCustomerInfo, getInvoicesByAccountId, updateStatusOrder,getInvoicesByInvoiceCode };

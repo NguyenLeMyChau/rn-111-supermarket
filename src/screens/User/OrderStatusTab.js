@@ -1,8 +1,10 @@
-import React from 'react';
-import { FlatList, StyleSheet, Text, View, TouchableOpacity, Platform } from 'react-native';
+import React, { useEffect } from 'react';
+import { FlatList, StyleSheet, Text, View, TouchableOpacity, Platform, Alert } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { formatCurrency, formatDate } from '../../util/format';
 import useUser from '../../hooks/useUser';
+import { useSocket } from '../../context/SocketContext';
+import { updateInvoiceStatus } from '../../store/reducers/invoiceSlice';
 
 export default function OrderStatusTab({ route, navigation }) {
     const { status } = route.params;  // Lấy trạng thái đơn hàng từ params
@@ -11,6 +13,40 @@ export default function OrderStatusTab({ route, navigation }) {
     console.log('invoices', invoices);
     const dispatch = useDispatch();
     const { updateStatusOrderUser } = useUser();  // Sử dụng custom hook useUser
+    const { emitSocketEvent, onSocketEvent } = useSocket();
+
+    useEffect(() => {
+        const handleNewInvoice = async (data) => {
+            const { invoice } = data;
+            console.log(invoice);
+    
+            try {
+              
+                // Fetch the full invoice data by invoiceCode
+              await getInvoicesByInvoiceCode(dispatch, invoice);
+                
+            } catch (error) {
+                console.error('Error fetching invoice:', error);
+                alert('Không thể thêm mới đơn hàng.');
+            }
+        };
+    
+      
+    const handleUpdateStatus = async (data) => {
+        const { invoiceCode, status } = data;
+        console.log('Status Update:', invoiceCode, status);
+
+        
+            // Dispatch action to update the invoice status in Redux store
+            dispatch(updateInvoiceStatus({invoiceCode:invoiceCode,status:status}))
+       
+    };
+
+    // Subscribe to 'newInvoice' and 'updateStatus' events
+    onSocketEvent('newInvoice', handleNewInvoice);
+   onSocketEvent('updateStatus', handleUpdateStatus);
+
+}, [onSocketEvent, dispatch]);
 
     // Lọc và sắp xếp các đơn hàng theo trạng thái và ngày tạo từ mới nhất đến cũ nhất
     const filteredInvoices = invoices
@@ -24,29 +60,28 @@ export default function OrderStatusTab({ route, navigation }) {
             if (confirmed) {
                 // Dispatch action để cập nhật trạng thái đơn hàng
                 console.log('call API to update status of invoice', invoice);
-                updateStatusOrderUser(invoice._id, 'Đã nhận hàng');
+                updateStatusOrderUser(invoice, 'Đã nhận hàng',emitSocketEvent);
 
             }
         } else {
             Alert.alert(
-                'Xác nhận đã giao hàng',
-                'Xác nhận "Đã giao hàng"?',
+                'Xác nhận đã giao hàng', // Title of the alert
+                'Xác nhận "Đã giao hàng"?', // Message in the alert
                 [
                     {
-                        text: 'Hủy',
-                        style: 'cancel',
+                        text: 'Hủy', // Cancel button text
+                        style: 'cancel', // Cancel button style
                     },
                     {
-                        text: 'Xác nhận',
+                        text: 'Xác nhận', // Confirm button text
                         onPress: () => {
-                            // Dispatch action để cập nhật trạng thái đơn hàng
-                            console.log('call API to update status of invoice', invoice);
-                            updateStatusOrderUser(invoice._id, 'Đã nhận hàng');
+                            updateStatusOrderUser(invoice, 'Đã nhận hàng',emitSocketEvent);
                         },
+                       
                     },
                 ],
-                { cancelable: true }
-            );
+                { cancelable: true } // Allows dismissing the alert by tapping outside
+            );         
         }
     };
 
