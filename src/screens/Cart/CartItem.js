@@ -275,7 +275,7 @@ const CartItem = ({ item }) => {
   return (
     <View>
     <View style={styles.itemContainer}>
-      <View style={{ width: "28%", height: 100, paddingRight: 10 }}>
+      <View style={{ width: "32%", height: 100, paddingRight: 10 }}>
         <Image style={styles.itemImage} source={{ uri: item.img }} />
       </View>
       <View style={{ width: "45%" }}>

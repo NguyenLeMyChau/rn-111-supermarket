@@ -168,6 +168,21 @@ const checkStockQuantityInCart = async (item_code, unit_id, quantity, accessToke
         alert(error.response ? error.response.data.message : error.message);
     }
 }
+const checkPaymentStatus = async (axiosJWT,appTransId) => {
+    try {
+      const response = await axiosJWT.post(`/api/zalo-pay/order-status/${appTransId}`);
+      console.log(response);
+      return response.data;
+
+    //   if (response.data.return_code === 1) {
+    //     setPaymentStatus("Thanh toán thành công!");
+    //   } else {
+    //     setPaymentStatus("Thanh toán thất bại.");
+    //   }
+    } catch (error) {
+      console.error("Error checking payment status:", error);
+    }
+  };
 
 
 
@@ -180,5 +195,6 @@ export {
     updateProductCart,
     getPromotionByProductId,
     checkStockQuantityInCart,
-    getPromotions
+    getPromotions,
+    checkPaymentStatus
 }

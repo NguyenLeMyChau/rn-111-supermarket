@@ -18,8 +18,9 @@ import { getPromotions, payCart } from "../../services/cartRequest";
 import { useAccessToken, useAxiosJWT } from "../../util/axiosInstance";
 import { useSelector } from "react-redux";
 import { useSocket } from "../../context/SocketContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function PaymentModal({ isVisible, onClose, total, cart }) {
+export default function PaymentModal({ isVisible, onClose, total, cart,openModal }) {
   const navigation = useNavigation();
   const accessToken = useAccessToken();
   const axiosJWT = useAxiosJWT();
@@ -135,7 +136,8 @@ export default function PaymentModal({ isVisible, onClose, total, cart }) {
         if (response.data.paymentUrl.return_message === "Giao dịch thành công") {
           // Lấy URL thanh toán ZaloPay từ backend
           const zaloPayUrl = response.data.paymentUrl.order_url;
-  
+          await AsyncStorage.setItem('app_trans_id', response.data.app_trans_id);
+          onClose();
           // Chuyển hướng người dùng đến WebView để thanh toán ZaloPay
           navigation.navigate("ViewPayZalo", { 
             url: zaloPayUrl,
@@ -147,6 +149,8 @@ export default function PaymentModal({ isVisible, onClose, total, cart }) {
             total: total,
             user: user,
             accessToken: accessToken,
+            axiosJWT,
+            app_trans_id:response.data.app_trans_id,
             emitSocketEvent
           });
         } else {

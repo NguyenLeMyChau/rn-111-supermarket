@@ -5,6 +5,7 @@ import { formatCurrency, formatDate } from '../../util/format';
 import useUser from '../../hooks/useUser';
 import { useSocket } from '../../context/SocketContext';
 import { updateInvoiceStatus } from '../../store/reducers/invoiceSlice';
+import { getInvoicesByInvoiceCode } from '../../services/userRequest';
 
 export default function OrderStatusTab({ route, navigation }) {
     const { status } = route.params;  // Lấy trạng thái đơn hàng từ params
@@ -26,8 +27,7 @@ export default function OrderStatusTab({ route, navigation }) {
               await getInvoicesByInvoiceCode(dispatch, invoice);
                 
             } catch (error) {
-                console.error('Error fetching invoice:', error);
-                alert('Không thể thêm mới đơn hàng.');
+                
             }
         };
     

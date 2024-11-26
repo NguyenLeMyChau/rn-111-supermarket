@@ -33,6 +33,9 @@ export default function Cart() {
     const user = useSelector((state) => state.auth?.login?.currentUser) || {};
     const cart = useSelector((state) => state.cart?.carts) || [];
     const [loadingCart, setLoadingCart] = useState(true);
+    const [isModalVisible, setModalVisible] = useState(false);
+    const openModal = () => setModalVisible(true);
+    const closeModal = () => setModalVisible(false);
     console.log('Cart', cart);
 
     useFocusEffect(
@@ -144,7 +147,11 @@ export default function Cart() {
                 onClose={() => setPaymentModalVisible(false)}
                 total={total}
                 cart={cart}
+                openModal={openModal}
             />
+             {isModalVisible && (
+                 <CountdownModal closeModal={closeModal} />
+            )}
         </View>
     );
 }
