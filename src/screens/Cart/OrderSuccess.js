@@ -16,11 +16,11 @@ const OrderSuccess = () => {
                 Đơn hàng của bạn đang được xử lý.{'\n'} Cảm ơn bạn vì đã tin dùng
                 <Text style={{ color: colors.primary, fontWeight: 'bold' }}> CAPY SMART</Text>
             </Text>
-            {/* <TouchableOpacity
+            <TouchableOpacity
                 style={styles.trackButton}
-                onPress={() => navigation.navigate('TrackOrder')}>
+                onPress={() => navigation.navigate('Order')}>
                 <Text style={styles.trackButtonText}>Theo dõi đơn hàng</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
             <TouchableOpacity
                 style={styles.cartButton}
                 onPress={() => navigation.navigate('Cart')}>

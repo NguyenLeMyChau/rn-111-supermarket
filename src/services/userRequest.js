@@ -45,7 +45,7 @@ const getInvoicesByInvoiceCode = async (accessToken, axiosJWT,dispatch,invoiceCo
         console.log(response.data);
         return response.data;
     } catch (error) {
-        console.error('Get One invoices failed:', error);
+       
         dispatch(getInvoiceFailed());
     }
 };
