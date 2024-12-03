@@ -162,7 +162,7 @@ export default function OrderStatusTab({ route, navigation }) {
                 <Text style={styles.orderNumber}>Mã đơn hàng: {item.invoiceCode}</Text>
                 <Text style={styles.orderDate}>{formatDate(item.createdAt)}</Text>
             </View>
-            <Text style={styles.orderTotal}>Tổng tiền: {formatCurrency(item.paymentAmount)}</Text>
+            <Text style={styles.orderTotal}>Tổng thanh toán: {formatCurrency(item.paymentAmount)}</Text>
             <Text style={styles.orderTotal}>Phương thức thanh toán: {item.paymentMethod}</Text>
             {/* Nếu trạng thái là "Đang giao hàng", hiển thị nút xác nhận đã giao hàng */}
             {item.status === 'Đang giao hàng' && (
