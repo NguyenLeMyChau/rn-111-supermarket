@@ -84,7 +84,37 @@ export default function OrderStatusTab({ route, navigation }) {
             );         
         }
     };
+    const handleRequestReturn = (invoice) => {
+        // Xác nhận và thay đổi trạng thái đơn hàng
+        if (Platform.OS === 'web') {
+            const confirmed = window.confirm('Yêu cầu hoàn trả');
+            if (confirmed) {
+                // Dispatch action để cập nhật trạng thái đơn hàng
+                console.log('call API to update status of invoice', invoice);
+                updateStatusOrderUser(invoice, 'Yêu cầu hoàn trả',emitSocketEvent);
 
+            }
+        } else {
+            Alert.alert(
+                'Xác nhận Yêu cầu hoàn trả', // Title of the alert
+                'Xác nhận "Yêu cầu hoàn trả"?', // Message in the alert
+                [
+                    {
+                        text: 'Hủy', // Cancel button text
+                        style: 'cancel', // Cancel button style
+                    },
+                    {
+                        text: 'Xác nhận', // Confirm button text
+                        onPress: () => {
+                            updateStatusOrderUser(invoice, 'Yêu cầu hoàn trả',emitSocketEvent);
+                        },
+                       
+                    },
+                ],
+                { cancelable: true } // Allows dismissing the alert by tapping outside
+            );         
+        }
+    };
     const renderItem = ({ item }) => (
         <TouchableOpacity
             style={styles.orderContainer}
@@ -111,6 +141,11 @@ export default function OrderStatusTab({ route, navigation }) {
                     >
                         <Text style={styles.returnButtonText}>Yêu cầu hoàn trả</Text>
                     </TouchableOpacity>
+                </>
+            )}
+            {item.status === 'Yêu cầu hoàn trả' &&(
+                <>
+                 <Text style={styles.returnText}>Yêu cầu hoàn trả</Text>
                 </>
             )}
         </TouchableOpacity>
@@ -188,4 +223,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
+    returnText:{
+        color: 'red',
+        fontSize: 16,
+        fontWeight: 'bold',
+    }
 });
