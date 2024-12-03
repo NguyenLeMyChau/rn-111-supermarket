@@ -25,7 +25,7 @@ const useUser = () => {
 
     const getInvoicesByInvoiceCodeUser = async (dispatch,invoiceCode) => {
         // Call API to update status order
-        await getInvoicesByInvoiceCode(accessToken, axiosJWT,dispatch,invoiceCode);
+        await getInvoicesByAccountId(user.id, accessToken, axiosJWT);
     }
 
     return { updateUser, getInvoice, updateStatusOrderUser,getInvoicesByInvoiceCodeUser };

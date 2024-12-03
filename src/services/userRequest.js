@@ -33,20 +33,21 @@ const getInvoicesByAccountId = async (accountId, accessToken, axiosJWT, dispatch
         dispatch(getInvoiceFailed());
     }
 }
-const getInvoicesByInvoiceCode = async (accessToken, axiosJWT,dispatch,invoiceCode) => {
-    
+const getInvoicesByInvoiceCode = async (accessToken, axiosJWT,dispatch,invoiceCode,accountId) => {
+    console.log(invoiceCode);
     try {
         const response = await axiosJWT.post(`/api/invoice/get-invoice-by-invoiceCode`,{invoiceCode}, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
         });
-        dispatch(addInvoice(response.data));
-        console.log(response.data);
-        return response.data;
+        if(response.data && response.data.customer_id===accountId)
+        { 
+            console.log(response.data);
+            return response.data;
+        }
     } catch (error) {
-       
-        dispatch(getInvoiceFailed());
+      console.log(error);
     }
 };
 

@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { formatCurrency, formatDate } from '../../util/format';
 import useUser from '../../hooks/useUser';
 import { useSocket } from '../../context/SocketContext';
-import { updateInvoiceStatus } from '../../store/reducers/invoiceSlice';
+import { addInvoice, updateInvoiceStatus } from '../../store/reducers/invoiceSlice';
 import { getInvoicesByInvoiceCode } from '../../services/userRequest';
 
 export default function OrderStatusTab({ route, navigation }) {
@@ -13,19 +13,21 @@ export default function OrderStatusTab({ route, navigation }) {
     const invoices = useSelector(state => state.invoice?.invoices);
     console.log('invoices', invoices);
     const dispatch = useDispatch();
-    const { updateStatusOrderUser } = useUser();  // Sử dụng custom hook useUser
+    const user = useSelector((state) => state.auth?.login?.currentUser);
+    const { updateStatusOrderUser ,getInvoicesByInvoiceCodeUser} = useUser();  // Sử dụng custom hook useUser
     const { emitSocketEvent, onSocketEvent } = useSocket();
 
     useEffect(() => {
-        const handleNewInvoice = async (data) => {
+        const handleNewInvoice =  (data) => {
             const { invoice } = data;
-            console.log(invoice);
-    
+            console.log(data);
             try {
-              
+                if(user._id === data.data.employee_id){
+                    dispatch(addInvoice({invoiceCode:invoice,invoice:data.data}))
+                }
                 // Fetch the full invoice data by invoiceCode
-              await getInvoicesByInvoiceCode(dispatch, invoice);
-                
+            //    getInvoicesByInvoiceCodeUser(dispatch, invoice);
+              
             } catch (error) {
                 
             }
@@ -50,8 +52,12 @@ export default function OrderStatusTab({ route, navigation }) {
 
     // Lọc và sắp xếp các đơn hàng theo trạng thái và ngày tạo từ mới nhất đến cũ nhất
     const filteredInvoices = invoices
-        ?.filter(item => item.status === status)
-        ?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    ?.filter(item => 
+      item.status === status || 
+      (status === "Đã nhận hàng" && item.status === "Tại quầy")
+    )
+    ?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  
 
     const handleConfirmDelivery = (invoice) => {
         // Xác nhận và thay đổi trạng thái đơn hàng
@@ -148,6 +154,11 @@ export default function OrderStatusTab({ route, navigation }) {
                  <Text style={styles.returnText}>Yêu cầu hoàn trả</Text>
                 </>
             )}
+            {item.status === 'Tại quầy' &&(
+                <>
+                 <Text style={styles.confirmText}>Thanh toán tại cửa hàng</Text>
+                </>
+            )}
         </TouchableOpacity>
     );
 
@@ -225,6 +236,11 @@ const styles = StyleSheet.create({
     },
     returnText:{
         color: 'red',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    confirmText:{
+        color: 'blue',
         fontSize: 16,
         fontWeight: 'bold',
     }

@@ -29,13 +29,14 @@ const invoiceSlice = createSlice({
             state.error = false;
         },
         addInvoice(state, action) {
-            const existingInvoice = state.invoices.find(
+            console.log(action.payload)
+            const existingInvoice = state.invoices?.find(
                 (invoice) => invoice.invoiceCode === action.payload.invoiceCode
             );
-        
+        console.log(`Invoice ${existingInvoice}`)
             if (!existingInvoice) {
                 alert(`Hóa đơn mới: ${action.payload.invoiceCode}`);
-                state.invoices = [...state.invoices, action.payload];
+                state.invoices = [...state.invoices, action.payload.invoice];
             }
             state.isFetching = false;
             state.error = false;

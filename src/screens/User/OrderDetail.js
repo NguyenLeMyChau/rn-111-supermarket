@@ -86,10 +86,10 @@ export default function OrderDetail() {
 
             {itemInvoice.detail.map((item) => {
                 console.log('item', item);
-                // Find the product in the productList based on item_code
+                
                 const productFind = products.find((p) => p._id === item.product);
                 console.log('productFind', productFind);
-                // If productFind exists, search for the unit in unit_convert based on unit._id
+            
                 const unitImage = productFind?.unit_convert?.find((u) => u.unit === item.unit._id)?.img || null;
                 console.log('unitImage', unitImage);
 
