@@ -11,7 +11,6 @@ export default function OrderDetail() {
     const { itemInvoice } = route.params;
     const products = useSelector((state) => state.product?.products) || [];
     console.log('itemInvoice', itemInvoice);
-    console.log('products', products);
 
     // Hàm xử lý hiển thị promotion
     const renderPromotion = (promotion, promotionDetail, price) => {
@@ -62,10 +61,7 @@ export default function OrderDetail() {
 
                 </View>
                 <View style={styles.orderInfoRow}>
-                    <View style={styles.orderInfo}>
-                        <Text style={styles.label}>Tổng tiền:</Text>
-                        <Text style={{ ...styles.value, fontWeight: 'bold' }}>{formatCurrency(itemInvoice.paymentAmount)}</Text>
-                    </View>
+
                     <View style={styles.orderInfo}>
                         <Text style={styles.label}>Ngày đặt hàng:</Text>
                         <Text style={styles.value}>{formatDate(itemInvoice.createdAt)}</Text>
@@ -80,22 +76,33 @@ export default function OrderDetail() {
                         </Text>
                     </View>
                 </View>
+                {
+                    itemInvoice.returnReason && (
+
+                        <View style={styles.orderInfoRow}>
+                            <View style={styles.orderInfo}>
+                                <Text style={styles.label}>Lý do trả hàng:</Text>
+                                <Text style={styles.value}>
+                                    {`${itemInvoice.returnReason}`}
+                                </Text>
+                            </View>
+                        </View>
+                    )
+                }
+
             </View>
 
             <Text style={styles.productTitle}>Sản phẩm trong đơn hàng:</Text>
 
             {itemInvoice.detail.map((item) => {
-                console.log('item', item);
                 // Find the product in the productList based on item_code
                 const productFind = products.find((p) => p._id === item.product);
-                console.log('productFind', productFind);
                 // If productFind exists, search for the unit in unit_convert based on unit._id
                 const unitImage = productFind?.unit_convert?.find((u) => u.unit === item.unit._id)?.img || null;
-                console.log('unitImage', unitImage);
 
                 return (
                     <View key={`${item._id}-${item.unit_id._id}`} style={styles.productContainer}>
-                      
+
                         <Image
                             source={{ uri: unitImage || item.productImg }}
                             style={styles.productImage}
@@ -122,6 +129,25 @@ export default function OrderDetail() {
                     </View>
                 );
             })}
+
+            <Text style={styles.productTitle}>Thanh toán:</Text>
+
+            <View style={{ ...styles.orderInfoContainer, marginBottom: 50 }}>
+                <View style={styles.orderInfoRowPayment}>
+                    <Text style={styles.label}>Tổng tiền:</Text>
+                    <Text style={{ ...styles.value, fontWeight: 'bold' }}>{formatCurrency(itemInvoice.totalPayment)}</Text>
+                </View>
+                <View style={styles.orderInfoRowPayment}>
+                    <Text style={styles.label}>Giảm giá:</Text>
+                    <Text style={{ ...styles.value, fontWeight: 'bold' }}>{formatCurrency(itemInvoice.discountPayment)}</Text>
+                </View>
+
+                <View style={styles.orderInfoRowPayment}>
+                    <Text style={styles.label}>Tổng thanh toán:</Text>
+                    <Text style={{ ...styles.value, fontWeight: 'bold' }}>{formatCurrency(itemInvoice.paymentAmount)}</Text>
+                </View>
+            </View>
+
         </ScrollView>
     );
 }
@@ -168,6 +194,12 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginBottom: 12,
     },
+    orderInfoRowPayment: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        padding: 10,
+        borderRadius: 8,
+    },
     orderInfo: {
         flex: 1,
     },
@@ -180,7 +212,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
         color: '#333',
-        marginRight: 8,
+        marginRight: 5,
     },
     value: {
         fontSize: 16,
