@@ -61,10 +61,8 @@ export default function OrderDetail() {
 
                 </View>
                 <View style={styles.orderInfoRow}>
-
                     <View style={styles.orderInfo}>
-                        <Text style={styles.label}>Ngày đặt hàng:</Text>
-                        <Text style={styles.value}>{formatDate(itemInvoice.createdAt)}</Text>
+                        <Text style={styles.label}>Ngày đặt hàng: <Text style={styles.value}>{formatDate(itemInvoice.createdAt)}</Text></Text>
                     </View>
                 </View>
 
