@@ -18,17 +18,19 @@ const useUser = () => {
         await getInvoicesByAccountId(user.id, accessToken, axiosJWT);
     }
 
-    const updateStatusOrderUser = async (invoice, status,emitSocketEvent) => {
+    const updateStatusOrderUser = async (invoice, status, reason, emitSocketEvent) => {
         // Call API to update status order
-        await updateStatusOrder(invoice, status, accessToken, axiosJWT,emitSocketEvent);
+        await updateStatusOrder(invoice, status, reason, accessToken, axiosJWT, emitSocketEvent);
     }
 
-    const getInvoicesByInvoiceCodeUser = async (dispatch,invoiceCode) => {
+    const getInvoicesByInvoiceCodeUser = async (dispatch, invoiceCode) => {
         // Call API to update status order
-        await getInvoicesByAccountId(user.id, accessToken, axiosJWT);
+
+        await getInvoicesByInvoiceCode(accessToken, axiosJWT, dispatch, invoiceCode);
+ 
     }
 
-    return { updateUser, getInvoice, updateStatusOrderUser,getInvoicesByInvoiceCodeUser };
+    return { updateUser, getInvoice, updateStatusOrderUser, getInvoicesByInvoiceCodeUser };
 }
 
 export default useUser;
