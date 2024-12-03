@@ -76,7 +76,7 @@ const logoutUser = async (dispatch, navigation, accessToken, axiosJWT) => {
 
 const registerCustomer = async (registerData) => {
     try {
-        const response = await axios.post(`/api/auth/register-customer`, registerData);
+        const response = await axios.post(`${BASE_URL}/api/auth/register-customer`, registerData);
        alert('Đăng ký khách hàng thành công');
         return response.data;
     } catch (error) {
