@@ -339,9 +339,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   label: {
+    
     fontSize: 16,
     fontWeight: "medium",
     color: "#7C7C7C",
+    maxWidth : "70%"
   },
   promotionText: {
     fontSize: 16,

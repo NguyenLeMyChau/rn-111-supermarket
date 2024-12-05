@@ -28,7 +28,6 @@ const getPromotionByProductId = async (product_id, unit_id) => {
         console.log(response.data)
         return response.data;
     } catch (error) {
-        console.error('Get get-promotion-by-product failed:', error);
     }
 }
 const getPromotions = async () => {
@@ -37,7 +36,6 @@ const getPromotions = async () => {
         console.log(response.data)
         return response.data;
     } catch (error) {
-        console.error('Get get-promotion-by-product failed:', error);
     }
 }
 
@@ -144,7 +142,6 @@ const updateProductCart = async (accountId, productId, unitId, quantity, total, 
         alert('Cập nhật giỏ hàng thành công');
         return response.data;
     } catch (error) {
-        console.error('Update product cart failed:', error);
     }
 }
 

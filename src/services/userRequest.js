@@ -14,7 +14,6 @@ const updateCustomerInfo = async (accountId, customerInfo, navigation, accessTok
         navigation.navigate('Login');
         return response.data;
     } catch (error) {
-        console.error('Update product cart failed:', error);
     }
 }
 
@@ -29,7 +28,6 @@ const getInvoicesByAccountId = async (accountId, accessToken, axiosJWT, dispatch
         dispatch(getInvoiceSuccess(response.data));
         return response.data;
     } catch (error) {
-        console.error('Get invoices failed:', error);
         dispatch(getInvoiceFailed());
     }
 }
@@ -68,7 +66,6 @@ const updateStatusOrder = async (invoice, status, reason, accessToken, axiosJWT,
 
         return response.data;
     } catch (error) {
-        console.error('Update status order failed:', error);
     }
 }
 
