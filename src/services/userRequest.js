@@ -1,3 +1,4 @@
+import { Alert } from "react-native";
 import { getInvoiceFailed, getInvoiceStart, getInvoiceSuccess } from "../store/reducers/invoiceSlice";
 
 const updateCustomerInfo = async (accountId, customerInfo, navigation, accessToken, axiosJWT) => {
@@ -10,7 +11,7 @@ const updateCustomerInfo = async (accountId, customerInfo, navigation, accessTok
                 Authorization: `Bearer ${accessToken}`,
             },
         });
-        alert('Vui lòng đăng nhập lại để cập nhật thông tin mới, chúng tôi xin lỗi vì sự bất tiện này');
+        Alert.alert("Thông báo",'Vui lòng đăng nhập lại để cập nhật thông tin mới, chúng tôi xin lỗi vì sự bất tiện này');
         navigation.navigate('Login');
         return response.data;
     } catch (error) {

@@ -51,7 +51,7 @@ export const createAxiosInstance = (user, dispatch, stateSuccess) => {
                     setTimeout(() => {
                         dispatch(resetLogoutState());
                     }, 1000);
-                    console.error('Failed to refresh token:', error);
+                   
                 }
             } else {
                 config.headers.Authorization = `Bearer ${user.accessToken}`;

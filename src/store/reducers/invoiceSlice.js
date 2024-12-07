@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { Alert } from 'react-native';
 
 const initialState = {
     invoices: null,
@@ -47,7 +48,7 @@ const invoiceSlice = createSlice({
                 (invoice) => invoice.invoiceCode === invoiceCode && invoice.status !== status
             );
             if (invoiceIndex !== -1) {
-                alert(`Cập nhật trạng thái hóa đơn: ${invoiceCode} - ${status}`);
+                Alert.alert("Thông báo",`Cập nhật trạng thái hóa đơn: ${invoiceCode} - ${status}`);
                 state.invoices[invoiceIndex] = {
                     ...state.invoices[invoiceIndex],
                     status,

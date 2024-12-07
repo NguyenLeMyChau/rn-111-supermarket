@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   TextInput,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import colors from "../../constants/Color";
 import Icon from "react-native-vector-icons/MaterialIcons"; // Import Icon
@@ -110,19 +111,22 @@ const CartItem = ({ item }) => {
             ) {
               const promotionProductExists = cart.find(cartItem => cartItem.product_id._id === promotion.product_id && cartItem.unit._id === promotion.unit_id._id);
 
-              const eligibleQuantity = Math.floor(
+              const eligibleQuantity =promotionProductExists?Math.floor(
                 promotionProductExists?.quantity / promotion.quantity
-              );
-            
-              if (!promotionProductExists || eligibleQuantity < 1) {
+              ) : 0;
+            console.log("123456",promotionProductExists)
+            console.log("123456",eligibleQuantity)
+              if ( eligibleQuantity < 1) {
                 setPromotionApply(null);
                 setQuantity_donate(0);
                 setGiaKhuyeMai(-1)
+              }else {
+                setQuantity_donate(eligibleQuantity)
+                setPromotionApply(promotion)
+                const gia = (quantity - eligibleQuantity) * item.price.price;
+                setGiaKhuyeMai(gia>=0?gia:0);
               }
-              setQuantity_donate(eligibleQuantity)
-              setPromotionApply(promotion)
-              const gia = (quantity - eligibleQuantity) * item.price.price;
-              setGiaKhuyeMai(gia>=0?gia:0);
+             
             }
           } 
         }
@@ -217,7 +221,7 @@ const CartItem = ({ item }) => {
       if (isStockAvailable.inStock) {
         handleUpdateQuantity(newQuantity);
       } else {
-        alert(isStockAvailable.message);
+        Alert.alert("Thông báo",isStockAvailable.message);
       }
     }
   };
@@ -236,7 +240,7 @@ const CartItem = ({ item }) => {
     if (isStockAvailable.inStock) {
       handleUpdateQuantity(newQuantity);
     } else {
-      alert(isStockAvailable.message);
+      Alert.alert("Thông báo",isStockAvailable.message);
     }
   };
 
@@ -255,7 +259,7 @@ const CartItem = ({ item }) => {
       if (isStockAvailable.inStock) {
         handleUpdateQuantity(newQuantity);
       } else {
-        alert(isStockAvailable.message);
+        Alert.alert("Thông báo",isStockAvailable.message);
       }
     }
   };

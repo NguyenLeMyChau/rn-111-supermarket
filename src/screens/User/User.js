@@ -95,11 +95,12 @@ export default function User() {
                 </>
             ) : (
                 <>
-                    <TouchableOpacityForm
-                        TextBegin={"Bạn chưa đăng nhập. Vui lòng"}
-                        TextValue={'Đăng nhập'}
-                        onPress={() => navigation.navigate('Login')}
-                    />
+                     <View style={styles.touchableContainer}>
+        <Text style={styles.textBegin}>Bạn chưa đăng nhập. Vui lòng</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            <Text style={styles.touchableText}>Đăng nhập</Text>
+        </TouchableOpacity>
+    </View>
                     <FlatList
                         data={guestItems}
                         renderItem={renderItem}
@@ -177,5 +178,20 @@ const styles = StyleSheet.create({
         color: colors.textButton,
         marginLeft: 10,
         fontWeight: 'bold',
+    },
+    touchableText: {
+        fontSize: 16, 
+        color: '#007BFF', 
+        textDecorationLine: 'underline', 
+    },
+    touchableContainer: {
+        flexDirection: 'row', 
+        alignItems: 'center', 
+        marginTop: 10, 
+    },
+    textBegin: {
+        fontSize: 16, 
+        color: '#555', 
+        marginRight: 5, 
     },
 });

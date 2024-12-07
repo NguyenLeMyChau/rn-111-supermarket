@@ -5,6 +5,7 @@ import {
   Modal,
   StyleSheet,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 
 const CountdownModal = ({ closeModal }) => {
@@ -29,18 +30,18 @@ const CountdownModal = ({ closeModal }) => {
   };
 
   const handleRetryPayment = () => {
-    alert('Thanh toán lại!');
+     
+  Alert.alert("Thông báo",'Thanh toán lại!');
     // Thêm logic thanh toán ở đây
   };
 
   const handleCancelPayment = () => {
-    alert('Hủy thanh toán!');
-  
+    Alert.alert("Thông báo",'Hủy thanh toán!');
     closeModal();
   };
 
   const handleCheckPaymentStatus = () => {
-    alert('Kiểm tra trạng thái thanh toán!');
+    Alert.alert("Thông báo",'Kiểm tra trạng thái thanh toán!');
     // Thêm logic kiểm tra trạng thái ở đây
   };
 

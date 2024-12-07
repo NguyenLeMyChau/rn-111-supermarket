@@ -4,26 +4,26 @@
     "slug": "rn-111-supermarket",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo-supermarket-removebg.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash-screen.png",
+      "image": "./assets/logo-supermarket-removebg.png",
       "resizeMode": "contain",
-      "backgroundColor": "#2392D0"
+      "backgroundColor": "#FFFE91"
     },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/favicon.png",
+        "foregroundImage": "./assets/logo-supermarket-removebg.png",
         "backgroundColor": "#ffffff"
       },
       "newArchEnabled": true,
       "package": "com.nguyenlemychau.rn111supermarket"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/logo-supermarket-removebg.png"
     },
     "extra": {
       "eas": {

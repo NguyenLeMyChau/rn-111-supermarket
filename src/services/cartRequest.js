@@ -1,6 +1,7 @@
 import axios from "axios";
 import { getCartFailed, getCartStart, getCartSuccess } from "../store/reducers/cartSlice";
 import { BASE_URL } from "../util/url";
+import { Alert } from "react-native";
 
 
 const getCartById = async (dispatch, accessToken, axiosJWT, accountId) => {
@@ -54,11 +55,11 @@ const addProductToCart = async (accessToken, axiosJWT, accountId, productId, uni
                 Authorization: `Bearer ${accessToken}`,
             },
         });
-        alert('Thêm sản phẩm vào giỏ hàng thành công');
+        aAlert.alert("Thành công",'Thêm sản phẩm vào giỏ hàng thành công');
         return response.data;
     } catch (error) {
         console.error('Add product to cart failed:', error);
-        alert('Thêm sản phẩm vào giỏ hàng thất bại ', error);
+        Alert.alert("Thông báo",'Thêm sản phẩm vào giỏ hàng thất bại ');
     }
 }
 
@@ -82,12 +83,12 @@ const payCart = async (navigation, accessToken, axiosJWT, customerId, products, 
         if (response.data.success) {
             emitSocketEvent("paymentSuccess", response.data);
             navigation.navigate('OrderSuccess');
-        } else alert('Thanh toán giỏ hàng thất bại ');
+        } else Alert.alert("Thông báo",'Thanh toán giỏ hàng thất bại ');
 
         return response.data;
     } catch (error) {
         console.error('Pay cart failed:', error);
-        alert('Thanh toán giỏ hàng thất bại ', error);
+        Alert.alert("Lỗi",'Thanh toán giỏ hàng thất bại ');
     }
 
 }
@@ -104,7 +105,7 @@ const updateCart = async (accountId, productList, accessToken, axiosJWT) => {
         });
         return response.data;
     } catch (error) {
-        console.error('Update cart failed:', error);
+        // console.error('Update cart failed:', error);
     }
 }
 
@@ -139,7 +140,7 @@ const updateProductCart = async (accountId, productId, unitId, quantity, total, 
                 Authorization: `Bearer ${accessToken}`,
             },
         });
-        alert('Cập nhật giỏ hàng thành công');
+        Alert.alert("Thành công",'Cập nhật giỏ hàng thành công');
         return response.data;
     } catch (error) {
     }
@@ -162,7 +163,7 @@ const checkStockQuantityInCart = async (item_code, unit_id, quantity, accessToke
         return response.data;
     } catch (error) {
         console.error('Check stock quantity failed:', error);
-        alert(error.response ? error.response.data.message : error.message);
+        Alert.alert("Thông báo",error.response ? error.response.data.message : error.message);
     }
 }
 const checkPaymentStatus = async (axiosJWT,appTransId) => {

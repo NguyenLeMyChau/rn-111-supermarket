@@ -7,6 +7,7 @@ import colors from '../../constants/Color';
 import { Picker } from '@react-native-picker/picker';
 import { districts } from '../../util/address';
 import useUser from '../../hooks/useUser';
+import { Alert } from 'react-native';
 
 export default function UserInfo() {
     const navigation = useNavigation();
@@ -80,7 +81,7 @@ export default function UserInfo() {
         const errorMessage = validateUserInfo(customerInfo);
 
         if (errorMessage) {
-            alert(errorMessage);
+            Alert.alert("Lỗi",errorMessage);
             return;
         }
 

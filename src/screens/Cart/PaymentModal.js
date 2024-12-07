@@ -117,12 +117,12 @@ export default function PaymentModal({ isVisible, onClose, total, cart,openModal
 
   const handleOrder = async () => {
     if (!paymentInfo) {
-      alert("Vui lòng nhập thông tin nhận hàng");
+      Alert.alert("Thông báo","Vui lòng nhập thông tin nhận hàng");
       return;
     }
   
     if (!paymentMethod) {
-      alert("Vui lòng chọn phương thức thanh toán");
+      Alert.alert("Thông báo","Vui lòng chọn phương thức thanh toán");
       return;
     }
   
@@ -154,11 +154,11 @@ export default function PaymentModal({ isVisible, onClose, total, cart,openModal
             emitSocketEvent
           });
         } else {
-          alert("Có lỗi xảy ra khi tạo yêu cầu thanh toán ZaloPay");
+         Alert.alert("Sự cố","Có lỗi xảy ra khi tạo yêu cầu thanh toán ZaloPay");
         }
       } catch (error) {
         console.error("Error calling backend for ZaloPay payment:", error);
-        alert("Có lỗi xảy ra trong quá trình thanh toán.");
+        aAlert.alert("Sự cố","Có lỗi xảy ra trong quá trình thanh toán.");
       }
     }
     // if (paymentMethod.name === "ZaloPay") {

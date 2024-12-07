@@ -75,7 +75,7 @@ const ProductDetail = () => {
             if (isStockAvailable.inStock) {
                 handleUpdateQuantity(newQuantity);
             } else {
-                alert(isStockAvailable.message);
+                Alert.alert("Thông báo",isStockAvailable.message);
             }
         }
     };
@@ -88,7 +88,7 @@ const ProductDetail = () => {
         if (isStockAvailable.inStock) {
             handleUpdateQuantity(newQuantity);
         } else {
-            alert(isStockAvailable.message);
+            Alert.alert("Thông báo",isStockAvailable.message);
         }
     };
 
@@ -101,7 +101,7 @@ const ProductDetail = () => {
             if (isStockAvailable.inStock) {
                 handleUpdateQuantity(newQuantity);
             } else {
-                alert(isStockAvailable.message);
+                Alert.alert("Thông báo",isStockAvailable.message);
             }
         }
     };

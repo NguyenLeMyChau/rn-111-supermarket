@@ -113,7 +113,7 @@ const ViewPayZalo = ({ route, navigation }) => {
       navigation.navigate("OrderSuccess"); // Chuyển hướng đến trang thành công
     } catch (error) {
       console.error("Error processing cart payment:", error);
-      alert("Có lỗi xảy ra khi thanh toán giỏ hàng.");
+      Alert.alert("Sư cố","Có lỗi xảy ra khi thanh toán giỏ hàng.");
     }
   };
 
@@ -130,10 +130,10 @@ const ViewPayZalo = ({ route, navigation }) => {
           <ActivityIndicator size="large" color="#0000ff" style={{ flex: 1, justifyContent: "center", alignItems: "center" }} />
         )}
       />
-       <View style={{ position: "absolute", top: 60, left: 10, padding: 10, backgroundColor: "rgba(0,0,0,0.5)", borderRadius: 5, zIndex: 1, }}>
+       {/* <View style={{ position: "absolute", top: 60, left: 10, padding: 10, backgroundColor: "rgba(0,0,0,0.5)", borderRadius: 5, zIndex: 1, }}>
         <ActivityIndicator size="small" color="#fff" />
         <Text style={{ color: "#fff", fontWeight: "bold" }}>{formatTime(timeLeft)}</Text>
-      </View>
+      </View> */}
     </View>
     
   );
