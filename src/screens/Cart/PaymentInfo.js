@@ -47,8 +47,11 @@ const PaymentInfo = () => {
     );
 
     useEffect(() => {
-        // Kiểm tra nếu tất cả các trường đều được điền đầy đủ
-        if (phone && gender !== '' && name && district && ward && street) {
+        // Kiểm tra nếu tất cả các trường đều được điền đầy đủ và số điện thoại hợp lệ
+        const phoneRegex = /^[0-9]{10,11}$/; // Chỉ chấp nhận số từ 10-11 ký tự
+        const isPhoneValid = phoneRegex.test(phone);
+
+        if (phone && isPhoneValid && gender !== '' && name && district && ward && street) {
             setIsButtonDisabled(false);
         } else {
             setIsButtonDisabled(true);

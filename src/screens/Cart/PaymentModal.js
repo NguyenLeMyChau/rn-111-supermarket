@@ -55,13 +55,17 @@ export default function PaymentModal({ isVisible, onClose, total, cart,openModal
   useEffect(() => {
     // Tính toán tổng tiền đã giảm mỗi khi promotion thay đổi
     if (promotion?.length > 0) {
-      let currentTotal = total; // Bắt đầu từ tổng ban đầu
+       // Bắt đầu từ tổng ban đầu
       const finalTotals = promotion.map((applicablePromotion) => {
+        let currentTotal = total;
         // Kiểm tra điều kiện để áp dụng khuyến mãi
         if (currentTotal > applicablePromotion.amount_sales) {
           const discountAmount =
             (currentTotal * applicablePromotion.percent) / 100;
           const amountLimit = applicablePromotion.amount_limit;
+
+          console.log('discountAmount', discountAmount);
+          console.log('amountLimit', amountLimit);
 
           // Giảm giá không vượt quá amount_limit
           if (discountAmount > amountLimit) {
@@ -74,7 +78,7 @@ export default function PaymentModal({ isVisible, onClose, total, cart,openModal
           currentTotal = total;
         }
 
-        console.log(currentTotal);
+        console.log("currentTotal",currentTotal);
         return currentTotal;
       });
       const minTotal = Math.min(...finalTotals);
