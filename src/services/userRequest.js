@@ -11,7 +11,7 @@ const updateCustomerInfo = async (accountId, customerInfo, navigation, accessTok
                 Authorization: `Bearer ${accessToken}`,
             },
         });
-        Alert.alert("Thông báo",'Vui lòng đăng nhập lại để cập nhật thông tin mới, chúng tôi xin lỗi vì sự bất tiện này');
+        Alert.alert("Thông báo", 'Vui lòng đăng nhập lại để cập nhật thông tin mới, chúng tôi xin lỗi vì sự bất tiện này');
         navigation.navigate('Login');
         return response.data;
     } catch (error) {
@@ -32,7 +32,7 @@ const getInvoicesByAccountId = async (accountId, accessToken, axiosJWT, dispatch
         dispatch(getInvoiceFailed());
     }
 }
-const getInvoicesByInvoiceCode = async (accessToken, axiosJWT,dispatch,invoiceCode,accountId) => {
+const getInvoicesByInvoiceCode = async (accessToken, axiosJWT, dispatch, invoiceCode, accountId) => {
     console.log(invoiceCode);
 
     try {
@@ -41,13 +41,12 @@ const getInvoicesByInvoiceCode = async (accessToken, axiosJWT,dispatch,invoiceCo
                 Authorization: `Bearer ${accessToken}`,
             },
         });
-        if(response.data && response.data.customer_id===accountId)
-        { 
+        if (response.data && response.data.customer_id === accountId) {
             console.log(response.data);
             return response.data;
         }
     } catch (error) {
-      console.log(error);
+        console.log(error);
         dispatch(getInvoiceFailed());
     }
 };

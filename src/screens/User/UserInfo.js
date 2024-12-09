@@ -16,6 +16,7 @@ export default function UserInfo() {
     const isDisable = true;
 
     const [phone, setPhone] = useState(user?.phone || '');
+    const [email, setEmail] = useState(user?.email || '');
     const [gender, setGender] = useState(user?.gender || false);
     const [name, setName] = useState(user?.name || '');
     const [city, setCity] = useState('Hồ Chí Minh');
@@ -42,7 +43,7 @@ export default function UserInfo() {
     );
 
     const validateUserInfo = (userInfo) => {
-        const { phone, gender, name, city, district, ward, street } = userInfo;
+        const { phone, name } = userInfo;
 
         if (!phone.trim()) {
             return 'Số điện thoại không được để trống.';
@@ -50,18 +51,6 @@ export default function UserInfo() {
 
         if (!name.trim()) {
             return 'Họ và tên không được để trống.';
-        }
-
-        if (!district) {
-            return 'Vui lòng chọn quận/huyện.';
-        }
-
-        if (!ward) {
-            return 'Vui lòng chọn phường/xã.';
-        }
-
-        if (!street.trim()) {
-            return 'Địa chỉ không được để trống.';
         }
 
         return null;
@@ -72,6 +61,7 @@ export default function UserInfo() {
             phone,
             gender,
             name,
+            email,
             city,
             district,
             ward,
@@ -81,7 +71,7 @@ export default function UserInfo() {
         const errorMessage = validateUserInfo(customerInfo);
 
         if (errorMessage) {
-            Alert.alert("Lỗi",errorMessage);
+            Alert.alert("Lỗi", errorMessage);
             return;
         }
 
@@ -143,6 +133,16 @@ export default function UserInfo() {
                     style={styles.inputFull}
                     value={name}
                     onChangeText={setName}
+                />
+            </View>
+
+            {/* Email */}
+            <View style={styles.inputContainer}>
+                <Text style={styles.label}>Email</Text>
+                <TextInput
+                    style={styles.inputFull}
+                    value={email}
+                    onChangeText={setEmail}
                 />
             </View>
 

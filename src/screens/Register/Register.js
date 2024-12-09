@@ -24,19 +24,48 @@ export default function Register({ navigation }) {
     const [showPassword, setShowPassword] = useState(false);
 
     const handleRegister = async () => {
+        // Kiểm tra các trường dữ liệu rỗng
         if (!name || !phone || !password) {
-           alert('Thông báo', 'Vui lòng nhập đầy đủ thông tin');
-            console.log('Vui lòng nhập đầy đủ thông tin');
-        } else {
-            const registerData = {
-                name,
-                phone,
-                password,
-                role: 'customer',
-            };
-            await registerCustomer(registerData);
+            Alert.alert('Thông báo', 'Vui lòng nhập đầy đủ thông tin');
+            return;
         }
-    }
+
+        // Kiểm tra độ dài mật khẩu và không chứa ký tự đặc biệt
+        const passwordRegex = /^[a-zA-Z0-9]{6,}$/; // Chỉ chứa chữ cái và số, ít nhất 6 ký tự
+        if (!passwordRegex.test(password)) {
+            Alert.alert(
+                'Thông báo',
+                'Mật khẩu phải có ít nhất 6 ký tự và không chứa ký tự đặc biệt'
+            );
+            return;
+        }
+
+        // Kiểm tra số điện thoại: chỉ chứa số, độ dài từ 10-11 ký tự
+        const phoneRegex = /^[0-9]{10,11}$/; // Chỉ chứa số, từ 10 đến 11 ký tự
+        if (!phoneRegex.test(phone)) {
+            Alert.alert(
+                'Thông báo',
+                'Số điện thoại phải từ 10-11 số và không chứa ký tự khác'
+            );
+            return;
+        }
+
+        // Nếu dữ liệu hợp lệ, gửi request
+        const registerData = {
+            name,
+            phone,
+            password,
+            role: 'customer',
+        };
+
+        try {
+            await registerCustomer(registerData, navigation);
+        } catch (error) {
+            Alert.alert('Lỗi', 'Đăng ký thất bại. Vui lòng thử lại.');
+            console.error(error);
+        }
+    };
+
 
     return (
         <View style={styles.container}>
@@ -57,6 +86,7 @@ export default function Register({ navigation }) {
                 placeholder={'Số điện thoại'}
                 value={phone}
                 onChangeText={setPhone}
+                keyboardType={'numeric'}
             />
 
             <Input

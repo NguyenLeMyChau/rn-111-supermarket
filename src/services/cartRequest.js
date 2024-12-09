@@ -55,7 +55,7 @@ const addProductToCart = async (accessToken, axiosJWT, accountId, productId, uni
                 Authorization: `Bearer ${accessToken}`,
             },
         });
-        aAlert.alert("Thành công",'Thêm sản phẩm vào giỏ hàng thành công');
+        Alert.alert("Thành công",'Thêm sản phẩm vào giỏ hàng thành công');
         return response.data;
     } catch (error) {
         console.error('Add product to cart failed:', error);

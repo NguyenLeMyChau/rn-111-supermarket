@@ -35,13 +35,14 @@ const loginUser = async (loginData, dispatch, navigation) => {
         if (userWithToken.role === 'customer') {
             navigation.navigate('MainTabs');
         } else {
-           Alert.alert("Thông báo",'Bạn không thể truy cập vào trang này');
+            Alert.alert("Thông báo", 'Bạn không thể truy cập vào trang này');
         }
 
     } catch (error) {
         dispatch(loginFailed());
         console.error('Login failed:', error);
-        Alert.alert("Lỗi",error.response ? error.response.data.message : error.message);
+        const errorMessage = error.response.data.message || 'Đã xảy ra lỗi';
+        Alert.alert("Lỗi", errorMessage);
     }
 }
 
@@ -69,19 +70,20 @@ const logoutUser = async (dispatch, navigation, accessToken, axiosJWT) => {
     } catch (error) {
         dispatch(logoutFailed());
         console.error('Logout failed:', error);
-        Alert.alert("Lỗi",error.response ? error.response.data.message : error.message);
+        Alert.alert("Lỗi", error.response ? error.response.data.message : error.message);
     }
 }
 
 
-const registerCustomer = async (registerData) => {
+const registerCustomer = async (registerData, navigation) => {
     try {
         const response = await axios.post(`${BASE_URL}/api/auth/register-customer`, registerData);
-       Alert.alert("Thành công",'Đăng ký khách hàng thành công');
+        Alert.alert("Thành công", 'Đăng ký khách hàng thành công');
+        navigation.navigate('Login');
         return response.data;
     } catch (error) {
         console.error('Resign customer failed:', error);
-        Alert.alert("Lỗi",error.response ? error.response.data.message : error.message);
+        Alert.alert("Lỗi", error.response ? error.response.data.message : error.message);
     }
 }
 

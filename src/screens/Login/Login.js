@@ -5,7 +5,7 @@ import {
   View,
   TouchableOpacity,
   ActivityIndicator,
-  Image,
+  Alert,
   Dimensions,
 } from "react-native";
 import colors from "../../constants/Color";
@@ -32,8 +32,25 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false); // Thêm trạng thái isLoading
 
-  // Xử lý đăng nhập với email và password
+  // Xử lý đăng nhập với phone và password
   const handleLogin = async () => {
+    // Kiểm tra ràng buộc số điện thoại
+    const phoneRegex = /^[0-9]{10,11}$/; // Kiểm tra số điện thoại chỉ chứa từ 10 đến 11 chữ số
+    if (!phoneRegex.test(phone)) {
+      Alert.alert('Lỗi', "Số điện thoại không hợp lệ. Vui lòng nhập lại.");
+      setIsLoading(false); // Dừng quá trình đăng nhập
+      return;
+    }
+
+    // Kiểm tra ràng buộc mật khẩu
+    const passwordRegex = /^[a-zA-Z0-9]{6,}$/; // Chỉ chứa chữ cái và số, ít nhất 6 ký tự
+    if (!passwordRegex.test(password)) {
+      Alert.alert('Lỗi', "Mật khẩu phải có ít nhất 6 ký tự và không chứa ký tự đặc biệt.");
+      setIsLoading(false); // Dừng quá trình đăng nhập
+      return;
+    }
+
+    // Nếu tất cả ràng buộc hợp lệ, thực hiện đăng nhập
     setIsLoading(true); // Bắt đầu quá trình đăng nhập
     const loginData = {
       phone: phone,
@@ -43,6 +60,7 @@ export default function Login() {
     setPaymentInfo(null);
     setIsLoading(false); // Kết thúc quá trình đăng nhập
   };
+
 
   return (
     <View style={styles.container}>

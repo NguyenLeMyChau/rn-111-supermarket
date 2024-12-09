@@ -158,7 +158,7 @@ export default function PaymentModal({ isVisible, onClose, total, cart,openModal
         }
       } catch (error) {
         console.error("Error calling backend for ZaloPay payment:", error);
-        aAlert.alert("Sự cố","Có lỗi xảy ra trong quá trình thanh toán.");
+        Alert.alert("Sự cố","Có lỗi xảy ra trong quá trình thanh toán.");
       }
     }
     // if (paymentMethod.name === "ZaloPay") {

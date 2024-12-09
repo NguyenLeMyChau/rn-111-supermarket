@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, TextInput, Animated, LayoutAnimation, UIManager, Platform, FlatList, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, TextInput, Alert, LayoutAnimation, UIManager, Platform, FlatList, Dimensions } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import colors from '../../constants/Color';
@@ -75,7 +75,7 @@ const ProductDetail = () => {
             if (isStockAvailable.inStock) {
                 handleUpdateQuantity(newQuantity);
             } else {
-                Alert.alert("Thông báo",isStockAvailable.message);
+                Alert.alert("Thông báo", isStockAvailable.message);
             }
         }
     };
@@ -88,7 +88,7 @@ const ProductDetail = () => {
         if (isStockAvailable.inStock) {
             handleUpdateQuantity(newQuantity);
         } else {
-            Alert.alert("Thông báo",isStockAvailable.message);
+            Alert.alert("Thông báo", isStockAvailable.message);
         }
     };
 
@@ -101,7 +101,7 @@ const ProductDetail = () => {
             if (isStockAvailable.inStock) {
                 handleUpdateQuantity(newQuantity);
             } else {
-                Alert.alert("Thông báo",isStockAvailable.message);
+                Alert.alert("Thông báo", isStockAvailable.message);
             }
         }
     };
@@ -114,11 +114,24 @@ const ProductDetail = () => {
 
     const handleAddCart = (quantity, total) => {
         if (!user.id) {
-            alert("Lưu ý", "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
+            Alert.alert(
+                "Thông báo",
+                "Bạn cần Đăng Nhập để thêm sản phẩm vào giỏ hàng.",
+                [
+                    {
+                        text: "Đăng Nhập",
+                        onPress: () => navigation.navigate("Login"), // Điều hướng đến trang Login
+                    },
+                    {
+                        text: "Hủy",
+                        style: "cancel",
+                    },
+                ]
+            );
             return;
         }
         if (!existingCartItem) {
-            addCart(product._id, product.unit_id._id, quantity, total,product.promotions[0]);
+            addCart(product._id, product.unit_id._id, quantity, total, product.promotions[0]);
         }
         else {
             console.log('Chạy updateProductToCart');
@@ -135,7 +148,7 @@ const ProductDetail = () => {
         if (item.promotions) {
             item.promotions.forEach((promo) => {
                 if (promo.type === "quantity") {
-                    giakhuyenmai =  promo.description;
+                    giakhuyenmai = promo.description;
                 } else if (promo.type === "amount") {
                     giakhuyenmai = item.price - promo.amount_donate;
                 }
@@ -478,7 +491,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#e53935', // Màu sắc cho giá khuyến mãi
         textAlign: 'right',
-        maxWidth:100,
+        maxWidth: 100,
     },
     addToCartButton: {
         backgroundColor: colors.button,

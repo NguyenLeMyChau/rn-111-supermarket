@@ -19,7 +19,8 @@ export default function Explore() {
             <TouchableOpacity
                 style={styles.itemContainer}
                 onPress={() => {
-                    navigation.navigate('ProductList', { name: item.name, productList: item.products });
+                    console.log('   item', item);
+                    navigation.navigate('ProductList', { name: item.category.name, productList: item.products });
                 }}
             >
                 <Image source={{ uri: item.category?.img }} style={styles.itemImage} />

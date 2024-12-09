@@ -30,7 +30,6 @@ export default function User() {
     const loggedInItems = [
         { id: '1', title: 'Đơn hàng của tôi', icon: 'shopping-cart' },
         { id: '2', title: 'Thông tin tài khoản', icon: 'user' },
-        { id: '3', title: 'Thông báo', icon: 'bell' },
         ...guestItems,
     ];
 

@@ -5,7 +5,8 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
-  
+  Alert
+
 } from "react-native";
 import React from "react";
 import colors from "../../constants/Color";
@@ -19,20 +20,31 @@ export default function ProductList({ route }) {
   const { name, productList } = route.params; // Nhận productList từ route.params
   const navigation = useNavigation(); // Khai báo navigation
   const user = useSelector((state) => state.auth?.login?.currentUser) || {};
-
+  console.log('name', name);
   const { addCart } = useCart();
 
   const handleAddCart = (product, quantity, total) => {
-    console.log('product', product);
     if (!user.id) {
-      alert("Lưu ý", "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
+      Alert.alert(
+        "Thông báo",
+        "Bạn cần Đăng Nhập để thêm sản phẩm vào giỏ hàng.",
+        [
+          {
+            text: "Đăng Nhập",
+            onPress: () => navigation.navigate("Login"), // Điều hướng đến trang Login
+          },
+          {
+            text: "Hủy",
+            style: "cancel",
+          },
+        ]
+      );
       return;
     }
-    addCart(product._id, product.unit_id._id, quantity, total,product.promotions[0]);
+    addCart(product._id, product.unit_id._id, quantity, total, product.promotions[0]);
   };
 
   const renderProduct = ({ item }) => {
-    console.log(item);
     let giakhuyenmai = null;
     const giagoc = item.price;
 
@@ -201,7 +213,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#e53935",
     textAlign: "left",
-    maxWidth:100,
+    maxWidth: 100,
   },
   addToCartButton: {
     backgroundColor: colors.button,

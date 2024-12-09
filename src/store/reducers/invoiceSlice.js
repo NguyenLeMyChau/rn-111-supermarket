@@ -36,7 +36,7 @@ const invoiceSlice = createSlice({
             );
         console.log(`Invoice ${existingInvoice}`)
             if (!existingInvoice) {
-                alert(`Hóa đơn mới: ${action.payload.invoiceCode}`);
+                Alert.alert(`Hóa đơn mới: ${action.payload.invoiceCode}`);
                 state.invoices = [...state.invoices, action.payload.invoice];
             }
             state.isFetching = false;

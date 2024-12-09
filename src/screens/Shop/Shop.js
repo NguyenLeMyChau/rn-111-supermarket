@@ -35,10 +35,23 @@ export default function Shop() {
     const handleAddCart = (product, quantity, price) => {
         console.log('product', product)
         if (!user || Object.keys(user).length === 0) {
-            alert("Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
+            Alert.alert(
+                "Thông báo",
+                "Bạn cần Đăng Nhập để thêm sản phẩm vào giỏ hàng.",
+                [
+                    {
+                        text: "Đăng Nhập",
+                        onPress: () => navigation.navigate("Login"), // Điều hướng đến trang Login
+                    },
+                    {
+                        text: "Hủy",
+                        style: "cancel",
+                    },
+                ]
+            );
             return;
         }
-        addCart(product._id, product.unit_id._id, quantity, price,product.promotions[0]);
+        addCart(product._id, product.unit_id._id, quantity, price, product.promotions[0]);
     };
 
     const renderProduct = ({ item }) => {
