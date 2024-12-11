@@ -136,10 +136,11 @@ export default function PaymentModal({ isVisible, onClose, total, cart,openModal
         const response = await axiosJWT.post("/api/payment/paymentapp", {
           amount:discountedTotal
         });
-        console.log(response)
+        console.log("zalopay",response)
         if (response.data.paymentUrl.return_message === "Giao dịch thành công") {
           // Lấy URL thanh toán ZaloPay từ backend
           const zaloPayUrl = response.data.paymentUrl.order_url;
+        
           await AsyncStorage.setItem('app_trans_id', response.data.app_trans_id);
           onClose();
           // Chuyển hướng người dùng đến WebView để thanh toán ZaloPay

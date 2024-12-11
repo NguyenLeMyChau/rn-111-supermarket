@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://be-111-supermarket.vercel.app'
+export const BASE_URL = 'https://be-111-supermarket.onrender.com'
 
- //export const BASE_URL = 'http://192.168.0.108:5000'
+//  export const BASE_URL = 'https://666f-123-20-169-102.ngrok-free.app'
 
