@@ -1,10 +1,18 @@
 import React, { useState, useRef, useEffect } from "react";
-import { ActivityIndicator, AppState, View, Alert, Text, Button } from "react-native";
+import {
+  ActivityIndicator,
+  AppState,
+  View,
+  Alert,
+  Text,
+  Button,
+  TouchableOpacity,
+} from "react-native";
 import WebView from "react-native-webview";
 import { checkPaymentStatus, payCart } from "../../services/cartRequest";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Modal from 'react-native-modal';
-import QRCode from 'react-native-qrcode-svg';
+import Modal from "react-native-modal";
+import QRCode from "react-native-qrcode-svg";
 
 const ViewPayZalo = ({ route, navigation }) => {
   const {
@@ -22,16 +30,20 @@ const ViewPayZalo = ({ route, navigation }) => {
     emitSocketEvent,
   } = route.params;
 
-  const [currentUrl, setCurrentUrl] = useState(url); 
+  const [currentUrl, setCurrentUrl] = useState(url);
   const [timeLeft, setTimeLeft] = useState(15 * 60);
   const [isModalVisible, setModalVisible] = useState(false);
-  const [qrData, setQrData] = useState("");  // Dữ liệu QR cho ZaloPay
+  const [qrData, setQrData] = useState(""); // Dữ liệu QR cho ZaloPay
   const appState = useRef(AppState.currentState);
-  const timeoutRef = useRef(null); 
+  const [loading, setLoading] = useState(false);
+  const timeoutRef = useRef(null);
 
   useEffect(() => {
     startTimeout();
-    const subscription = AppState.addEventListener("change", handleAppStateChange);
+    const subscription = AppState.addEventListener(
+      "change",
+      handleAppStateChange
+    );
 
     return () => {
       clearTimeout(timeoutRef.current);
@@ -52,18 +64,20 @@ const ViewPayZalo = ({ route, navigation }) => {
   };
 
   const handleTimeout = () => {
-    clearInterval(timeoutRef.current); 
-    Alert.alert(
-      "Thông báo",
-      "Phiên thanh toán đã hết hạn. Vui lòng thử lại.",
-      [{ text: "OK", onPress: () => navigation.goBack() }]
-    );
+    clearInterval(timeoutRef.current);
+    Alert.alert("Thông báo", "Phiên thanh toán đã hết hạn. Vui lòng thử lại.", [
+      { text: "OK", onPress: () => navigation.goBack() },
+    ]);
   };
 
   const handleAppStateChange = (nextAppState) => {
-    if (appState.current.match(/inactive|background/) && nextAppState === "active") {
+    if (
+      appState.current.match(/inactive|background/) &&
+      nextAppState === "active"
+    ) {
       console.log("App returned to foreground");
       setCurrentUrl(url);
+      setLoading(true);
       checkPaymentStatusPay();
     }
     appState.current = nextAppState;
@@ -83,6 +97,7 @@ const ViewPayZalo = ({ route, navigation }) => {
     } else {
       Alert.alert("Thông báo", "Giao dịch chưa được thực hiện");
       setCurrentUrl(url); // Ensure it resets to the original URL if payment is not successful
+      setLoading(false);
     }
   };
 
@@ -112,10 +127,12 @@ const ViewPayZalo = ({ route, navigation }) => {
         transactionId
       );
       clearInterval(timeoutRef.current);
+      setLoading(false);
       // navigation.navigate("OrderSuccess");
     } catch (error) {
       console.error("Error processing cart payment:", error);
       Alert.alert("Sự cố", "Có lỗi xảy ra khi thanh toán giỏ hàng.");
+      setLoading(false);
     }
   };
 
@@ -127,7 +144,7 @@ const ViewPayZalo = ({ route, navigation }) => {
 
   const hideQrModal = () => {
     setModalVisible(false);
-     checkPaymentStatusPay(); // Check payment status when QR modal is closed
+    checkPaymentStatusPay(); // Check payment status when QR modal is closed
   };
 
   return (
@@ -140,7 +157,11 @@ const ViewPayZalo = ({ route, navigation }) => {
         allowsBackForwardNavigationGestures={true}
         onNavigationStateChange={handleNavigationStateChange}
         renderLoading={() => (
-          <ActivityIndicator size="large" color="#0000ff" style={{ flex: 1, justifyContent: "center", alignItems: "center" }} />
+          <ActivityIndicator
+            size="large"
+            color="#0000ff"
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          />
         )}
       />
 
@@ -148,10 +169,31 @@ const ViewPayZalo = ({ route, navigation }) => {
 
       {/* Modal hiển thị QR thanh toán */}
       <Modal isVisible={isModalVisible}>
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "white", padding: 20 }}>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "white",
+            padding: 20,
+          }}
+        >
           <Text style={{ marginBottom: 20 }}>QR thanh toán ZaloPay</Text>
           <QRCode value={qrData} size={250} />
-          <Button title="Xác nhận" onPress={hideQrModal} />
+          <TouchableOpacity
+            onPress={hideQrModal}
+            style={{
+              backgroundColor: "blue",
+              padding: 10,
+              borderRadius: 5,
+              margin:30,
+            }}
+            disabled={loading} // Disable khi loading
+          >
+            <Text style={{ color: "white", textAlign: "center" }}>
+              {loading ? "Đang kiểm tra giao dịch..." : "Xác nhận"}
+            </Text>
+          </TouchableOpacity>
         </View>
       </Modal>
     </View>

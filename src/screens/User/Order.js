@@ -1,14 +1,44 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import OrderStatusTab from './OrderStatusTab'; // Component hiển thị đơn hàng theo trạng thái
 import Icon from 'react-native-vector-icons/Ionicons'; // Đảm bảo bạn đã cài đặt react-native-vector-icons
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons' // Import MaterialIcons
+import { useFocusEffect } from '@react-navigation/native';
+import { getInvoicesByAccountId } from '../../services/userRequest';
+import { useAccessToken, useAxiosJWT } from '../../util/axiosInstance';
+import { useDispatch, useSelector } from 'react-redux';
+import { loadingContainer } from '../../constants/Loading';
 
 const Tab = createBottomTabNavigator();
 
 export default function Order({ navigation }) {
+    const user = useSelector((state) => state.auth?.login?.currentUser) || {};
+    const accessToken = useAccessToken();
+    const axiosJWT = useAxiosJWT();
+    const dispatch = useDispatch();
+    const [loadingCart, setLoadingCart] = useState(true);
+
+    useFocusEffect(
+        useCallback(() => {
+            if (user?.accessToken) {
+
+                getInvoicesByAccountId(user.id, accessToken, axiosJWT, dispatch,setLoadingCart);
+                console.log("asdsadsadsa",loadingCart)
+                
+            }
+        }, [user])
+    );
+    
+  if (loadingCart) {
+    return (
+      <View style={loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
     return (
         <View style={styles.container}>
             {/* Header */}

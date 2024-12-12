@@ -18,7 +18,7 @@ const updateCustomerInfo = async (accountId, customerInfo, navigation, accessTok
     }
 }
 
-const getInvoicesByAccountId = async (accountId, accessToken, axiosJWT, dispatch) => {
+const getInvoicesByAccountId = async (accountId, accessToken, axiosJWT, dispatch,setLoadingCart) => {
     dispatch(getInvoiceStart());
     try {
         const response = await axiosJWT.get(`/api/customer/get-invoice/${accountId}`, {
@@ -27,6 +27,7 @@ const getInvoicesByAccountId = async (accountId, accessToken, axiosJWT, dispatch
             },
         });
         dispatch(getInvoiceSuccess(response.data));
+        setLoadingCart(false)
         return response.data;
     } catch (error) {
         dispatch(getInvoiceFailed());

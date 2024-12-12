@@ -44,13 +44,13 @@ export default function User() {
         return screenMap[id]; // Lấy tên màn hình tương ứng với id
     };
 
-    useFocusEffect(
-        useCallback(() => {
-            if (user?.accessToken) {
-                getInvoicesByAccountId(user.id, accessToken, axiosJWT, dispatch);
-            }
-        }, [user])
-    );
+    // useFocusEffect(
+    //     useCallback(() => {
+    //         if (user?.accessToken) {
+    //             getInvoicesByAccountId(user.id, accessToken, axiosJWT, dispatch);
+    //         }
+    //     }, [user])
+    // );
 
     const renderItem = ({ item }) => (
         <TouchableOpacity style={styles.itemContainer}
