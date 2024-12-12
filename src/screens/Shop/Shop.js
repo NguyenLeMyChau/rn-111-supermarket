@@ -96,7 +96,7 @@ export default function Shop() {
                             )}
                         </View>
                     ) : (
-                        <Text style={styles.productPrice}>{formatCurrency(giagoc)} đ</Text>
+                        <Text style={styles.productPrice}>{formatCurrency(giagoc)}</Text>
                     )}
                     <TouchableOpacity style={styles.addToCartButton} onPress={() => handleAddCart(item, 1, giakhuyenmai !== null && typeof (giakhuyenmai) !== "string" ? giakhuyenmai : giagoc)}>
                         <Icon name="cart" size={24} color="#FFFFFF" />
