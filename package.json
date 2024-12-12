@@ -44,7 +44,8 @@
     "redux-persist": "^6.0.0",
     "socket.io-client": "^4.8.1",
     "tinycolor2": "^1.6.0",
-    "typescript": "~5.3.3"
+    "typescript": "~5.3.3",
+    "expo-updates": "~0.26.10"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

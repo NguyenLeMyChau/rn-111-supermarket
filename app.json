@@ -30,6 +30,14 @@
         "projectId": "9ac114af-0dad-4b55-b09a-e023ddb82891"
       }
     },
-    "owner": "nguyenvanhoangiuh2k2"
+    "owner": "nguyenvanhoangiuh2k2",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "enabled": true,
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 0
+    }
   }
 }

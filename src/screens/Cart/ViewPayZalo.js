@@ -179,7 +179,7 @@ const ViewPayZalo = ({ route, navigation }) => {
           }}
         >
           <Text style={{ marginBottom: 20 }}>QR thanh toán ZaloPay</Text>
-          <QRCode value={qrData} size={250} />
+          {/* <QRCode value={url} size={250} /> */}
           <TouchableOpacity
             onPress={hideQrModal}
             style={{
