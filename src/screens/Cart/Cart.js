@@ -50,7 +50,6 @@ export default function Cart() {
   const [isModalVisible, setModalVisible] = useState(false);
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
-  console.log("Cart", cart);
 
   useFocusEffect(
     useCallback(() => {

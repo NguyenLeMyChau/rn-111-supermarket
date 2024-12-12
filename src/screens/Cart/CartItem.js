@@ -43,7 +43,7 @@ const CartItem = ({ item }) => {
   const [notProductDonate,setNotProductDonate] = useState();
   const products = useSelector((state) => state.product?.products) || [];
   const { addCart,removeProductFromCart } = useCart();
-  console.log('item test code',item)
+  // console.log('item test code',item)
 
   useEffect(() => {
     const fetchPromotion = async () => {
@@ -114,8 +114,6 @@ const CartItem = ({ item }) => {
               const eligibleQuantity =promotionProductExists?Math.floor(
                 promotionProductExists?.quantity / promotion.quantity
               ) : 0;
-            console.log("123456",promotionProductExists)
-            console.log("123456",eligibleQuantity)
               if ( eligibleQuantity < 1) {
                 setPromotionApply(null);
                 setQuantity_donate(0);

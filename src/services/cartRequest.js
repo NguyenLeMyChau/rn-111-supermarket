@@ -128,7 +128,6 @@ const removeProductCart = async (accountId, productId, unit_id, accessToken, axi
 
 const updateProductCart = async (accountId, productId, unitId, quantity, total, accessToken, axiosJWT) => {
     try {
-        console.log(quantity)
         const response = await axiosJWT.post(`/api/customer/update-product-cart`, {
             accountId,
             productId,

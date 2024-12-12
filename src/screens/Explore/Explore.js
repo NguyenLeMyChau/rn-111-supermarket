@@ -19,7 +19,6 @@ export default function Explore() {
             <TouchableOpacity
                 style={styles.itemContainer}
                 onPress={() => {
-                    console.log('   item', item);
                     navigation.navigate('ProductList', { name: item.category.name, productList: item.products });
                 }}
             >

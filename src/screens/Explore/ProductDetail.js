@@ -26,7 +26,6 @@ const ProductDetail = () => {
     const axiosJWT = useAxiosJWT();
 
     const { product } = route.params;
-    console.log('product', product);
 
     const user = useSelector((state) => state.auth?.login?.currentUser) || {};
     const cart = useSelector((state) => state.cart?.carts);
@@ -135,10 +134,31 @@ const ProductDetail = () => {
         }
         else {
             console.log('Chạy updateProductToCart');
-            console.log('quanitty', quantity);
-            console.log('total', total);
+            console.log('quanitty', product);
+            console.log('total', quantity);
             updateProductToCart(product, product.unit_id._id, quantity, total);
         }
+    };
+
+    const handleAddCartRelatedProducts = (product, quantity, total) => {
+        if (!user.id) {
+            Alert.alert(
+                "Thông báo",
+                "Bạn cần Đăng Nhập để thêm sản phẩm vào giỏ hàng.",
+                [
+                    {
+                        text: "Đăng Nhập",
+                        onPress: () => navigation.navigate("Login"), // Điều hướng đến trang Login
+                    },
+                    {
+                        text: "Hủy",
+                        style: "cancel",
+                    },
+                ]
+            );
+            return;
+        }
+        addCart(product._id, product.unit_id._id, quantity, total, product.promotions[0]);
     };
 
     const renderProduct = ({ item }) => {
@@ -186,7 +206,7 @@ const ProductDetail = () => {
                     ) : (
                         <Text style={styles.productPrice}>{formatCurrency(giagoc)}</Text>
                     )}
-                    <TouchableOpacity style={styles.addToCartButton} onPress={() => handleAddCart(1, giakhuyenmai !== null && typeof (giakhuyenmai) !== "string" ? giakhuyenmai : giagoc)}>
+                    <TouchableOpacity style={styles.addToCartButton} onPress={() => handleAddCartRelatedProducts(item, 1, giakhuyenmai !== null && typeof (giakhuyenmai) !== "string" ? giakhuyenmai : giagoc)}>
                         <Ionicons name="cart" size={24} color="#FFFFFF" />
                     </TouchableOpacity>
                 </View>

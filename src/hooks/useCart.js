@@ -16,7 +16,6 @@ const useCart = () => {
     const [loadingCart, setLoadingCart] = useState(false);
 
     const addCart = async (productId, unitId, quantity, total,promotion) => {
-        console.log(promotion)
         await addProductToCart(accessToken, axiosJWT, user.id, productId, unitId, quantity, total,promotion);
         
         await fetchDataCart(setLoadingCart);
