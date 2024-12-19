@@ -16,7 +16,7 @@ const getCartById = async (dispatch, accessToken, axiosJWT, accountId) => {
         dispatch(getCartSuccess(response.data));
         return response.data;
     } catch (error) {
-        console.error('Get all carts failed:', error);
+        // console.error('Get all carts failed:', error);
         dispatch(getCartFailed());
     }
 };

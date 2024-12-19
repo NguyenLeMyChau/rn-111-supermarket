@@ -9,7 +9,7 @@
     "splash": {
       "image": "./assets/logo-supermarket-removebg.png",
       "resizeMode": "contain",
-      "backgroundColor": "#FFFE91"
+      "backgroundColor": "blue"
     },
     "ios": {
       "supportsTablet": true
@@ -17,7 +17,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/logo-supermarket-removebg.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "blue"
       },
       "newArchEnabled": true,
       "package": "com.nguyenlemychau.rn111supermarket"
